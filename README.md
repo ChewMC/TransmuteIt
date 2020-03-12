@@ -12,3 +12,7 @@ The design is to mimic it as much as possible, as a result:
 ## Planned
 
 I have a lot planned that are probably way over my head in ability to actually do them. [This Trello Board](https://trello.com/b/SZVMEvD7/transmuteit) will hopefully help me with it.
+
+## Builds
+
+Dev builds are occasionally on my [Jenkins server](https://jenkins.chew.pw/job/TransmuteIt/). I don't do it for every commit, only ones that can be ran on your server without *too* many issues. Safe(st) builds are on the (currently non-existent) SpigotMC resource page.
