@@ -1,0 +1,14 @@
+name: TransmuteIt
+main: pw.chew.transmuteit.TransmuteIt
+version: 1.0
+api-version: 1.14
+description: It's basically ProjectE for Spigot
+author: Chewsterchew
+website: https://github.com/Chew/TransmuteIt
+commands:
+   transmute:
+      description: The main command for the plugin.
+      usage: "Usage: /transmute"
+      permission: transmute.main
+      permission-message: The admins have revoked your ability to run this command!
+      default: true
