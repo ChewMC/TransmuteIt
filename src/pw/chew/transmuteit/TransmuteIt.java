@@ -8,6 +8,7 @@ public class TransmuteIt extends JavaPlugin {
     FileConfiguration config = this.getConfig();
     saveConfig();
 
+    this.getCommand("getemc").setExecutor(new GetEMCCommand());
     System.out.println("[TransmuteIt] Booted!");
   }
   // Fired when plugin is disabled
