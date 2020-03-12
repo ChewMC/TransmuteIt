@@ -6,9 +6,21 @@ description: It's basically ProjectE for Spigot
 author: Chewsterchew
 website: https://github.com/Chew/TransmuteIt
 commands:
-   transmute:
-      description: The main command for the plugin.
-      usage: "Usage: /transmute"
-      permission: transmute.main
-      permission-message: The admins have revoked your ability to run this command!
-      default: true
+  transmute:
+    description: The main command for the plugin.
+    usage: "Usage: /transmute"
+    permission: transmute.main
+    permission-message: The admins have revoked your ability to run this command!
+    default: true
+  setEMC:
+    description: Set the EMC value of the held item.
+    usage: "Usage: /setEMC 8"
+    permission: transmute.admin.emc.set
+    permission-message: The admins have revoked your ability to run this command!
+    default: op
+  getEMC:
+    description: Get the EMC value of the held item.
+    usage: "Usage: /getEMC"
+    permission: transmute.emc.get
+    permission-message: The admins have revoked your ability to run this command!
+    default: true
