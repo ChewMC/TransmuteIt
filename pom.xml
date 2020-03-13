@@ -27,6 +27,12 @@
       <version>1.15.2-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20190722</version>
+		</dependency>
   </dependencies>
   <build>
 		<sourceDirectory>src</sourceDirectory>
@@ -55,6 +61,7 @@
 				<directory>src</directory>
 				<includes>
 					<include>**/*.yml</include>
+  				<include>**/*.json</include>
 				</includes>
 			</resource>
 		</resources>
