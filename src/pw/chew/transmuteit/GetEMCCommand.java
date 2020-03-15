@@ -8,33 +8,35 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.Material;
 
 public class GetEMCCommand implements CommandExecutor {
-
-
-  // This method is called, when somebody uses our command
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (sender instanceof Player) {
+      // All this basically is just "Get the held item's name"
       Player player = (Player)sender;
       PlayerInventory inventory = player.getInventory();
       ItemStack item = inventory.getItemInMainHand();
       int amount = item.getAmount();
       Material type = item.getType();
       String name = type.toString();
+      // If it's nothing
       if(name == "AIR") {
         sender.sendMessage("Please hold an item to find its EMC value!");
       } else {
+        // If it's something
         try {
           int emc = TransmuteIt.json.getInt(type.toString());
           sender.sendMessage("That item is " + amount + " of " + name + ". EMC Value: " + emc * amount);
+          // If there's no JSON file or it's not IN the JSON file
         } catch(org.json.JSONException e) {
           sender.sendMessage("That item is " + amount + " of " + name + ". It has no set EMC value!");
         }
       }
 
     } else {
+      // Sorry Jimbo, Players only!
       sender.sendMessage("[TransmuteIt] Only players may run this command.");
     }
 
-    // If the player (or console) uses our command correct, we can return true
+    // If the player (or console) uses our command correctly, we can return true
     return true;
   }
 }
