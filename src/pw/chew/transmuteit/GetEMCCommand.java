@@ -15,18 +15,20 @@ public class GetEMCCommand implements CommandExecutor {
     if (sender instanceof Player) {
       Player player = (Player)sender;
       PlayerInventory inventory = player.getInventory();
-      ItemStack item = inventory.getItemInMainHand​();
+      ItemStack item = inventory.getItemInMainHand();
       int amount = item.getAmount();
       Material type = item.getType();
-      try {
-        int emc = TransmuteIt.json.getInt(type.toString());
-        sender.sendMessage("That item is " + amount + " of " + type.toString() + ". EMC Value: " + emc * amount);
-      } catch(org.json.JSONException e) {
-        sender.sendMessage("That item is " + amount + " of " + type.toString() + ". It has no set EMC value!");
+      String name = type.toString();
+      if(name == "AIR") {
+        sender.sendMessage("Please hold an item to find its EMC value!");
+      } else {
+        try {
+          int emc = TransmuteIt.json.getInt(type.toString());
+          sender.sendMessage("That item is " + amount + " of " + name + ". EMC Value: " + emc * amount);
+        } catch(org.json.JSONException e) {
+          sender.sendMessage("That item is " + amount + " of " + name + ". It has no set EMC value!");
+        }
       }
-
-
-
 
     } else {
       sender.sendMessage("[TransmuteIt] Only players may run this command.");
