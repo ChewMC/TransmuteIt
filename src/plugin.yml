@@ -24,3 +24,9 @@ commands:
     permission: transmute.emc.get
     permission-message: The admins have revoked your ability to run this command!
     default: true
+  emc:
+    description: Get your EMC value.
+    usage: "Usage: /emc"
+    permission: transmute.player.emc
+    permission-message: The admins have revoked your ability to run this command!
+    default: true

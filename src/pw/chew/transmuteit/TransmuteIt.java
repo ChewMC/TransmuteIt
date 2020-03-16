@@ -20,8 +20,8 @@ public class TransmuteIt extends JavaPlugin {
   static JSONObject json;
 
   // Temporary place to store EMC & Discoveries.
-  Map<UUID, Integer> emc = new HashMap<>();
-  Map<UUID, ArrayList<String>> discoveries = new HashMap<>();
+  static Map<UUID, Integer> emc = new HashMap<>();
+  static Map<UUID, ArrayList<String>> discoveries = new HashMap<>();
 
   // Fired when plugin is first enabled
   public void onEnable() {
@@ -48,6 +48,7 @@ public class TransmuteIt extends JavaPlugin {
 
     this.getCommand("getemc").setExecutor(new GetEMCCommand());
     this.getCommand("transmute").setExecutor(new TransmuteCommand());
+    this.getCommand("emc").setExecutor(new EMCCommand());
     System.out.println("[TransmuteIt] Booted!");
   }
   // Fired when plugin is disabled
