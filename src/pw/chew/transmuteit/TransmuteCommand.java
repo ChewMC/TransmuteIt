@@ -38,10 +38,10 @@ public class TransmuteCommand implements CommandExecutor {
   }
 
   public void helpResponse(CommandSender sender) {
-    sender.sendMessage("&cWelcome to TransmuteIt!");
-    sender.sendMessage("&b/transmute take [amount] &c- Take [amount] of held item and convert to EMC.");
-    sender.sendMessage("&b/transmute get [item] [amount] &c- Get amount of item using EMC.");
-    sender.sendMessage("&b/transmute help &c- This command.");
-    sender.sendMessage("&b/getEMC &c- Get the EMC value of held item.");
+    sender.sendMessage("§dWelcome to TransmuteIt!");
+    sender.sendMessage("§b/transmute take [amount] §d- Take [amount] of held item and convert to EMC.");
+    sender.sendMessage("§b/transmute get [item] [amount] §d- Get amount of item using EMC.");
+    sender.sendMessage("§b/transmute help §d- This command.");
+    sender.sendMessage("§b/getEMC §d- Get the EMC value of held item.");
   }
 }
