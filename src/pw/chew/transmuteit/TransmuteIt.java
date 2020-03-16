@@ -1,7 +1,8 @@
 package pw.chew.transmuteit;
+import java.util.ArrayList;
+import java.util.UUID;
 import java.io.IOException;
 import java.io.FileOutputStream;
-import com.google.common.io.Files;
 import java.io.InputStream;
 import java.io.FileNotFoundException;
 import org.json.JSONObject;
@@ -17,6 +18,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class TransmuteIt extends JavaPlugin {
   static File emcFile;
   static JSONObject json;
+
+  // Temporary place to store EMC & Discoveries.
+  Map<UUID, Integer> emc = new HashMap<>();
+  Map<UUID, ArrayList<String>> discoveries = new HashMap<>();
 
   // Fired when plugin is first enabled
   public void onEnable() {
