@@ -49,6 +49,7 @@ public class TransmuteIt extends JavaPlugin {
     this.getCommand("getemc").setExecutor(new GetEMCCommand());
     this.getCommand("transmute").setExecutor(new TransmuteCommand());
     this.getCommand("emc").setExecutor(new EMCCommand());
+    this.getCommand("setemc").setExecutor(new SetEMCCommand());
     System.out.println("[TransmuteIt] Booted!");
   }
   // Fired when plugin is disabled
