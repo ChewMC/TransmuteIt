@@ -18,7 +18,7 @@ public class GetEMCCommand implements CommandExecutor {
       Material type = item.getType();
       String name = type.toString();
       // If it's nothing
-      if(name == "AIR") {
+      if(name.equals("AIR")) {
         sender.sendMessage("Please hold an item to find its EMC value!");
       } else {
         // If it's something

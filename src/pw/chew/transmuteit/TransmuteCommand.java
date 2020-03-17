@@ -17,12 +17,12 @@ public class TransmuteCommand implements CommandExecutor {
         helpResponse(sender);
       } else if(args.length >= 1) {
         String arg0 = args[0].toLowerCase();
-        if(arg0 == "help") {
+        if(arg0.equals("help")) {
           helpResponse(sender);
-        } else if(arg0 == "get") {
           sender.sendMessage("This sub-command hasn't been implemented yet!");
-        } else if(arg0 == "take") {
+        } else if(arg0.equals("get")) {
           sender.sendMessage("This sub-command hasn't been implemented yet!");
+        } else if(arg0.equals("take")) {
         } else {
           sender.sendMessage("Invalid subcommand! Need help? Try \"/transmute help\"");
         }
