@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class TransmuteIt extends JavaPlugin {
   static File emcFile;
   static JSONObject json;
+  FileConfiguration config;
 
   // Temporary place to store EMC & Discoveries.
   static Map<UUID, Integer> emc = new HashMap<>();
@@ -25,8 +26,10 @@ public class TransmuteIt extends JavaPlugin {
 
   // Fired when plugin is first enabled
   public void onEnable() {
+    config = this.getConfig();
+    config.addDefault("economy", false);
+    config.options().copyDefaults(true);
     saveDefaultConfig();
-    FileConfiguration config = this.getConfig();
 
     while (true) {
       try {
@@ -34,8 +37,6 @@ public class TransmuteIt extends JavaPlugin {
         break;
       } catch (FileNotFoundException e) {
         System.out.println("[TransmuteIt] EMC File missing! Attempting to grab defaults from JAR.");
-
-        //this.getPluginLoader().disablePlugin(this);
         try {
           copyFileFromJar();
         } catch (IOException f) {

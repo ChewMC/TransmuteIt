@@ -1,0 +1,3 @@
+# Use Vault/Economy instead of having a separate place to store EMC?
+# Requires Vault Plugin
+economy: false
