@@ -22,7 +22,42 @@ public class TransmuteCommand implements CommandExecutor {
         if(arg0.equals("help")) {
           helpResponse(sender);
         } else if(arg0.equals("get")) {
-          sender.sendMessage("This sub-command hasn't been implemented yet!");
+          if (args.length < 3) {
+            sender.sendMessage("This sub-command requires more arguments! Check \"/transmute help\" for more info.");
+            return true;
+          }
+          Player player = (Player)sender;
+          UUID uuid = player.getUniqueId();
+          String name = args[1].toUpperCase();
+          int amount = Integer.parseInt(args[2]);
+
+          ArrayList<String> empty = new ArrayList<String>();
+          TransmuteIt.discoveries.putIfAbsent(uuid, empty);
+
+          if(TransmuteIt.discoveries.get(uuid).contains(name)) {
+            int emc = TransmuteIt.emc.getOrDefault(uuid, 0);
+            int value;
+            try {
+              value = TransmuteIt.json.getInt(name);
+            } catch(org.json.JSONException e) {
+              sender.sendMessage("This item no longer has an EMC value!");
+              return true;
+            }
+            if((value * amount) > emc) {
+              sender.sendMessage("You don't have enough EMC!");
+              return true;
+            }
+
+            PlayerInventory inventory = player.getInventory();
+            ItemStack item = new ItemStack(Material.getMaterial(name), amount);
+            inventory.addItem(item);
+            TransmuteIt.emc.replace(uuid, emc - (value * amount));
+            sender.sendMessage("Successfully transmuted " + (value * amount) + " EMC into " + amount + " " + name);
+            return true;
+          } else {
+            sender.sendMessage("Uh oh! You don't appear to have discovered " + name + ". Type /getemc to find the exact name.");
+            return true;
+          }
         } else if(arg0.equals("take")) {
           int takeAmount = Integer.parseInt(args[1]);
           if(takeAmount <= 0) {
