@@ -1,4 +1,5 @@
 package pw.chew.transmuteit;
+import java.util.UUID;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,10 +20,41 @@ public class TransmuteCommand implements CommandExecutor {
         String arg0 = args[0].toLowerCase();
         if(arg0.equals("help")) {
           helpResponse(sender);
-          sender.sendMessage("This sub-command hasn't been implemented yet!");
         } else if(arg0.equals("get")) {
           sender.sendMessage("This sub-command hasn't been implemented yet!");
         } else if(arg0.equals("take")) {
+          int takeAmount = Integer.parseInt(args[1]);
+          if(takeAmount <= 0) {
+            sender.sendMessage("Please select a value greater than 0!");
+            return true;
+          }
+          ItemStack item = ((Player)sender).getInventory().getItemInMainHand();
+          int amount = item.getAmount();
+          if(amount - takeAmount < 0) {
+            sender.sendMessage("You don't have enough of this item!");
+            return true;
+          }
+          Material type = item.getType();
+          String name = type.toString();
+          // If it's nothing
+          if(name.equals("AIR")) {
+            sender.sendMessage("Please hold an item to transmute it!");
+          } else {
+            // If it's something
+            try {
+              int emc = TransmuteIt.json.getInt(type.toString());
+              item.setAmount(amount - takeAmount);
+              UUID uuid = ((Player)sender).getUniqueId();
+              int current = TransmuteIt.emc.getOrDefault(uuid, 0);
+              int newEMC = current + (takeAmount * emc);
+              TransmuteIt.emc.putIfAbsent(uuid, 0);
+              TransmuteIt.emc.replace(uuid, newEMC);
+              sender.sendMessage("Successfully transmuted " + takeAmount + " " + name + "! You now have " + newEMC + " EMC");
+              // If there's no JSON file or it's not IN the JSON file
+            } catch(org.json.JSONException e) {
+              sender.sendMessage("This item has no set EMC value!");
+            }
+          }
         } else {
           sender.sendMessage("Invalid subcommand! Need help? Try \"/transmute help\"");
         }
