@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.Material;
+import java.util.ArrayList;
 
 public class TransmuteCommand implements CommandExecutor {
 
@@ -49,7 +50,16 @@ public class TransmuteCommand implements CommandExecutor {
               int newEMC = current + (takeAmount * emc);
               TransmuteIt.emc.putIfAbsent(uuid, 0);
               TransmuteIt.emc.replace(uuid, newEMC);
-              sender.sendMessage("Successfully transmuted " + takeAmount + " " + name + "! You now have " + newEMC + " EMC");
+              ArrayList<String> empty = new ArrayList<String>();
+              TransmuteIt.discoveries.putIfAbsent(uuid, empty);
+              if(TransmuteIt.discoveries.get(uuid).contains(name)) {
+                sender.sendMessage("Successfully transmuted " + takeAmount + " " + name + "! You now have " + newEMC + " EMC");
+              } else {
+                sender.sendMessage("You've discovered " + name + "! Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
+                sender.sendMessage("Successfully transmuted " + takeAmount + " " + name + "! You now have " + newEMC + " EMC");
+                TransmuteIt.discoveries.get(uuid).add(name);
+              }
+
               // If there's no JSON file or it's not IN the JSON file
             } catch(org.json.JSONException e) {
               sender.sendMessage("This item has no set EMC value!");
