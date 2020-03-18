@@ -24,7 +24,7 @@ public class GetEMCCommand implements CommandExecutor {
         // If it's something
         try {
           int emc = TransmuteIt.json.getInt(type.toString());
-          sender.sendMessage("That item is " + amount + " of " + name + ". EMC Value: " + emc * amount);
+          sender.sendMessage("That item is " + amount + " of " + name + ". Stack EMC Value: " + emc * amount + " (" + amount + " @ " + emc + " EMC each)");
           // If there's no JSON file or it's not IN the JSON file
         } catch(org.json.JSONException e) {
           sender.sendMessage("That item is " + amount + " of " + name + ". It has no set EMC value!");

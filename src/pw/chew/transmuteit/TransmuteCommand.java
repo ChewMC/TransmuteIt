@@ -7,14 +7,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.Material;
-import java.util.ArrayList;
 
 public class TransmuteCommand implements CommandExecutor {
 
   // This method is called, when somebody uses our command
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (sender instanceof Player) {
-
+      Player player = (Player)sender;
       if(args.length == 0) {
         helpResponse(sender);
       } else if(args.length >= 1) {
@@ -26,13 +25,12 @@ public class TransmuteCommand implements CommandExecutor {
             sender.sendMessage("This sub-command requires more arguments! Check \"/transmute help\" for more info.");
             return true;
           }
-          Player player = (Player)sender;
           UUID uuid = player.getUniqueId();
           String name = args[1].toUpperCase();
           int amount = Integer.parseInt(args[2]);
 
           if(new DataManager().discovered(uuid, name)) {
-            int emc = new DataManager().getEMC(uuid);
+            int emc = new DataManager().getEMC(uuid, player);
             int value;
             try {
               value = TransmuteIt.json.getInt(name);
@@ -49,7 +47,7 @@ public class TransmuteCommand implements CommandExecutor {
             ItemStack item = new ItemStack(Material.getMaterial(name), amount);
             inventory.addItem(item);
             DataManager bob = new DataManager();
-            bob.writeEMC(uuid, emc - (value * amount));
+            bob.writeEMC(uuid, emc - (value * amount), player);
             sender.sendMessage("Successfully transmuted " + (value * amount) + " EMC into " + amount + " " + name);
             return true;
           } else {
@@ -79,9 +77,9 @@ public class TransmuteCommand implements CommandExecutor {
               int emc = TransmuteIt.json.getInt(type.toString());
               item.setAmount(amount - takeAmount);
               UUID uuid = ((Player)sender).getUniqueId();
-              int current = new DataManager().getEMC(uuid);
+              int current = new DataManager().getEMC(uuid, player);
               int newEMC = current + (takeAmount * emc);
-              new DataManager().writeEMC(uuid, newEMC);
+              new DataManager().writeEMC(uuid, newEMC, player);
               if(new DataManager().discovered(uuid, name)) {
                 sender.sendMessage("Successfully transmuted " + takeAmount + " " + name + "! You now have " + newEMC + " EMC");
               } else {

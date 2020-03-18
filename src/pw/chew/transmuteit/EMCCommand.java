@@ -8,8 +8,9 @@ import org.bukkit.entity.Player;
 public class EMCCommand implements CommandExecutor {
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (sender instanceof Player) {
+      Player player = (Player)sender;
       UUID uuid = ((Player)sender).getUniqueId();
-      int emc = new DataManager().getEMC(uuid);
+      int emc = new DataManager().getEMC(uuid, player);
       sender.sendMessage("You have " + emc + " EMC!");
     } else {
       // Sorry Jimbo, Players only!

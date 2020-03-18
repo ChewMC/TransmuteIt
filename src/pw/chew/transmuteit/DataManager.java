@@ -1,4 +1,5 @@
 package pw.chew.transmuteit;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.json.JSONException;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -9,11 +10,11 @@ import java.io.File;
 import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
-import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.IOException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import org.bukkit.entity.Player;
 
 public class DataManager {
   public DataManager() {
@@ -21,8 +22,13 @@ public class DataManager {
   }
 
 
-  public int getEMC(UUID uuid) {
-    return getData(uuid).getInt("emc");
+  public int getEMC(UUID uuid, Player player) {
+    if(TransmuteIt.useEconomy) {
+      double emc = TransmuteIt.econ.getBalance(player);
+      return (int)emc;
+    } else {
+      return getData(uuid).getInt("emc");
+    }
   }
 
   public static File getDataFolder() {
@@ -126,16 +132,21 @@ public class DataManager {
     writer.close();
   }
 
-  public void writeEMC(UUID uuid, int amount) {
-    File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-    try {
-      JSONObject data = getData(uuid);
-      data.put("emc", amount);
-      PrintWriter writer = new PrintWriter(userFile);
-      data.write(writer);
-      writer.close();
-    } catch(FileNotFoundException e) {
-      System.out.println("[TransmuteIt] Unable to write to EMC file! EMC will NOT save!");
+  public void writeEMC(UUID uuid, int amount, Player player) {
+    if(TransmuteIt.useEconomy) {
+      double balance = TransmuteIt.econ.getBalance(player);
+      EconomyResponse r = TransmuteIt.econ.depositPlayer(player, amount);
+    } else {
+      File userFile = new File(getDataFolder(), uuid.toString() + ".json");
+      try {
+        JSONObject data = getData(uuid);
+        data.put("emc", amount);
+        PrintWriter writer = new PrintWriter(userFile);
+        data.write(writer);
+        writer.close();
+      } catch(FileNotFoundException e) {
+        System.out.println("[TransmuteIt] Unable to write to EMC file! EMC will NOT save!");
+      }
     }
   }
 
