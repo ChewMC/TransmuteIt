@@ -1,4 +1,5 @@
 package pw.chew.transmuteit;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.ArrayList;
 import java.util.UUID;
 import java.io.IOException;
@@ -14,11 +15,18 @@ import com.google.gson.Gson;
 import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
 
 public class TransmuteIt extends JavaPlugin {
+  // Files
   static File emcFile;
   static JSONObject json;
   FileConfiguration config;
+
+  // Vault Hook
+  static Economy econ;
+  static boolean useEconomy = false;
 
   // Temporary place to store EMC & Discoveries.
   static Map<UUID, Integer> emc = new HashMap<>();
@@ -30,6 +38,13 @@ public class TransmuteIt extends JavaPlugin {
     config.addDefault("economy", false);
     config.options().copyDefaults(true);
     saveDefaultConfig();
+
+    if(setupEconomy() == false) {
+      System.out.println("[TransmuteIt] Could not find vault (or there's no economy hooked into it), economy won't work!");
+    } else {
+      System.out.println("[TransmuteIt] Vault HOOKED! Let's get this cash!");
+      useEconomy = true;
+    }
 
     while (true) {
       try {
@@ -47,17 +62,33 @@ public class TransmuteIt extends JavaPlugin {
       }
     }
 
+    // Load Commands
     this.getCommand("getemc").setExecutor(new GetEMCCommand());
     this.getCommand("transmute").setExecutor(new TransmuteCommand());
     this.getCommand("emc").setExecutor(new EMCCommand());
     this.getCommand("setemc").setExecutor(new SetEMCCommand());
     System.out.println("[TransmuteIt] Booted!");
   }
+
   // Fired when plugin is disabled
   public void onDisable() {
 
   }
 
+  // Setup Vault Economy Hook
+  private boolean setupEconomy() {
+    if (getServer().getPluginManager().getPlugin("Vault") == null) {
+      return false;
+    }
+    RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+    if (rsp == null) {
+      return false;
+    }
+    econ = rsp.getProvider();
+    return econ != null;
+  }
+
+  // Load EMC values from JSON file
   public void loadEMC() throws FileNotFoundException {
     emcFile = new File(getDataFolder(), "emc.json");
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -67,6 +98,7 @@ public class TransmuteIt extends JavaPlugin {
     json = new JSONObject(gsson);
   }
 
+  // Copy default EMC values from JSON file hidden in the JAR.
   private void copyFileFromJar() throws IOException {
     String name = "/emc.json";
     File target = new File(getDataFolder(), "emc.json");
