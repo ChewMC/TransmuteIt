@@ -9,6 +9,12 @@ The design is to mimic it as much as possible, as a result:
 
 1) You need to transmute an item to be able to transmute it.
 
+## Discrepancies from ProjectE
+
+* EMC calculations aren't smart. You can't just set the EMC value for gold ingot and expect it to auto-calculate gold blocks being ingot times 9. I'm sure it's possible, but I really don't wanna spend the time.
+* It's just the transmuting, as long as you have the perms, you can transmute.
+* As of now, there's no "Tome of Knowledge" to unlock all the discoveries, maybe I'll add a perm for that.
+
 ## Planned
 
 I have a lot planned that are probably way over my head in ability to actually do them. [This Trello Board](https://trello.com/b/SZVMEvD7/transmuteit) will hopefully help me with it.
