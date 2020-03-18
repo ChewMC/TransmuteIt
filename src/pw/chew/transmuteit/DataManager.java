@@ -59,7 +59,6 @@ public class DataManager {
       bob = new JSONObject(data);
     } catch(JSONException e) {
       e.printStackTrace();
-      System.out.println("JSON EXCEPTION OCCURED. YOU FOOL. YOU BOMBASTIC BEANLORD");
       bob = new JSONObject("{\"emc\":0,\"discoveries\":[]}");
     }
     return bob;
@@ -91,15 +90,12 @@ public class DataManager {
 
   public void prepareDataFile(UUID uuid) {
     File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-    System.out.println("does userFile exist on line 80?" + userFile.exists());
     PrintWriter writer;
-    System.out.println("Let's print this scanner");
     String data = "";
     try {
       Scanner scanner = new Scanner(userFile);
       while (scanner.hasNextLine()) {
         data += (scanner.nextLine());
-        System.out.println(data);
       }
       scanner.close();
     } catch (FileNotFoundException e) {
@@ -111,13 +107,10 @@ public class DataManager {
       return;
     }
     JSONObject bob;
-    System.out.println("data at line 107:" + data);
     try {
       bob = new JSONObject(data);
-      System.out.println("bob at line 110:" + bob.toString());
     } catch(JSONException e) {
       e.printStackTrace();
-      System.out.println("JSON EXCEPTION OCCURED. YOU FOOL. YOU BOMBASTIC BEANLORD");
       bob = new JSONObject("{\"emc\":0,\"discoveries\":[]}");
     }
     if(bob.length() < 2) {
