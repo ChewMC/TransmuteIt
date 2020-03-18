@@ -9,7 +9,7 @@ public class EMCCommand implements CommandExecutor {
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (sender instanceof Player) {
       UUID uuid = ((Player)sender).getUniqueId();
-      int emc = TransmuteIt.emc.getOrDefault(uuid, 0);
+      int emc = new DataManager().getEMC(uuid);
       sender.sendMessage("You have " + emc + " EMC!");
     } else {
       // Sorry Jimbo, Players only!

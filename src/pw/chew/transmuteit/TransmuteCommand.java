@@ -31,11 +31,8 @@ public class TransmuteCommand implements CommandExecutor {
           String name = args[1].toUpperCase();
           int amount = Integer.parseInt(args[2]);
 
-          ArrayList<String> empty = new ArrayList<String>();
-          TransmuteIt.discoveries.putIfAbsent(uuid, empty);
-
-          if(TransmuteIt.discoveries.get(uuid).contains(name)) {
-            int emc = TransmuteIt.emc.getOrDefault(uuid, 0);
+          if(new DataManager().discovered(uuid, name)) {
+            int emc = new DataManager().getEMC(uuid);
             int value;
             try {
               value = TransmuteIt.json.getInt(name);
@@ -51,7 +48,8 @@ public class TransmuteCommand implements CommandExecutor {
             PlayerInventory inventory = player.getInventory();
             ItemStack item = new ItemStack(Material.getMaterial(name), amount);
             inventory.addItem(item);
-            TransmuteIt.emc.replace(uuid, emc - (value * amount));
+            DataManager bob = new DataManager();
+            bob.writeEMC(uuid, emc - (value * amount));
             sender.sendMessage("Successfully transmuted " + (value * amount) + " EMC into " + amount + " " + name);
             return true;
           } else {
@@ -77,28 +75,25 @@ public class TransmuteCommand implements CommandExecutor {
             sender.sendMessage("Please hold an item to transmute it!");
           } else {
             // If it's something
-            try {
+          //  try {
               int emc = TransmuteIt.json.getInt(type.toString());
               item.setAmount(amount - takeAmount);
               UUID uuid = ((Player)sender).getUniqueId();
-              int current = TransmuteIt.emc.getOrDefault(uuid, 0);
+              int current = new DataManager().getEMC(uuid);
               int newEMC = current + (takeAmount * emc);
-              TransmuteIt.emc.putIfAbsent(uuid, 0);
-              TransmuteIt.emc.replace(uuid, newEMC);
-              ArrayList<String> empty = new ArrayList<String>();
-              TransmuteIt.discoveries.putIfAbsent(uuid, empty);
-              if(TransmuteIt.discoveries.get(uuid).contains(name)) {
+              new DataManager().writeEMC(uuid, newEMC);
+              if(new DataManager().discovered(uuid, name)) {
                 sender.sendMessage("Successfully transmuted " + takeAmount + " " + name + "! You now have " + newEMC + " EMC");
               } else {
                 sender.sendMessage("You've discovered " + name + "! Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
                 sender.sendMessage("Successfully transmuted " + takeAmount + " " + name + "! You now have " + newEMC + " EMC");
-                TransmuteIt.discoveries.get(uuid).add(name);
+                new DataManager().writeDiscovery(uuid, name);
               }
 
               // If there's no JSON file or it's not IN the JSON file
-            } catch(org.json.JSONException e) {
-              sender.sendMessage("This item has no set EMC value!");
-            }
+            //} catch(org.json.JSONException e) {
+            //  sender.sendMessage("This item has no set EMC value!");
+            //}
           }
         } else {
           sender.sendMessage("Invalid subcommand! Need help? Try \"/transmute help\"");
