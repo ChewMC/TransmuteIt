@@ -41,9 +41,14 @@ public class TransmuteIt extends JavaPlugin {
 
     if(setupEconomy() == false) {
       System.out.println("[TransmuteIt] Could not find vault (or there's no economy hooked into it), economy won't work!");
+      useEconomy = false;
     } else {
       System.out.println("[TransmuteIt] Vault HOOKED! Let's get this cash!");
-      useEconomy = true;
+      if(config.getBoolean("economy")) {
+        useEconomy = true;
+      } else {
+        useEconomy = false;
+      }
     }
 
     while (true) {

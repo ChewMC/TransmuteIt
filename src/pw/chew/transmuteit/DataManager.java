@@ -135,7 +135,8 @@ public class DataManager {
   public void writeEMC(UUID uuid, int amount, Player player) {
     if(TransmuteIt.useEconomy) {
       double balance = TransmuteIt.econ.getBalance(player);
-      EconomyResponse r = TransmuteIt.econ.depositPlayer(player, amount);
+      EconomyResponse r = TransmuteIt.econ.withdrawPlayer(player, balance);
+      EconomyResponse s = TransmuteIt.econ.depositPlayer(player, amount);
     } else {
       File userFile = new File(getDataFolder(), uuid.toString() + ".json");
       try {
