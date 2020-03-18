@@ -31,3 +31,14 @@ commands:
     permission: transmute.player.emc
     permission-message: The admins have revoked your ability to run this command!
     default: true
+
+permissions:
+  transmute.player:
+    default: true
+    children:
+      transmute.emc.get: true
+      transmute.player.emc: true
+  transmute.*:
+    default: op
+    children:
+      transmute.admin.emc.set: true
