@@ -42,3 +42,4 @@ permissions:
     default: op
     children:
       transmute.admin.emc.set: true
+      transmute.player: true
