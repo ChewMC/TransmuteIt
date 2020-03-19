@@ -74,9 +74,15 @@ public class TransmuteIt extends JavaPlugin {
     this.getCommand("transmute").setExecutor(transmute);
     this.getCommand("emc").setExecutor(new EMCCommand());
     this.getCommand("setemc").setExecutor(new SetEMCCommand());
+    this.getCommand("discoveries").setExecutor(new DiscoveriesCommand());
 
     // Load tab completes
     this.getCommand("transmute").setTabCompleter(transmute);
+
+    // Register Events
+    getServer().getPluginManager().registerEvents(new DiscoveriesGUI(), this);
+
+    // Magic Time
     getLogger().info("Booted!");
   }
 
