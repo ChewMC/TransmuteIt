@@ -62,13 +62,19 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             return true;
           }
         } else if(arg0.equals("take")) {
-          int takeAmount = Integer.parseInt(args[1]);
+          PlayerInventory inventory = ((Player)sender).getInventory();
+          ItemStack item = inventory.getItemInMainHand();
+          int amount = item.getAmount();
+          int takeAmount = 0;
+          if(args.length >= 2) {
+            takeAmount = Integer.parseInt(args[1]);
+          } else {
+            takeAmount = amount;
+          }
           if(takeAmount <= 0) {
             sender.sendMessage("Please select a value greater than 0!");
             return true;
           }
-          ItemStack item = ((Player)sender).getInventory().getItemInMainHand();
-          int amount = item.getAmount();
           if(amount - takeAmount < 0) {
             sender.sendMessage("You don't have enough of this item!");
             return true;
