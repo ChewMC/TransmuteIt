@@ -81,20 +81,23 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
           } else {
             // If it's something
             try {
+              DataManager bob = new DataManager();
               int emc = TransmuteIt.json.getInt(type.toString());
               item.setAmount(amount - takeAmount);
               UUID uuid = ((Player)sender).getUniqueId();
               int current = new DataManager().getEMC(uuid, player);
               int newEMC = current + (takeAmount * emc);
-              new DataManager().writeEMC(uuid, newEMC, player);
-              if(new DataManager().discovered(uuid, name)) {
-                sender.sendMessage("Successfully transmuted " + takeAmount + " " + name + "! You now have " + newEMC + " EMC");
-              } else {
-                sender.sendMessage("You've discovered " + name + "! Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
-                sender.sendMessage("Successfully transmuted " + takeAmount + " " + name + "! You now have " + newEMC + " EMC");
+              bob.writeEMC(uuid, newEMC, player);
+              if(bob.discovered(uuid, name) == false) {
+                sender.sendMessage("You've discovered " + name + "!");
+                if(bob.discoveries(uuid).size() == 0) {
+                  sender.sendMessage("Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
+                }
                 new DataManager().writeDiscovery(uuid, name);
               }
-
+              sender.sendMessage("Successfully transmuted " + takeAmount + " " + name + " into EMC!");
+              sender.sendMessage("You now have " + newEMC + " EMC (+" + (takeAmount * emc) + " EMC)");
+              return true;
             // If there's no JSON file or it's not IN the JSON file
             } catch(org.json.JSONException e) {
               sender.sendMessage("This item has no set EMC value!");
