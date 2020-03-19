@@ -32,7 +32,7 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
   public void initializeItems(UUID uuid) {
     List<Object> discoveries = new DataManager().discoveries(uuid);
     for(int i = 0; i < discoveries.size() && i < 54; i++) {
-      inv.addItem(createGuiItem(Material.getMaterial(discoveries.get(i).toString()), discoveries.get(i).toString(), "EMC Value: Not implemented"));
+      inv.addItem(createGuiItem(Material.getMaterial(discoveries.get(i).toString()), discoveries.get(i).toString(), "Raw Name: " + discoveries.get(i).toString(), "EMC Value: " + TransmuteIt.json.getInt(discoveries.get(i).toString())));
     }
   }
 
@@ -40,7 +40,7 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
   private ItemStack createGuiItem(Material material, String name, String...lore) {
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
-    meta.setDisplayName(ChatColor.RESET + name);
+    meta.setDisplayName(ChatColor.RESET + capitalize(name));
     ArrayList<String> metaLore = new ArrayList<String>();
 
     for(String loreComments : lore) {
@@ -50,6 +50,17 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
     meta.setLore(metaLore);
     item.setItemMeta(meta);
     return item;
+  }
+
+  public String capitalize(String to) {
+    String[] words = to.split("_");
+    String newword = "";
+    for(int i = 0; i < words.length; i++) {
+      String rest = words[i].substring(1).toLowerCase();
+      String first = words[i].substring(0, 1).toUpperCase();
+      newword = newword + first + rest + " ";
+    }
+    return newword;
   }
 
   // You can open the inventory with this
