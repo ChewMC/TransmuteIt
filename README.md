@@ -17,10 +17,10 @@ The design is to mimic it as much as possible, as a result:
 * Durability / Enchantments aren't calculated into the EMC value (yet).
 * Potions/Enchanted Books or other items that rely on metadata aren't tracked either. Only names so far.
 
-## Planned
+## Bugs / Feedback / Contribution
 
-I have a lot planned that are probably way over my head in ability to actually do them. [This Trello Board](https://trello.com/b/SZVMEvD7/transmuteit) will hopefully help me with it.
+I appreciate any and all feedback. Make sure to leave it on the [Issues tab](https://github.com/Chew/TransmuteIt/issues), I also welcome [pull requests](https://github.com/Chew/TransmuteIt/pulls) to help me out!
 
 ## Builds
 
-Dev builds are occasionally on my [Jenkins server](https://jenkins.chew.pw/job/TransmuteIt/). I don't do it for every commit, only ones that can be ran on your server without *too* many issues. Safe(st) builds are on the (currently non-existent) SpigotMC resource page.
+Dev builds are occasionally on my [Jenkins server](https://jenkins.chew.pw/job/TransmuteIt/). I don't do it for every commit, only ones that can be ran on your server without *too* many issues. Safe(st) builds are on the (currently non-existent) SpigotMC resource page. If you do use the builds, make sure to stay as up to date as possible!
