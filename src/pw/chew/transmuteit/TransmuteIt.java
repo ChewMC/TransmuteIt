@@ -67,12 +67,17 @@ public class TransmuteIt extends JavaPlugin {
       }
     }
 
+    TransmuteCommand transmute = new TransmuteCommand();
+
     // Load Commands
     this.getCommand("getemc").setExecutor(new GetEMCCommand());
-    this.getCommand("transmute").setExecutor(new TransmuteCommand());
+    this.getCommand("transmute").setExecutor(transmute);
     this.getCommand("emc").setExecutor(new EMCCommand());
     this.getCommand("setemc").setExecutor(new SetEMCCommand());
-    System.out.println("[TransmuteIt] Booted!");
+
+    // Load tab completes
+    this.getCommand("transmute").setTabCompleter(transmute);
+    getLogger().info("Booted!");
   }
 
   // Fired when plugin is disabled

@@ -1,4 +1,5 @@
 package pw.chew.transmuteit;
+import java.util.ArrayList;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.json.JSONException;
 import java.io.FileNotFoundException;
@@ -175,5 +176,10 @@ public class DataManager {
     JSONObject data = getData(uuid);
     List<Object> bob = data.getJSONArray("discoveries").toList();
     return bob.contains(item);
+  }
+
+  public List<Object> discoveries(UUID uuid) {
+    JSONObject data = getData(uuid);
+    return data.getJSONArray("discoveries").toList();
   }
 }

@@ -1,14 +1,21 @@
 package pw.chew.transmuteit;
+import java.util.Arrays;
+import org.bukkit.Bukkit;
+import java.util.Collections;
+import org.bukkit.util.StringUtil;
 import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.Material;
 
-public class TransmuteCommand implements CommandExecutor {
+public class TransmuteCommand implements CommandExecutor, TabCompleter {
 
   // This method is called, when somebody uses our command
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -105,6 +112,35 @@ public class TransmuteCommand implements CommandExecutor {
 
     // If the player (or console) uses our command correct, we can return true
     return true;
+  }
+
+  @Override
+  public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+    List<String> completions = new ArrayList<>();
+    List<String> commands = new ArrayList<>();
+
+    ((TransmuteIt)Bukkit.getPluginManager().getPlugin("TransmuteIt")).getLogger().info(args.length + ": " + Arrays.toString(args));
+
+    if (args.length == 1) {
+      commands.add("help");
+      commands.add("get");
+      commands.add("take");
+      StringUtil.copyPartialMatches(args[0], commands, completions);
+    } else if (args.length >= 2 && args[0].equals("help")) {
+      StringUtil.copyPartialMatches(args[1], commands, completions);
+    } else if (args[0].equals("get")) {
+      if(args.length == 2) {
+        List<Object> discoveries = new DataManager().discoveries(((Player)sender).getUniqueId());
+        for(int i = 0; i < discoveries.size(); i++) {
+          commands.add(discoveries.get(i).toString());
+        }
+      } else {
+
+      }
+      StringUtil.copyPartialMatches(args[1], commands, completions);
+    }
+    Collections.sort(completions);
+    return completions;
   }
 
   public void helpResponse(CommandSender sender) {
