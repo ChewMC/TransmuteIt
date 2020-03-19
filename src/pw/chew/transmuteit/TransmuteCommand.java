@@ -80,7 +80,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage("Please hold an item to transmute it!");
           } else {
             // If it's something
-          //  try {
+            try {
               int emc = TransmuteIt.json.getInt(type.toString());
               item.setAmount(amount - takeAmount);
               UUID uuid = ((Player)sender).getUniqueId();
@@ -95,10 +95,10 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
                 new DataManager().writeDiscovery(uuid, name);
               }
 
-              // If there's no JSON file or it's not IN the JSON file
-            //} catch(org.json.JSONException e) {
-            //  sender.sendMessage("This item has no set EMC value!");
-            //}
+            // If there's no JSON file or it's not IN the JSON file
+            } catch(org.json.JSONException e) {
+              sender.sendMessage("This item has no set EMC value!");
+            }
           }
         } else {
           sender.sendMessage("Invalid subcommand! Need help? Try \"/transmute help\"");
@@ -135,7 +135,6 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
           commands.add(discoveries.get(i).toString());
         }
       } else {
-
       }
       StringUtil.copyPartialMatches(args[1], commands, completions);
     }
