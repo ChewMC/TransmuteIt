@@ -36,6 +36,7 @@ permissions:
   transmute.player:
     default: true
     children:
+      transmute.main: true
       transmute.emc.get: true
       transmute.player.emc: true
   transmute.*:
