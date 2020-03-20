@@ -47,7 +47,7 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
       strings.add(Objects.toString(object, null));
     }
     Collections.sort(strings);
-    for(int i = 0; i < strings.size() && i < 54; i++) {
+    for(int i = 0; i < strings.size(); i++) {
       String nameraw = strings.get(i).toString();
       String nameformatted = nameraw.replace("_", " ");
       if(search) {
