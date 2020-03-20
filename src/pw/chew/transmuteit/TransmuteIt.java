@@ -16,6 +16,7 @@ import java.io.File;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import net.milkbowl.vault.economy.Economy;
+import org.bstats.bukkit.Metrics;
 
 public class TransmuteIt extends JavaPlugin {
   // Files
@@ -37,6 +38,9 @@ public class TransmuteIt extends JavaPlugin {
     config.addDefault("economy", false);
     config.options().copyDefaults(true);
     saveDefaultConfig();
+
+    int pluginId = 6819; // <-- Replace with the id of your plugin!
+    Metrics metrics = new Metrics(this, pluginId);
 
     if(setupEconomy() == false) {
       System.out.println("[TransmuteIt] Could not find vault (or there's no economy hooked into it), economy won't work!");
