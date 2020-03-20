@@ -157,5 +157,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     sender.sendMessage("§b/transmute get [item] [amount] §d- Get amount of item using EMC.");
     sender.sendMessage("§b/transmute help §d- This command.");
     sender.sendMessage("§b/getEMC §d- Get the EMC value of held item.");
+    sender.sendMessage("§b/emc §d- View your EMC.");
+    sender.sendMessage("§b/discoveries [search term] §d- View your Discoveries. Leave blank to see all.");
   }
 }
