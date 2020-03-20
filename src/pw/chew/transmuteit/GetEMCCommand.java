@@ -16,6 +16,9 @@ public class GetEMCCommand implements CommandExecutor {
       ItemStack item = inventory.getItemInMainHand();
       int amount = item.getAmount();
       Material type = item.getType();
+      // I know this is deprecated
+      short currentDurability = item.getDurability();
+      short maxDurability = type.getMaxDurability();
       String name = type.toString();
       // If it's nothing
       if(name.equals("AIR")) {
@@ -24,6 +27,9 @@ public class GetEMCCommand implements CommandExecutor {
         // If it's something
         try {
           int emc = TransmuteIt.json.getInt(type.toString());
+          if(maxDurability > 0) {
+            emc = (int)((double)emc * (((double)maxDurability-(double)currentDurability)/(double)maxDurability));
+          }
           sender.sendMessage("That item is " + amount + " of " + name + ". Stack EMC Value: " + emc * amount + " (" + amount + " @ " + emc + " EMC each)");
           // If there's no JSON file or it's not IN the JSON file
         } catch(org.json.JSONException e) {

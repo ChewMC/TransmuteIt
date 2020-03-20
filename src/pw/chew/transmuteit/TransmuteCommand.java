@@ -1,7 +1,5 @@
 package pw.chew.transmuteit;
 import java.text.NumberFormat;
-import java.util.Arrays;
-import org.bukkit.Bukkit;
 import java.util.Collections;
 import org.bukkit.util.StringUtil;
 import java.util.UUID;
@@ -90,6 +88,11 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             try {
               DataManager bob = new DataManager();
               int emc = TransmuteIt.json.getInt(type.toString());
+              short currentDurability = item.getDurability();
+              short maxDurability = type.getMaxDurability();
+              if(maxDurability > 0) {
+                emc = (int)((double)emc * (((double)maxDurability-(double)currentDurability)/(double)maxDurability));
+              }
               item.setAmount(amount - takeAmount);
               UUID uuid = ((Player)sender).getUniqueId();
               int current = new DataManager().getEMC(uuid, player);
@@ -128,8 +131,6 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
   public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
     List<String> completions = new ArrayList<>();
     List<String> commands = new ArrayList<>();
-
-    ((TransmuteIt)Bukkit.getPluginManager().getPlugin("TransmuteIt")).getLogger().info(args.length + ": " + Arrays.toString(args));
 
     if (args.length == 1) {
       commands.add("help");
