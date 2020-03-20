@@ -1,5 +1,7 @@
 # TransmuteIt
 
+![Spigot Downloads](https://img.shields.io/spiget/downloads/76287?style=flat-square)
+
 Welcome to TransmuteIt, my 2nd plugin!
 
 ## Lore
@@ -23,4 +25,4 @@ I appreciate any and all feedback. Make sure to leave it on the [Issues tab](htt
 
 ## Builds
 
-Dev builds are occasionally on my [Jenkins server](https://jenkins.chew.pw/job/TransmuteIt/). I don't do it for every commit, only ones that can be ran on your server without *too* many issues. Safe(st) builds are on the (currently non-existent) SpigotMC resource page. If you do use the builds, make sure to stay as up to date as possible!
+Dev builds are occasionally on my [Jenkins server](https://jenkins.chew.pw/job/TransmuteIt/). I don't do it for every commit, only ones that can be ran on your server without *too* many issues. Safe(st) builds are on the [SpigotMC resource page](https://www.spigotmc.org/resources/transmuteit.76287/). If you do use the builds, make sure to stay as up to date as possible!
