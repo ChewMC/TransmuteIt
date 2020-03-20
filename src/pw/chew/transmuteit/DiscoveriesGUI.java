@@ -55,7 +55,7 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
           inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + NumberFormat.getInstance().format(TransmuteIt.json.getInt(nameraw))));
         }
       } else {
-        inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + TransmuteIt.json.getInt(nameraw)));
+        inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + NumberFormat.getInstance().format(TransmuteIt.json.getInt(nameraw))));
       }
 
     }
