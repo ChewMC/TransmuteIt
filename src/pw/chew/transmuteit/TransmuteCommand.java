@@ -1,4 +1,5 @@
 package pw.chew.transmuteit;
+import java.text.NumberFormat;
 import java.util.Arrays;
 import org.bukkit.Bukkit;
 import java.util.Collections;
@@ -102,7 +103,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
                 new DataManager().writeDiscovery(uuid, name);
               }
               sender.sendMessage("Successfully transmuted " + takeAmount + " " + name + " into EMC!");
-              sender.sendMessage("You now have " + newEMC + " EMC (+" + (takeAmount * emc) + " EMC)");
+              sender.sendMessage("You now have " + NumberFormat.getInstance().format(newEMC) + " EMC (+" + NumberFormat.getInstance().format(takeAmount * emc) + " EMC)");
               return true;
             // If there's no JSON file or it's not IN the JSON file
             } catch(org.json.JSONException e) {

@@ -1,4 +1,5 @@
 package pw.chew.transmuteit;
+import java.text.NumberFormat;
 import java.util.Objects;
 import java.util.Collections;
 import java.util.UUID;
@@ -51,7 +52,7 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
       String nameformatted = nameraw.replace("_", " ");
       if(search) {
         if(nameraw.contains(term) || nameformatted.contains(term)) {
-          inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + TransmuteIt.json.getInt(nameraw)));
+          inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + NumberFormat.getInstance().format(TransmuteIt.json.getInt(nameraw))));
         }
       } else {
         inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + TransmuteIt.json.getInt(nameraw)));

@@ -1,4 +1,5 @@
 package pw.chew.transmuteit;
+import java.text.NumberFormat;
 import java.util.UUID;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,7 +12,7 @@ public class EMCCommand implements CommandExecutor {
       Player player = (Player)sender;
       UUID uuid = ((Player)sender).getUniqueId();
       int emc = new DataManager().getEMC(uuid, player);
-      sender.sendMessage("You have " + emc + " EMC!");
+      sender.sendMessage("You have " + NumberFormat.getInstance().format(emc) + " EMC!");
     } else {
       // Sorry Jimbo, Players only!
       sender.sendMessage("[TransmuteIt] Only players may run this command.");
