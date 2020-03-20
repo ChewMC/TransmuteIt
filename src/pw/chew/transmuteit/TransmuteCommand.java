@@ -113,6 +113,35 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
               sender.sendMessage("This item has no set EMC value!");
             }
           }
+        } else if(arg0.equals("learn")) {
+          PlayerInventory inventory = ((Player)sender).getInventory();
+          ItemStack item = inventory.getItemInMainHand();
+          Material type = item.getType();
+          String name = type.toString();
+          // If it's nothing
+          if(name.equals("AIR")) {
+            sender.sendMessage("Please hold an item to learn it!");
+          } else {
+            // If it's something
+            try {
+              TransmuteIt.json.getInt(type.toString());
+              DataManager bob = new DataManager();
+              UUID uuid = ((Player)sender).getUniqueId();
+              if(bob.discovered(uuid, name) == false) {
+                sender.sendMessage("You've discovered " + name + "!");
+                if(bob.discoveries(uuid).size() == 0) {
+                  sender.sendMessage("Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
+                }
+                new DataManager().writeDiscovery(uuid, name);
+              } else {
+                sender.sendMessage("You've already discovered " + name + "!");
+              }
+              return true;
+            // If there's no JSON file or it's not IN the JSON file
+            } catch(org.json.JSONException e) {
+              sender.sendMessage("This item has no set EMC value!");
+            }
+          }
         } else {
           sender.sendMessage("Invalid subcommand! Need help? Try \"/transmute help\"");
         }
