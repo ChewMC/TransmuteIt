@@ -1,4 +1,6 @@
 package pw.chew.transmuteit;
+import java.util.Objects;
+import java.util.Collections;
 import java.util.UUID;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.Bukkit;
@@ -29,10 +31,32 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
   }
 
   // You can call this whenever you want to put the items in
-  public void initializeItems(UUID uuid) {
+  public void initializeItems(UUID uuid, String args[]) {
+    boolean search = false;
+    String term = "";
+    if(args.length > 0) {
+      search = true;
+      for(int i = 0; i < args.length; i++) {
+        term += args[i].toUpperCase();
+      }
+    }
     List<Object> discoveries = new DataManager().discoveries(uuid);
-    for(int i = 0; i < discoveries.size() && i < 54; i++) {
-      inv.addItem(createGuiItem(Material.getMaterial(discoveries.get(i).toString()), discoveries.get(i).toString(), "Raw Name: " + discoveries.get(i).toString(), "EMC Value: " + TransmuteIt.json.getInt(discoveries.get(i).toString())));
+    List<String> strings = new ArrayList<>(discoveries.size());
+    for (Object object : discoveries) {
+      strings.add(Objects.toString(object, null));
+    }
+    Collections.sort(strings);
+    for(int i = 0; i < strings.size() && i < 54; i++) {
+      String nameraw = strings.get(i).toString();
+      String nameformatted = nameraw.replace("_", " ");
+      if(search) {
+        if(nameraw.contains(term) || nameformatted.contains(term)) {
+          inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + TransmuteIt.json.getInt(nameraw)));
+        }
+      } else {
+        inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + TransmuteIt.json.getInt(nameraw)));
+      }
+
     }
   }
 

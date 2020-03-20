@@ -9,7 +9,7 @@ public class DiscoveriesCommand implements CommandExecutor {
     if (sender instanceof Player) {
       Player player = (Player)sender;
       DiscoveriesGUI gui = new DiscoveriesGUI();
-      gui.initializeItems(player.getUniqueId());
+      gui.initializeItems(player.getUniqueId(), args);
       gui.openInventory(player);
     } else {
       sender.sendMessage("[TransmuteIt] Only players may run this command.");
