@@ -165,6 +165,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
       commands.add("help");
       commands.add("get");
       commands.add("take");
+      commands.add("learn");
       StringUtil.copyPartialMatches(args[0], commands, completions);
     } else if (args.length >= 2 && args[0].equals("help")) {
       StringUtil.copyPartialMatches(args[1], commands, completions);
@@ -187,6 +188,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     sender.sendMessage("§b/transmute take [amount] §d- Take [amount] of held item and convert to EMC.");
     sender.sendMessage("§b/transmute get [item] [amount] §d- Get amount of item using EMC.");
     sender.sendMessage("§b/transmute help §d- This command.");
+    sender.sendMessage("§b/transmute learn §d- Discover the item without transmuting it.");
     sender.sendMessage("§b/getEMC §d- Get the EMC value of held item.");
     sender.sendMessage("§b/emc §d- View your EMC.");
     sender.sendMessage("§b/discoveries [search term] §d- View your Discoveries. Leave blank to see all.");
