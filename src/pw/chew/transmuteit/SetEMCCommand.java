@@ -33,9 +33,14 @@ public class SetEMCCommand implements CommandExecutor {
       } else {
         // If it's something
         try {
-          TransmuteIt.json.put(name, input);
+          if(input < 0) {
+            TransmuteIt.json.put(name, input);
+            sender.sendMessage("Item " + name + "'s EMC Value has been set to " + input);
+          } else {
+            TransmuteIt.json.remove(name);
+            sender.sendMessage("Item " + name + "'s EMC Value has been removed");
+          }
           writeToEMCFile();
-          sender.sendMessage("Item " + name + "'s EMC Value has been set to " + input);
           // If there's no JSON file or it's not IN the JSON file
         } catch(org.json.JSONException e) {
           sender.sendMessage("That item is " + amount + " of " + name + ". It has no set EMC value!");
