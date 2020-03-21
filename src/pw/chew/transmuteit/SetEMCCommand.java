@@ -33,7 +33,7 @@ public class SetEMCCommand implements CommandExecutor {
       } else {
         // If it's something
         try {
-          if(input < 0) {
+          if(input > 0) {
             TransmuteIt.json.put(name, input);
             sender.sendMessage("Item " + name + "'s EMC Value has been set to " + input);
           } else {
