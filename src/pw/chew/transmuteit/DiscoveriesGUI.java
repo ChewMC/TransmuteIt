@@ -50,12 +50,17 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
     for(int i = 0; i < strings.size(); i++) {
       String nameraw = strings.get(i).toString();
       String nameformatted = nameraw.replace("_", " ");
-      if(search) {
-        if(nameraw.contains(term) || nameformatted.contains(term)) {
-          inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + NumberFormat.getInstance().format(TransmuteIt.json.getInt(nameraw))));
+      try {
+        int emc = TransmuteIt.json.getInt(nameraw);
+        if (search) {
+          if (nameraw.contains(term) || nameformatted.contains(term)) {
+            inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)));
+          }
+        } else {
+          inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)));
         }
-      } else {
-        inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + NumberFormat.getInstance().format(TransmuteIt.json.getInt(nameraw))));
+      } catch(JSONException e) {
+        new DataManager().removeDiscovery(uuid, nameraw);
       }
 
     }

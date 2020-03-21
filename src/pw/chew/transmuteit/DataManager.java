@@ -172,6 +172,19 @@ public class DataManager {
     }
   }
 
+  public void removeDiscovery(UUID uuid, String item) {
+    File userFile = new File(getDataFolder(), uuid.toString() + ".json");
+    try {
+      JSONObject data = getData(uuid);
+      data.getJSONArray("discoveries").toList().remove(item);
+      PrintWriter writer = new PrintWriter(userFile);
+      data.write(writer);
+      writer.close();
+    } catch(FileNotFoundException e) {
+      System.out.println("[TransmuteIt] Unable to write to EMC file! EMC will NOT save!");
+    }
+  }
+
   public boolean discovered(UUID uuid, String item) {
     JSONObject data = getData(uuid);
     List<Object> bob = data.getJSONArray("discoveries").toList();
