@@ -1,4 +1,5 @@
 package pw.chew.transmuteit;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -35,15 +36,20 @@ public class GetEMCCommand implements CommandExecutor {
         sender.sendMessage("Please hold an item to find its EMC value!");
       } else {
         // If it's something
+        sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bItem Information" + ChatColor.COLOR_CHAR + "d ]--------");
+        sender.sendMessage(ChatColor.YELLOW + "Friendly Name: " + ChatColor.GREEN + new TransmuteCommand().capitalize(name));
+        sender.sendMessage(ChatColor.YELLOW + "Raw Name: " + ChatColor.GREEN + name);
         try {
           int emc = TransmuteIt.json.getInt(type.toString());
+          int normal_emc = emc;
           if(maxDurability > 0) {
             emc = (int)((double)emc * (((double)maxDurability-(double)currentDurability)/(double)maxDurability));
           }
-          sender.sendMessage("That item is " + amount + " of " + name + ". Stack EMC Value: " + emc * amount + " (" + amount + " @ " + emc + " EMC each)");
+          sender.sendMessage(ChatColor.YELLOW + "EMC Value: " + ChatColor.GREEN + emc);
+          sender.sendMessage(ChatColor.YELLOW + "Stack EMC Value: " + ChatColor.GREEN + (emc * amount));
           // If there's no JSON file or it's not IN the JSON file
         } catch(org.json.JSONException e) {
-          sender.sendMessage("That item is " + amount + " of " + name + ". It has no set EMC value!");
+          sender.sendMessage(ChatColor.YELLOW + "EMC Value: " + ChatColor.GREEN + "None!");
         }
       }
 

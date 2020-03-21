@@ -1,6 +1,7 @@
 package pw.chew.transmuteit;
 import java.text.NumberFormat;
 import java.util.Collections;
+import org.bukkit.ChatColor;
 import org.bukkit.util.StringUtil;
 import java.util.UUID;
 import java.util.List;
@@ -97,15 +98,16 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
               int current = new DataManager().getEMC(uuid, player);
               int newEMC = current + (takeAmount * emc);
               bob.writeEMC(uuid, newEMC, player);
+              sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");
               if(!bob.discovered(uuid, name)) {
-                sender.sendMessage("You've discovered " + name + "!");
+                sender.sendMessage(ChatColor.COLOR_CHAR + "aYou've discovered " + name + "!");
                 if(bob.discoveries(uuid).size() == 0) {
-                  sender.sendMessage("Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
+                  sender.sendMessage(ChatColor.ITALIC + "" + ChatColor.COLOR_CHAR + "7Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
                 }
                 new DataManager().writeDiscovery(uuid, name);
               }
-              sender.sendMessage("Successfully transmuted " + takeAmount + " " + name + " into EMC!");
-              sender.sendMessage("You now have " + NumberFormat.getInstance().format(newEMC) + " EMC (+" + NumberFormat.getInstance().format(takeAmount * emc) + " EMC)");
+              sender.sendMessage(ChatColor.GREEN + "+ " + NumberFormat.getInstance().format(takeAmount * emc) + " EMC [Total: " + NumberFormat.getInstance().format(newEMC) + " EMC]");
+              sender.sendMessage(ChatColor.RED + "- " + takeAmount + " " + capitalize(name));
               return true;
             // If there's no JSON file or it's not IN the JSON file
             } catch(org.json.JSONException e) {
@@ -126,14 +128,15 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
               TransmuteIt.json.getInt(type.toString());
               DataManager bob = new DataManager();
               UUID uuid = ((Player)sender).getUniqueId();
+              sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");
               if(!bob.discovered(uuid, name)) {
-                sender.sendMessage("You've discovered " + name + "!");
+                sender.sendMessage(ChatColor.COLOR_CHAR + "aYou've discovered " + name + "!");
                 if(bob.discoveries(uuid).size() == 0) {
-                  sender.sendMessage("Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
+                  sender.sendMessage(ChatColor.COLOR_CHAR + "7" + ChatColor.ITALIC + "Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
                 }
                 new DataManager().writeDiscovery(uuid, name);
               } else {
-                sender.sendMessage("You've already discovered " + name + "!");
+                sender.sendMessage(ChatColor.COLOR_CHAR + "cYou've already discovered " + name + "!");
               }
               return true;
             // If there's no JSON file or it's not IN the JSON file
@@ -179,6 +182,17 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     }
     Collections.sort(completions);
     return completions;
+  }
+
+  public String capitalize(String to) {
+    String[] words = to.split("_");
+    String newword = "";
+    for (String word : words) {
+      String rest = word.substring(1).toLowerCase();
+      String first = word.substring(0, 1).toUpperCase();
+      newword = newword + first + rest + " ";
+    }
+    return newword;
   }
 
   public void helpResponse(CommandSender sender) {
