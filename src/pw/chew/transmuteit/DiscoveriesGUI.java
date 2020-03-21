@@ -116,10 +116,15 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
 
     UUID uuid = player.getUniqueId();
     String name = clickedItem.getType().toString();
-    int amount = 1;
 
     if(new DataManager().discovered(uuid, name)) {
       int emc = new DataManager().getEMC(uuid, player);
+      int amount = 1;
+      if(e.isShiftClick()) {
+        amount = 64;
+      } else if(e.isLeftClick() || e.isRightClick()) {
+        amount = 1;
+      }
       int value;
       try {
         value = TransmuteIt.json.getInt(name);
