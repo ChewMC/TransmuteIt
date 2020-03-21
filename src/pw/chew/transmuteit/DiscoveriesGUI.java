@@ -1,8 +1,7 @@
 package pw.chew.transmuteit;
 import java.text.NumberFormat;
-import java.util.Objects;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
+
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,8 +15,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.Material;
 import org.bukkit.inventory.PlayerInventory;
-import java.util.ArrayList;
-import java.util.List;
+import org.json.JSONException;
 
 public class DiscoveriesGUI implements InventoryHolder, Listener {
   private Inventory inv;
@@ -71,11 +69,8 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
     ItemStack item = new ItemStack(material, 1);
     ItemMeta meta = item.getItemMeta();
     meta.setDisplayName(ChatColor.RESET + capitalize(name));
-    ArrayList<String> metaLore = new ArrayList<String>();
 
-    for(String loreComments : lore) {
-      metaLore.add(loreComments);
-    }
+    ArrayList<String> metaLore = new ArrayList<String>(Arrays.asList(lore));
 
     meta.setLore(metaLore);
     item.setItemMeta(meta);
@@ -85,9 +80,9 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
   public String capitalize(String to) {
     String[] words = to.split("_");
     String newword = "";
-    for(int i = 0; i < words.length; i++) {
-      String rest = words[i].substring(1).toLowerCase();
-      String first = words[i].substring(0, 1).toUpperCase();
+    for (String word : words) {
+      String rest = word.substring(1).toLowerCase();
+      String first = word.substring(0, 1).toUpperCase();
       newword = newword + first + rest + " ";
     }
     return newword;
@@ -146,7 +141,7 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
     } else {
       try {
         DataManager bob = new DataManager();
-        if(bob.discovered(uuid, name) == false) {
+        if(!bob.discovered(uuid, name)) {
           player.sendMessage("You've discovered " + name + "!");
           if(bob.discoveries(uuid).size() == 0) {
             player.sendMessage("Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");

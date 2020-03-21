@@ -42,7 +42,7 @@ public class TransmuteIt extends JavaPlugin {
     int pluginId = 6819; // <-- Replace with the id of your plugin!
     Metrics metrics = new Metrics(this, pluginId);
 
-    if(setupEconomy() == false) {
+    if(!setupEconomy()) {
       System.out.println("[TransmuteIt] Could not find vault (or there's no economy hooked into it), economy won't work!");
       useEconomy = false;
     } else {
@@ -104,7 +104,7 @@ public class TransmuteIt extends JavaPlugin {
       return false;
     }
     econ = rsp.getProvider();
-    return econ != null;
+    return true;
   }
 
   // Load EMC values from JSON file

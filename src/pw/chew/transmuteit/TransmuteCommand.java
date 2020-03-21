@@ -22,7 +22,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
       Player player = (Player)sender;
       if(args.length == 0) {
         helpResponse(sender);
-      } else if(args.length >= 1) {
+      } else {
         String arg0 = args[0].toLowerCase();
         if(arg0.equals("help")) {
           helpResponse(sender);
@@ -55,11 +55,10 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             DataManager bob = new DataManager();
             bob.writeEMC(uuid, emc - (value * amount), player);
             sender.sendMessage("Successfully transmuted " + (value * amount) + " EMC into " + amount + " " + name);
-            return true;
           } else {
             sender.sendMessage("Uh oh! You don't appear to have discovered " + name + ". Type /getemc to find the exact name.");
-            return true;
           }
+          return true;
         } else if(arg0.equals("take")) {
           PlayerInventory inventory = ((Player)sender).getInventory();
           ItemStack item = inventory.getItemInMainHand();
@@ -98,7 +97,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
               int current = new DataManager().getEMC(uuid, player);
               int newEMC = current + (takeAmount * emc);
               bob.writeEMC(uuid, newEMC, player);
-              if(bob.discovered(uuid, name) == false) {
+              if(!bob.discovered(uuid, name)) {
                 sender.sendMessage("You've discovered " + name + "!");
                 if(bob.discoveries(uuid).size() == 0) {
                   sender.sendMessage("Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
@@ -127,7 +126,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
               TransmuteIt.json.getInt(type.toString());
               DataManager bob = new DataManager();
               UUID uuid = ((Player)sender).getUniqueId();
-              if(bob.discovered(uuid, name) == false) {
+              if(!bob.discovered(uuid, name)) {
                 sender.sendMessage("You've discovered " + name + "!");
                 if(bob.discoveries(uuid).size() == 0) {
                   sender.sendMessage("Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
@@ -172,10 +171,9 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     } else if (args[0].equals("get")) {
       if(args.length == 2) {
         List<Object> discoveries = new DataManager().discoveries(((Player)sender).getUniqueId());
-        for(int i = 0; i < discoveries.size(); i++) {
-          commands.add(discoveries.get(i).toString());
+        for (Object discovery : discoveries) {
+          commands.add(discovery.toString());
         }
-      } else {
       }
       StringUtil.copyPartialMatches(args[1], commands, completions);
     }
