@@ -6,6 +6,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.Material;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class GetEMCCommand implements CommandExecutor {
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -16,9 +18,17 @@ public class GetEMCCommand implements CommandExecutor {
       ItemStack item = inventory.getItemInMainHand();
       int amount = item.getAmount();
       Material type = item.getType();
-      // I know this is deprecated
-      short currentDurability = item.getDurability();
+      ItemMeta meta = item.getItemMeta();
+      Damageable damage;
+      int currentDurability = 0;
+      if(meta instanceof Damageable) {
+        damage = ((Damageable) meta);
+        currentDurability = damage.getDamage();
+      }
       short maxDurability = type.getMaxDurability();
+      if(currentDurability > maxDurability) {
+        currentDurability = maxDurability;
+      }
       String name = type.toString();
       // If it's nothing
       if(name.equals("AIR")) {
