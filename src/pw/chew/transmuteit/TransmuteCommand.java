@@ -22,7 +22,9 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     if (sender instanceof Player) {
       Player player = (Player)sender;
       if(args.length == 0) {
-        helpResponse(sender);
+        TransmuteGUI gui = new TransmuteGUI();
+        gui.initializeItems(player.getUniqueId(), args, player);
+        gui.openInventory(player);
       } else {
         String arg0 = args[0].toLowerCase();
         if(arg0.equals("help")) {
