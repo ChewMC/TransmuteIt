@@ -57,7 +57,9 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             inventory.addItem(item);
             DataManager bob = new DataManager();
             bob.writeEMC(uuid, emc - (value * amount), player);
-            sender.sendMessage("Successfully transmuted " + (value * amount) + " EMC into " + amount + " " + name);
+            sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");
+            sender.sendMessage(ChatColor.GREEN + "+ " + amount + " " + capitalize(name));
+            sender.sendMessage(ChatColor.RED + "- " + NumberFormat.getInstance().format(amount * value) + " EMC [Total: " + NumberFormat.getInstance().format(emc - (value * amount)) + " EMC]");
           } else {
             sender.sendMessage("Uh oh! You don't appear to have discovered " + name + ". Type /getemc to find the exact name.");
           }
