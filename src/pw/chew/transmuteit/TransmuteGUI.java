@@ -39,6 +39,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
         int totalDiscoveries = TransmuteIt.json.length();
         inv.setItem(10, createGuiItem(Material.getMaterial("PLAYER_HEAD"), "You", ChatColor.YELLOW + "EMC: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc), ChatColor.YELLOW + "Discoveries: " + ChatColor.GREEN + discoveries + " / " + totalDiscoveries));
         inv.setItem(12, createGuiItem(Material.getMaterial("PAPER"), "Help!", "Click to view help!"));
+        inv.setItem(14, createGuiItem(Material.getMaterial("ENCHANTING_TABLE"), "Discoveries", "" + "Click to view your discoveries."));
     }
 
     // Nice little method to create a gui item with a custom name, and description
@@ -82,6 +83,12 @@ public class TransmuteGUI implements InventoryHolder, Listener {
 
         if(e.getRawSlot() == 12) {
             helpResponse(player);
+        }
+
+        if(e.getRawSlot() == 14) {
+            DiscoveriesGUI gui = new DiscoveriesGUI();
+            gui.initializeItems(player.getUniqueId(), new String[0]);
+            gui.openInventory(player);
         }
 
 
