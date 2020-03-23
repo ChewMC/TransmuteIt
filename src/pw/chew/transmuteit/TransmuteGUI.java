@@ -4,11 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -83,6 +85,12 @@ public class TransmuteGUI implements InventoryHolder, Listener {
 
         if(e.getRawSlot() == 12) {
             helpResponse(player);
+            List<HumanEntity> viewers = e.getInventory().getViewers();
+            for(int i = 0; i < viewers.size(); i++) {
+                if(viewers.get(0).getUniqueId() == player.getUniqueId()) {
+                    viewers.get(0).closeInventory();
+                }
+            }
         }
 
         if(e.getRawSlot() == 14) {
