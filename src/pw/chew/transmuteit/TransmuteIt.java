@@ -1,22 +1,19 @@
 package pw.chew.transmuteit;
-import org.bukkit.plugin.RegisteredServiceProvider;
-import java.util.ArrayList;
-import java.util.UUID;
-import java.io.IOException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.FileNotFoundException;
-import org.json.JSONObject;
-import java.io.FileReader;
-import java.util.Map;
-import java.util.HashMap;
-import com.google.gson.GsonBuilder;
+
 import com.google.gson.Gson;
-import java.io.File;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import com.google.gson.GsonBuilder;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.json.JSONObject;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class TransmuteIt extends JavaPlugin {
   // Files

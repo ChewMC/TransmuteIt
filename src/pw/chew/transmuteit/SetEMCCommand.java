@@ -1,13 +1,15 @@
 package pw.chew.transmuteit;
-import org.bukkit.inventory.ItemStack;
+
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import java.io.PrintWriter;
-import java.io.FileNotFoundException;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.Material;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 
 public class SetEMCCommand implements CommandExecutor {
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

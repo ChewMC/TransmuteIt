@@ -1,35 +1,17 @@
 package pw.chew.transmuteit;
-import java.util.ArrayList;
+
 import net.milkbowl.vault.economy.EconomyResponse;
-import org.json.JSONException;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 import org.bukkit.Bukkit;
-import org.json.JSONObject;
-import java.util.UUID;
-import java.io.File;
-import java.util.Map;
-import java.util.List;
-import java.util.HashMap;
-import java.io.PrintWriter;
-import java.io.IOException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import org.bukkit.entity.Player;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.*;
+import java.util.*;
 
 public class DataManager {
   public DataManager() {
 
-  }
-
-
-  public int getEMC(UUID uuid, Player player) {
-    if(TransmuteIt.useEconomy) {
-      double emc = TransmuteIt.econ.getBalance(player);
-      return (int)emc;
-    } else {
-      return getData(uuid).getInt("emc");
-    }
   }
 
   public static File getDataFolder() {
@@ -39,6 +21,15 @@ public class DataManager {
       loc.mkdirs();
     }
     return loc;
+  }
+
+  public int getEMC(UUID uuid, Player player) {
+    if(TransmuteIt.useEconomy) {
+      double emc = TransmuteIt.econ.getBalance(player);
+      return (int)emc;
+    } else {
+      return getData(uuid).getInt("emc");
+    }
   }
 
   public JSONObject getData(UUID uuid) {
