@@ -37,7 +37,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
         int emc = bob.getEMC(uuid, player);
         int discoveries = bob.discoveries(uuid).size();
         int totalDiscoveries = TransmuteIt.json.length();
-        inv.setItem(10, createGuiItem(Material.getMaterial("PLAYER_HEAD"), "You", ChatColor.YELLOW + "EMC: " + ChatColor.GREEN + emc, ChatColor.YELLOW + "Discoveries: " + ChatColor.GREEN + discoveries + " / " + totalDiscoveries));
+        inv.setItem(10, createGuiItem(Material.getMaterial("PLAYER_HEAD"), "You", ChatColor.YELLOW + "EMC: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc), ChatColor.YELLOW + "Discoveries: " + ChatColor.GREEN + discoveries + " / " + totalDiscoveries));
         inv.setItem(12, createGuiItem(Material.getMaterial("PAPER"), "Help!", "Click to view help!"));
     }
 
