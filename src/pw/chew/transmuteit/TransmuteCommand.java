@@ -1,11 +1,9 @@
 package pw.chew.transmuteit;
 import java.text.NumberFormat;
-import java.util.Collections;
+import java.util.*;
+
 import org.bukkit.ChatColor;
 import org.bukkit.util.StringUtil;
-import java.util.UUID;
-import java.util.List;
-import java.util.ArrayList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -36,7 +34,13 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
           }
           UUID uuid = player.getUniqueId();
           String name = args[1].toUpperCase();
-          int amount = Integer.parseInt(args[2]);
+          int amount = 0;
+          try {
+            amount = Integer.parseInt(args[2]);
+          } catch(NumberFormatException e) {
+            sender.sendMessage("Invalid number input! Please enter a number!");
+            return true;
+          }
 
           if(new DataManager().discovered(uuid, name)) {
             int emc = new DataManager().getEMC(uuid, player);
@@ -70,7 +74,12 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
           int amount = item.getAmount();
           int takeAmount = 0;
           if(args.length >= 2) {
-            takeAmount = Integer.parseInt(args[1]);
+            try {
+              takeAmount = Integer.parseInt(args[1]);
+            } catch(NumberFormatException e) {
+              sender.sendMessage("Invalid number input! Please enter a number!");
+              return true;
+            }
           } else {
             takeAmount = amount;
           }
