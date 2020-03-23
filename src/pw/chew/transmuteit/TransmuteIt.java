@@ -82,6 +82,7 @@ public class TransmuteIt extends JavaPlugin {
     // Register Events
     getServer().getPluginManager().registerEvents(new DiscoveriesGUI(), this);
     getServer().getPluginManager().registerEvents(new TransmuteGUI(), this);
+    getServer().getPluginManager().registerEvents(new TransmuteTakeGUI(), this);
 
     // Magic Time
     getLogger().info("Booted!");
