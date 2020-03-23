@@ -4,7 +4,7 @@
   <groupId>pw.chew.transmuteit</groupId>
   <artifactId>TransmuteIt</artifactId>
   <name>TransmuteIt</name>
-  <version>0.1.0-b${build}</version>
+  <version>0.2.0-b${build}</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -127,11 +127,6 @@
       <artifactId>VaultAPI</artifactId>
       <version>1.7</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.json</groupId>
-      <artifactId>json</artifactId>
-      <version>20190722</version>
     </dependency>
   </dependencies>
   <properties>
