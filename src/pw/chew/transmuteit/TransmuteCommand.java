@@ -75,17 +75,34 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         } else if(arg0.equals("take")) {
           PlayerInventory inventory = ((Player)sender).getInventory();
           ItemStack item = inventory.getItemInMainHand();
+          boolean enchantments = item.getEnchantments().size() > 0;
+          boolean confirm = false;
           int amount = item.getAmount();
           int takeAmount = 0;
           if(args.length >= 2) {
-            try {
-              takeAmount = Integer.parseInt(args[1]);
-            } catch(NumberFormatException e) {
-              sender.sendMessage("Invalid number input! Please enter a number!");
-              return true;
+            if(args[1].toLowerCase().equals("confirm")) {
+              takeAmount = 1;
+              confirm = true;
+            } else {
+              try {
+                takeAmount = Integer.parseInt(args[1]);
+              } catch(NumberFormatException e) {
+                sender.sendMessage("Invalid number input! Please enter a number!");
+                return true;
+              }
             }
+
           } else {
             takeAmount = amount;
+          }
+          if(args.length >= 3) {
+            if (args[2].toLowerCase().equals("confirm")) {
+              confirm = true;
+            }
+          }
+          if(!confirm && enchantments) {
+            sender.sendMessage(ChatColor.YELLOW + "WARNING: " + ChatColor.RED + "This item has enchantments! They will NOT be calculated into the EMC, are you sure you want to transmute this? Add \"confirm\" to the command if so!");
+            return true;
           }
           if(takeAmount <= 0) {
             sender.sendMessage("Please select a value greater than 0!");
