@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.JSONObject;
+import pw.chew.transmuteit.expansions.TransmuteItExpansion;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -49,6 +51,10 @@ public class TransmuteIt extends JavaPlugin {
       } else {
         useEconomy = false;
       }
+    }
+
+    if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
+      new TransmuteItExpansion(this).register();
     }
 
     while (true) {

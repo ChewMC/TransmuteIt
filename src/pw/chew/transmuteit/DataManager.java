@@ -186,4 +186,12 @@ public class DataManager {
     JSONObject data = getData(uuid);
     return data.getJSONArray("discoveries").toList();
   }
+
+  public JSONObject getEMCValues() {
+    return TransmuteIt.json;
+  }
+
+  public int getAmountOfItemsWithEMC() {
+    return getEMCValues().length();
+  }
 }
