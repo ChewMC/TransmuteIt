@@ -5,7 +5,7 @@ api-version: 1.15
 description: It's just ProjectE Transmutation for Spigot
 author: Chewsterchew
 website: https://github.com/Chew/TransmuteIt
-softdepend: [Vault, PlaceholderAPI]
+softdepend: [Vault, PlaceholderAPI, MVdWPlaceholderAPI]
 commands:
   transmute:
     description: The main command for the plugin.
