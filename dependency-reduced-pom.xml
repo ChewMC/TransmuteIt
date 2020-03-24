@@ -4,7 +4,7 @@
   <groupId>pw.chew.transmuteit</groupId>
   <artifactId>TransmuteIt</artifactId>
   <name>TransmuteIt</name>
-  <version>0.2.0-b${build}</version>
+  <version>0.3.0-b${build}</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -68,6 +68,14 @@
       <id>CodeMC</id>
       <url>https://repo.codemc.org/repository/maven-public</url>
     </repository>
+    <repository>
+      <id>placeholderapi</id>
+      <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+    </repository>
+    <repository>
+      <id>mvdw-software</id>
+      <url>http://repo.mvdw-software.be/content/groups/public/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -123,20 +131,28 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20190722</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>com.github.MilkBowl</groupId>
       <artifactId>VaultAPI</artifactId>
       <version>1.7</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.json</groupId>
-      <artifactId>json</artifactId>
-      <version>20190722</version>
+      <groupId>me.clip</groupId>
+      <artifactId>placeholderapi</artifactId>
+      <version>2.10.4</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.google.code.gson</groupId>
-      <artifactId>gson</artifactId>
-      <version>2.8.6</version>
+      <groupId>be.maximvdw</groupId>
+      <artifactId>MVdWPlaceholderAPI</artifactId>
+      <version>2.1.1-SNAPSHOT</version>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.bstats</groupId>
@@ -150,4 +166,3 @@
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 </project>
-
