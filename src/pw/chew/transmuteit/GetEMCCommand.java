@@ -11,6 +11,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
 
 public class GetEMCCommand implements CommandExecutor {
@@ -74,12 +75,12 @@ public class GetEMCCommand implements CommandExecutor {
           if(maxDurability > 0) {
             emc = (int)((double)emc * (((double)maxDurability-(double)currentDurability)/(double)maxDurability));
           }
-          sender.sendMessage(ChatColor.YELLOW + "Single EMC Value: " + ChatColor.GREEN + emc);
+          sender.sendMessage(ChatColor.YELLOW + "Single EMC Value: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc));
           if(!arg) {
-            sender.sendMessage(ChatColor.YELLOW + "Hand EMC Value: " + ChatColor.GREEN + (emc * amount) + " (for " + amount + " items)");
+            sender.sendMessage(ChatColor.YELLOW + "Hand EMC Value: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc * amount) + " (for " + amount + " items)");
           }
           if(inventoryAmount > 0) {
-            sender.sendMessage(ChatColor.YELLOW + "Inventory EMC Value: " + ChatColor.GREEN + (emc * inventoryAmount) + " (for " + inventoryAmount + " items)");
+            sender.sendMessage(ChatColor.YELLOW + "Inventory EMC Value: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc * inventoryAmount) + " (for " + inventoryAmount + " items)");
           }
           // If there's no JSON file or it's not IN the JSON file
         } catch(org.json.JSONException e) {
