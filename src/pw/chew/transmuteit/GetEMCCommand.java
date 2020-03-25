@@ -11,6 +11,8 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.HashMap;
+
 public class GetEMCCommand implements CommandExecutor {
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (sender instanceof Player) {
@@ -19,7 +21,13 @@ public class GetEMCCommand implements CommandExecutor {
       PlayerInventory inventory = player.getInventory();
       ItemStack item = inventory.getItemInMainHand();
       int amount = item.getAmount();
+      int inventoryAmount = 0;
       Material type = item.getType();
+      HashMap<Integer, ? extends ItemStack> inventoryItems = inventory.all(type);
+      ItemStack[] inventoryItemsThanks = inventoryItems.values().toArray(new ItemStack[0]);
+      for(int i = 0; i < inventoryItems.size(); i++) {
+        inventoryAmount += inventoryItemsThanks[i].getAmount();
+      }
       ItemMeta meta = item.getItemMeta();
       Damageable damage;
       int currentDurability = 0;
@@ -46,8 +54,9 @@ public class GetEMCCommand implements CommandExecutor {
           if(maxDurability > 0) {
             emc = (int)((double)emc * (((double)maxDurability-(double)currentDurability)/(double)maxDurability));
           }
-          sender.sendMessage(ChatColor.YELLOW + "EMC Value: " + ChatColor.GREEN + emc);
-          sender.sendMessage(ChatColor.YELLOW + "Stack EMC Value: " + ChatColor.GREEN + (emc * amount));
+          sender.sendMessage(ChatColor.YELLOW + "Single EMC Value: " + ChatColor.GREEN + emc);
+          sender.sendMessage(ChatColor.YELLOW + "Hand EMC Value: " + ChatColor.GREEN + (emc * amount) + " (for " + amount + " items)");
+          sender.sendMessage(ChatColor.YELLOW + "Inventory EMC Value: " + ChatColor.GREEN + (emc * inventoryAmount) + " (for " + inventoryAmount + " items)");
           // If there's no JSON file or it's not IN the JSON file
         } catch(org.json.JSONException e) {
           sender.sendMessage(ChatColor.YELLOW + "EMC Value: " + ChatColor.GREEN + "None!");
