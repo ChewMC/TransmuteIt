@@ -18,31 +18,51 @@ public class GetEMCCommand implements CommandExecutor {
     if (sender instanceof Player) {
       // All this basically is just "Get the held item's name"
       Player player = (Player)sender;
+      int maxDurability = 0;
+      int currentDurability = 0;
+      int amount = 0;
+      int inventoryAmount = 0;
+      boolean arg = false;
+      Material type;
       PlayerInventory inventory = player.getInventory();
       ItemStack item = inventory.getItemInMainHand();
-      int amount = item.getAmount();
-      int inventoryAmount = 0;
-      Material type = item.getType();
+      if(args.length == 0 || (item.getType().toString().equals(args[0].toUpperCase()))) {
+        amount = item.getAmount();
+        inventoryAmount = 0;
+        type = item.getType();
+        ItemMeta meta = item.getItemMeta();
+        Damageable damage;
+        currentDurability = 0;
+        if(meta instanceof Damageable) {
+          damage = ((Damageable) meta);
+          currentDurability = damage.getDamage();
+        }
+      } else {
+        arg = true;
+        try {
+          type = Material.getMaterial(args[0].toUpperCase());
+        } catch(IllegalArgumentException e) {
+          sender.sendMessage(ChatColor.RED + "An item with the name \"" + args[0].toUpperCase() + "\" does not exist!");
+          return true;
+        }
+      }
+
       HashMap<Integer, ? extends ItemStack> inventoryItems = inventory.all(type);
       ItemStack[] inventoryItemsThanks = inventoryItems.values().toArray(new ItemStack[0]);
       for(int i = 0; i < inventoryItems.size(); i++) {
         inventoryAmount += inventoryItemsThanks[i].getAmount();
       }
-      ItemMeta meta = item.getItemMeta();
-      Damageable damage;
-      int currentDurability = 0;
-      if(meta instanceof Damageable) {
-        damage = ((Damageable) meta);
-        currentDurability = damage.getDamage();
-      }
-      short maxDurability = type.getMaxDurability();
+      maxDurability = type.getMaxDurability();
       if(currentDurability > maxDurability) {
+        currentDurability = maxDurability;
+      }
+      if(arg) {
         currentDurability = maxDurability;
       }
       String name = type.toString();
       // If it's nothing
       if(name.equals("AIR")) {
-        sender.sendMessage("Please hold an item to find its EMC value!");
+        sender.sendMessage(ChatColor.RED + "Please hold an item to find its EMC value!");
       } else {
         // If it's something
         sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bItem Information" + ChatColor.COLOR_CHAR + "d ]--------");
@@ -55,8 +75,12 @@ public class GetEMCCommand implements CommandExecutor {
             emc = (int)((double)emc * (((double)maxDurability-(double)currentDurability)/(double)maxDurability));
           }
           sender.sendMessage(ChatColor.YELLOW + "Single EMC Value: " + ChatColor.GREEN + emc);
-          sender.sendMessage(ChatColor.YELLOW + "Hand EMC Value: " + ChatColor.GREEN + (emc * amount) + " (for " + amount + " items)");
-          sender.sendMessage(ChatColor.YELLOW + "Inventory EMC Value: " + ChatColor.GREEN + (emc * inventoryAmount) + " (for " + inventoryAmount + " items)");
+          if(!arg) {
+            sender.sendMessage(ChatColor.YELLOW + "Hand EMC Value: " + ChatColor.GREEN + (emc * amount) + " (for " + amount + " items)");
+          }
+          if(inventoryAmount > 0) {
+            sender.sendMessage(ChatColor.YELLOW + "Inventory EMC Value: " + ChatColor.GREEN + (emc * inventoryAmount) + " (for " + inventoryAmount + " items)");
+          }
           // If there's no JSON file or it's not IN the JSON file
         } catch(org.json.JSONException e) {
           sender.sendMessage(ChatColor.YELLOW + "EMC Value: " + ChatColor.GREEN + "None!");
