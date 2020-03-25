@@ -69,7 +69,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.GREEN + "+ " + amount + " " + capitalize(name));
             sender.sendMessage(ChatColor.RED + "- " + NumberFormat.getInstance().format(amount * value) + " EMC [Total: " + NumberFormat.getInstance().format(emc - (value * amount)) + " EMC]");
           } else {
-            sender.sendMessage("Uh oh! You don't appear to have discovered " + name + ". Type /getemc to find the exact name.");
+            sender.sendMessage(ChatColor.RED + "Uh oh! You don't appear to have discovered " + name + ". Type \"/discoveries\" to view your discoveries.");
           }
           return true;
         } else if(arg0.equals("take")) {
