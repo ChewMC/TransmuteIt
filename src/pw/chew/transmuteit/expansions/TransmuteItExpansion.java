@@ -46,7 +46,7 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
 
     /**
      * The name of the person who created this expansion should go here.
-     * <br>For convienience do we return the author from the plugin.yml
+     * <br>For convenience do we return the author from the plugin.yml
      *
      * @return The name of the author as a String.
      */
