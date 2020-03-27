@@ -75,8 +75,12 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
           ItemStack item = inventory.getItemInMainHand();
           boolean enchantments = item.getEnchantments().size() > 0;
           boolean confirm = false;
-          int amount = item.getAmount();
-          int takeAmount = 0;
+          ItemStack[] items = inventory.all(item.getType()).values().toArray(new ItemStack[0]);
+          int amount = 0;
+          for (ItemStack itemStack : items) {
+            amount += itemStack.getAmount();
+          }
+          int takeAmount;
           if(args.length >= 2) {
             if(args[1].toLowerCase().equals("confirm")) {
               takeAmount = 1;
@@ -107,7 +111,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             return true;
           }
           if(amount - takeAmount < 0) {
-            sender.sendMessage("You don't have enough of this item!");
+            sender.sendMessage("You don't have enough of this item! (You only have " + amount + ")");
             return true;
           }
           Material type = item.getType();
@@ -125,7 +129,19 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
               if(maxDurability > 0) {
                 emc = (int)((double)emc * (((double)maxDurability-(double)currentDurability)/(double)maxDurability));
               }
-              item.setAmount(amount - takeAmount);
+              int taken = 0;
+              for (ItemStack itemStack : items) {
+                if (taken != takeAmount) {
+                  int inStack = itemStack.getAmount();
+                  if (inStack + taken <= takeAmount) {
+                    itemStack.setAmount(0);
+                    taken += inStack;
+                  } else {
+                    itemStack.setAmount(Math.abs(takeAmount - taken - inStack));
+                    taken = takeAmount;
+                  }
+                }
+              }
               UUID uuid = ((Player)sender).getUniqueId();
               int current = new DataManager().getEMC(uuid, player);
               int newEMC = current + (takeAmount * emc);
