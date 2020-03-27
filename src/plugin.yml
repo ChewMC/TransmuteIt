@@ -9,6 +9,8 @@ softdepend: [Vault, PlaceholderAPI, MVdWPlaceholderAPI]
 commands:
   transmute:
     description: The main command for the plugin.
+    aliases:
+      - 'tm'
     usage: "Usage: /transmute"
     permission: transmute.main
     permission-message: The admins have revoked your ability to run this command!
