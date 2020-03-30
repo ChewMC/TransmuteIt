@@ -65,10 +65,7 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
         inventoryAmount += inventoryItemsThanks[i].getAmount();
       }
       maxDurability = type.getMaxDurability();
-      if(currentDurability > maxDurability) {
-        currentDurability = maxDurability;
-      }
-      if(arg) {
+      if(currentDurability > maxDurability || args.length > 0) {
         currentDurability = maxDurability;
       }
       String name = type.toString();
@@ -83,7 +80,7 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
         try {
           int emc = TransmuteIt.json.getInt(type.toString());
           int normal_emc = emc;
-          if(maxDurability > 0) {
+          if(maxDurability > 0 && !arg) {
             emc = (int)((double)emc * (((double)maxDurability-(double)currentDurability)/(double)maxDurability));
           }
           sender.sendMessage(ChatColor.YELLOW + "Single EMC Value: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc));
