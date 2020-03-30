@@ -48,7 +48,13 @@ public class GetEMCCommand implements CommandExecutor {
         }
       }
 
-      HashMap<Integer, ? extends ItemStack> inventoryItems = inventory.all(type);
+      HashMap<Integer, ? extends ItemStack> inventoryItems;
+      try {
+        inventoryItems = inventory.all(type);
+      } catch(IllegalArgumentException e) {
+        sender.sendMessage(ChatColor.RED + "An item with the name \"" + args[0].toUpperCase() + "\" does not exist!");
+        return true;
+      }
       ItemStack[] inventoryItemsThanks = inventoryItems.values().toArray(new ItemStack[0]);
       for(int i = 0; i < inventoryItems.size(); i++) {
         inventoryAmount += inventoryItemsThanks[i].getAmount();
