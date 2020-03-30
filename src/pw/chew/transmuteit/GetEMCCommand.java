@@ -5,16 +5,21 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.util.StringUtil;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
-public class GetEMCCommand implements CommandExecutor {
+public class GetEMCCommand implements CommandExecutor, TabCompleter {
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (sender instanceof Player) {
       // All this basically is just "Get the held item's name"
@@ -101,5 +106,19 @@ public class GetEMCCommand implements CommandExecutor {
 
     // If the player (or console) uses our command correctly, we can return true
     return true;
+  }
+
+  @Override
+  public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+    List<String> completions = new ArrayList<>();
+    List<String> commands = new ArrayList<>();
+
+    if (args.length == 1) {
+      String[] items = TransmuteIt.json.keySet().toArray(new String[0]);
+      Collections.addAll(commands, items);
+      StringUtil.copyPartialMatches(args[0], commands, completions);
+    }
+    Collections.sort(completions);
+    return completions;
   }
 }
