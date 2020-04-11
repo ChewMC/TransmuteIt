@@ -4,7 +4,7 @@
   <groupId>pw.chew.transmuteit</groupId>
   <artifactId>TransmuteIt</artifactId>
   <name>TransmuteIt</name>
-  <version>0.3.0-b${build}</version>
+  <version>0.4.0-b${build}</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
