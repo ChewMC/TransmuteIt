@@ -23,7 +23,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     // If is not a player
     if (!(sender instanceof Player)) {
       sender.sendMessage("[TransmuteIt] Only players may run this command.");
-      return false;
+      return true;
     }
 
     Player player = (Player)sender;
@@ -49,7 +49,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         return this.handleAnalyze(sender);
       default:
         sender.sendMessage("Invalid subcommand! Need help? Try \"/transmute help\"");
-        return false;
+        return true;
     }
   }
 
@@ -146,7 +146,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     // If it's nothing
     if(name.equals("AIR")) {
       sender.sendMessage("Please hold an item to transmute it!");
-      return false;
+      return true;
     }
 
     // If it's something
@@ -189,7 +189,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
       // If there's no JSON file or it's not IN the JSON file
     } catch(org.json.JSONException e) {
       sender.sendMessage("This item has no set EMC value!");
-      return false;
+      return true;
     }
   }
 
@@ -201,7 +201,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     // If it's nothing
     if (name.equals("AIR")) {
       sender.sendMessage("Please hold an item to learn it!");
-      return false;
+      return true;
     }
     // If it's something
     try {
@@ -222,7 +222,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
       // If there's no JSON file or it's not IN the JSON file
     } catch (org.json.JSONException e) {
       sender.sendMessage("This item has no set EMC value!");
-      return false;
+      return true;
     }
   }
 
