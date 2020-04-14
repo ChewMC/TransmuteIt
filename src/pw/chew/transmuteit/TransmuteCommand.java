@@ -116,7 +116,9 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     }
     int takeAmount;
     if(args.length >= 2) {
-      if(args[1].toLowerCase().equals("confirm")) {
+      if(args[1].toLowerCase().equals("hand")) {
+        takeAmount = item.getAmount();
+      } else if(args[1].toLowerCase().equals("confirm")) {
         takeAmount = 1;
         confirm = true;
       } else {
@@ -127,7 +129,6 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
           return true;
         }
       }
-
     } else {
       takeAmount = amount;
     }
