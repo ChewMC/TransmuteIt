@@ -112,6 +112,7 @@
     <resources>
       <resource>
         <directory>src</directory>
+        <filtering>true</filtering>
         <includes>
           <include>**/*.yml</include>
           <include>**/*.json</include>
