@@ -100,6 +100,13 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
   private boolean handleTake(CommandSender sender, Player player, String[] args) {
     PlayerInventory inventory = ((Player)sender).getInventory();
     ItemStack item = inventory.getItemInMainHand();
+    Material type = item.getType();
+    String name = type.toString();
+    // If it's nothing
+    if(name.equals("AIR")) {
+      sender.sendMessage("Please hold an item to transmute it!");
+      return true;
+    }
     boolean enchantments = item.getEnchantments().size() > 0;
     boolean confirm = false;
     ItemStack[] items = inventory.all(item.getType()).values().toArray(new ItemStack[0]);
@@ -133,19 +140,13 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
       sender.sendMessage(ChatColor.YELLOW + "WARNING: " + ChatColor.RED + "This item has enchantments! They will NOT be calculated into the EMC, are you sure you want to transmute this? Add \"confirm\" to the command if so!");
       return true;
     }
+
     if(takeAmount <= 0) {
       sender.sendMessage("Please select a value greater than 0!");
       return true;
     }
     if(amount - takeAmount < 0) {
       sender.sendMessage("You don't have enough of this item! (You only have " + amount + ")");
-      return true;
-    }
-    Material type = item.getType();
-    String name = type.toString();
-    // If it's nothing
-    if(name.equals("AIR")) {
-      sender.sendMessage("Please hold an item to transmute it!");
       return true;
     }
 
