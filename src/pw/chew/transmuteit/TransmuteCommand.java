@@ -115,9 +115,11 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
       amount += itemStack.getAmount();
     }
     int takeAmount;
+    boolean hand = false;
     if(args.length >= 2) {
       if(args[1].toLowerCase().equals("hand")) {
         takeAmount = item.getAmount();
+        hand = true;
       } else if(args[1].toLowerCase().equals("confirm")) {
         takeAmount = 1;
         confirm = true;
@@ -160,16 +162,20 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
       if(maxDurability > 0) {
         emc = (int)((double)emc * (((double)maxDurability-(double)currentDurability)/(double)maxDurability));
       }
-      int taken = 0;
-      for (ItemStack itemStack : items) {
-        if (taken != takeAmount) {
-          int inStack = itemStack.getAmount();
-          if (inStack + taken <= takeAmount) {
-            itemStack.setAmount(0);
-            taken += inStack;
-          } else {
-            itemStack.setAmount(Math.abs(takeAmount - taken - inStack));
-            taken = takeAmount;
+      if(hand) {
+        item.setAmount(0);
+      } else {
+        int taken = 0;
+        for (ItemStack itemStack : items) {
+          if (taken != takeAmount) {
+            int inStack = itemStack.getAmount();
+            if (inStack + taken <= takeAmount) {
+              itemStack.setAmount(0);
+              taken += inStack;
+            } else {
+              itemStack.setAmount(Math.abs(takeAmount - taken - inStack));
+              taken = takeAmount;
+            }
           }
         }
       }
