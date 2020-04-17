@@ -29,10 +29,14 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     Player player = (Player)sender;
     // Show GUI
     if(args.length == 0) {
-      TransmuteGUI gui = new TransmuteGUI();
-      gui.initializeItems(player.getUniqueId(), args, player);
-      gui.openInventory(player);
-      return true;
+      if(sender.hasPermission("transmute.gui")) {
+        TransmuteGUI gui = new TransmuteGUI();
+        gui.initializeItems(player.getUniqueId(), args, player);
+        gui.openInventory(player);
+        return true;
+      } else {
+        return helpResponse(sender);
+      }
     }
 
     String arg0 = args[0].toLowerCase();
@@ -40,13 +44,29 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
       case "help":
         return helpResponse(sender);
       case "get":
-        return this.handleGet(sender, player, args);
+        if(sender.hasPermission("transmute.command.get")) {
+          return this.handleGet(sender, player, args);
+        } else {
+          return missingPermissionResponse(sender, "transmute.command.get");
+        }
       case "take":
-        return this.handleTake(sender, player, args);
+        if(sender.hasPermission("transmute.command.take")) {
+          return this.handleTake(sender, player, args);
+        } else {
+          return missingPermissionResponse(sender, "transmute.command.take");
+        }
       case "learn":
-        return this.handleLearn(sender);
+        if(sender.hasPermission("transmute.command.learn")) {
+          return this.handleLearn(sender);
+        } else {
+          return missingPermissionResponse(sender, "transmute.command.learn");
+        }
       case "analyze":
-        return this.handleAnalyze(sender);
+        if(sender.hasPermission("transmute.command.analyze")) {
+          return this.handleAnalyze(sender);
+        } else {
+          return missingPermissionResponse(sender, "transmute.command.analyze");
+        }
       default:
         sender.sendMessage("Invalid sub-command! Need help? Try \"/transmute help\"");
         return true;
@@ -335,6 +355,11 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     if(sender.hasPermission("transmute.admin.emc.set")) {
       sender.sendMessage(ChatColor.YELLOW + "/setEMC [amount]" + ChatColor.GRAY + " - " + ChatColor.GREEN + "Set the EMC value of held item.");
     }
+    return true;
+  }
+
+  public static boolean missingPermissionResponse(CommandSender sender, String missingo) {
+    sender.sendMessage(ChatColor.RED + "You are missing the proper permission to run this command! You need: " + ChatColor.GREEN + missingo);
     return true;
   }
 }

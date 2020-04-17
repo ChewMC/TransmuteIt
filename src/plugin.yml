@@ -12,7 +12,7 @@ commands:
     aliases:
       - 'tm'
     usage: "Usage: /transmute"
-    permission: transmute.gui
+    permission: transmute.main
     permission-message: The admins have revoked your ability to run this command!
     default: true
   setEMC:
@@ -44,6 +44,7 @@ permissions:
   transmute.player:
     default: true
     children:
+      transmute.main: true
       transmute.gui: true
       transmute.command.getemc: true
       transmute.command.getemc.any: true
