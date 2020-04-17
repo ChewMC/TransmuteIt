@@ -323,14 +323,18 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
   }
 
   public static boolean helpResponse(CommandSender sender) {
-    sender.sendMessage("§dWelcome to TransmuteIt!");
-    sender.sendMessage("§b/transmute take [amount] §d- Take [amount] of held item and convert to EMC.");
-    sender.sendMessage("§b/transmute get [item] [amount] §d- Get amount of item using EMC.");
-    sender.sendMessage("§b/transmute help §d- This command.");
-    sender.sendMessage("§b/transmute learn §d- Discover the item without transmuting it.");
-    sender.sendMessage("§b/getEMC §d- Get the EMC value of held item.");
-    sender.sendMessage("§b/emc §d- View your EMC.");
-    sender.sendMessage("§b/discoveries [search term] §d- View your Discoveries. Leave blank to see all.");
+    sender.sendMessage(ChatColor.LIGHT_PURPLE + "-----[ " + ChatColor.AQUA + "Welcome to TransmuteIt!" + ChatColor.LIGHT_PURPLE + " ]-----");
+    sender.sendMessage(ChatColor.YELLOW + "/transmute take (amount)" + ChatColor.GRAY + " - " + ChatColor.GREEN + "Take [amount] of held item and convert to EMC.");
+    sender.sendMessage(ChatColor.YELLOW + "/transmute get [item] [amount]" + ChatColor.GRAY + " - " + ChatColor.GREEN + "Get [amount] of [item] using EMC.");
+    sender.sendMessage(ChatColor.YELLOW + "/transmute help" + ChatColor.GRAY + " - " + ChatColor.GREEN + "This command.");
+    sender.sendMessage(ChatColor.YELLOW + "/transmute learn" + ChatColor.GRAY + " - " + ChatColor.GREEN + "Discover the item without transmuting it.");
+    sender.sendMessage(ChatColor.YELLOW + "/transmute analyze" + ChatColor.GRAY + " - " + ChatColor.GREEN + "Analyze your inventory for its EMC value.");
+    sender.sendMessage(ChatColor.YELLOW + "/getEMC (item)" + ChatColor.GRAY + " - " + ChatColor.GREEN + "Get the EMC value of an item, blank for currently held item.");
+    sender.sendMessage(ChatColor.YELLOW + "/emc" + ChatColor.GRAY + " - " + ChatColor.GREEN + "View your EMC.");
+    sender.sendMessage(ChatColor.YELLOW + "/discoveries (search term)" + ChatColor.GRAY + " - " + ChatColor.GREEN + "View your Discoveries. Leave blank to see all, or type to search!");
+    if(sender.hasPermission("transmute.admin.emc.set")) {
+      sender.sendMessage(ChatColor.YELLOW + "/setEMC [amount]" + ChatColor.GRAY + " - " + ChatColor.GREEN + "Set the EMC value of held item.");
+    }
     return true;
   }
 }
