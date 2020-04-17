@@ -12,19 +12,19 @@ commands:
     aliases:
       - 'tm'
     usage: "Usage: /transmute"
-    permission: transmute.main
+    permission: transmute.gui
     permission-message: The admins have revoked your ability to run this command!
     default: true
   setEMC:
     description: Set the EMC value of the held item.
-    usage: "Usage: /setEMC 8"
-    permission: transmute.admin.emc.set
+    usage: "Usage: /setEMC <amount>"
+    permission: transmute.admin.setemc
     permission-message: The admins have revoked your ability to run this command!
     default: op
   getEMC:
     description: Get the EMC value of the held item.
     usage: "Usage: /getEMC"
-    permission: transmute.emc.get
+    permission: transmute.command.getemc
     permission-message: The admins have revoked your ability to run this command!
     default: true
   emc:
@@ -44,12 +44,19 @@ permissions:
   transmute.player:
     default: true
     children:
-      transmute.main: true
-      transmute.emc.get: true
+      transmute.gui: true
+      transmute.command.getemc: true
+      transmute.command.getemc.any: true
       transmute.player.emc: true
       transmute.player.discoveries: true
+      transmute.command.take: true
+      transmute.command.get: true
+      transmute.command.analyze: true
+      transmute.command.learn: true
   transmute.*:
     default: op
     children:
-      transmute.admin.emc.set: true
+      transmute.admin.setemc: true
       transmute.player: true
+      transmute.player.emc.others: true
+      transmute.player.discoveries.other: true
