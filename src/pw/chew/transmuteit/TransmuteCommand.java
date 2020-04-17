@@ -48,7 +48,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
       case "analyze":
         return this.handleAnalyze(sender);
       default:
-        sender.sendMessage("Invalid subcommand! Need help? Try \"/transmute help\"");
+        sender.sendMessage("Invalid sub-command! Need help? Try \"/transmute help\"");
         return true;
     }
   }
@@ -322,7 +322,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     return newword.substring(0, newword.length()-1);
   }
 
-  public boolean helpResponse(CommandSender sender) {
+  public static boolean helpResponse(CommandSender sender) {
     sender.sendMessage("§dWelcome to TransmuteIt!");
     sender.sendMessage("§b/transmute take [amount] §d- Take [amount] of held item and convert to EMC.");
     sender.sendMessage("§b/transmute get [item] [amount] §d- Get amount of item using EMC.");

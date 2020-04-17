@@ -84,7 +84,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
         }
 
         if(e.getRawSlot() == 12) {
-            helpResponse(player);
+            TransmuteCommand.helpResponse(player);
             List<HumanEntity> viewers = e.getInventory().getViewers();
             for(int i = 0; i < viewers.size(); i++) {
                 if(viewers.get(0).getUniqueId() == player.getUniqueId()) {
@@ -106,16 +106,5 @@ public class TransmuteGUI implements InventoryHolder, Listener {
         }
 
 
-    }
-
-    public void helpResponse(Player player) {
-        player.sendMessage("§dWelcome to TransmuteIt!");
-        player.sendMessage("§b/transmute take [amount] §d- Take [amount] of held item and convert to EMC.");
-        player.sendMessage("§b/transmute get [item] [amount] §d- Get amount of item using EMC.");
-        player.sendMessage("§b/transmute help §d- This command.");
-        player.sendMessage("§b/transmute learn §d- Discover the item without transmuting it.");
-        player.sendMessage("§b/getEMC §d- Get the EMC value of held item.");
-        player.sendMessage("§b/emc §d- View your EMC.");
-        player.sendMessage("§b/discoveries [search term] §d- View your Discoveries. Leave blank to see all.");
     }
 }
