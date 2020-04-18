@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class TransmuteIt extends JavaPlugin {
-  // Files
+  // Files & Config
   static File emcFile;
   static JSONObject json;
   FileConfiguration config;
@@ -33,30 +33,31 @@ public class TransmuteIt extends JavaPlugin {
 
   // Fired when plugin is first enabled
   public void onEnable() {
+    // Get and save config
     config = this.getConfig();
     config.addDefault("economy", false);
     config.options().copyDefaults(true);
     saveDefaultConfig();
 
-    int pluginId = 6819; // <-- Replace with the id of your plugin!
+    // bStats
+    int pluginId = 6819;
     Metrics metrics = new Metrics(this, pluginId);
 
+    // Setup Vault Hook
     if(!setupEconomy()) {
       System.out.println("[TransmuteIt] Could not find vault (or there's no economy hooked into it), economy won't work!");
       useEconomy = false;
     } else {
       System.out.println("[TransmuteIt] Vault HOOKED! Let's get this cash!");
-      if(config.getBoolean("economy")) {
-        useEconomy = true;
-      } else {
-        useEconomy = false;
-      }
+      useEconomy = config.getBoolean("economy");
     }
 
+    // Set up PAPI Hook
     if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
       new TransmuteItExpansion(this).register();
     }
 
+    // Load EMC
     while (true) {
       try {
         loadEMC();
@@ -73,9 +74,10 @@ public class TransmuteIt extends JavaPlugin {
       }
     }
 
-    TransmuteCommand transmute = new TransmuteCommand();
 
     // Load Commands
+    TransmuteCommand transmute = new TransmuteCommand();
+
     this.getCommand("getemc").setExecutor(new GetEMCCommand());
     this.getCommand("transmute").setExecutor(transmute);
     this.getCommand("emc").setExecutor(new EMCCommand());
