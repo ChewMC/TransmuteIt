@@ -303,18 +303,19 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     return true;
   }
 
-
   @Override
   public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
     List<String> completions = new ArrayList<>();
     List<String> commands = new ArrayList<>();
+    String[] completes = {"get", "take", "learn", "analyze"};
 
     if (args.length == 1) {
       commands.add("help");
-      commands.add("get");
-      commands.add("take");
-      commands.add("learn");
-      commands.add("analyze");
+      for (String complete : completes) {
+        if (sender.hasPermission("transmute.command." + complete)) {
+          commands.add(complete);
+        }
+      }
       StringUtil.copyPartialMatches(args[0], commands, completions);
     } else if (args.length >= 2 && args[0].equals("help")) {
       StringUtil.copyPartialMatches(args[1], commands, completions);
