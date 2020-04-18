@@ -118,8 +118,8 @@ public class TransmuteIt extends JavaPlugin {
   public void loadEMC() throws FileNotFoundException {
     emcFile = new File(getDataFolder(), "emc.json");
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    Map<String, Object> map = new HashMap<>();
-    map = gson.fromJson(new FileReader(emcFile), new HashMap<String, Object>().getClass());
+    HashMap<String, Object> map;
+    map = gson.fromJson(new FileReader(emcFile), HashMap.class);
     String gsson = gson.toJson(map);
     json = new JSONObject(gsson);
   }

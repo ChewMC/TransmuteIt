@@ -17,17 +17,17 @@ import java.util.*;
 
 public class TransmuteCommand implements CommandExecutor, TabCompleter {
 
-  // This method is called, when somebody uses our command
+  // /transmute command handler.
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-    // If is not a player
+    // If sender is not a player
     if (!(sender instanceof Player)) {
       sender.sendMessage("[TransmuteIt] Only players may run this command.");
       return true;
     }
 
     Player player = (Player)sender;
-    // Show GUI
+    // Show GUI or /tm help, permission depending, if no ARGs are specified
     if(args.length == 0) {
       if(sender.hasPermission("transmute.gui")) {
         TransmuteGUI gui = new TransmuteGUI();
@@ -39,6 +39,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
       }
     }
 
+    // Main sub-command handler. If no perm, tell them.
     String arg0 = args[0].toLowerCase();
     switch (arg0) {
       case "help":
@@ -73,7 +74,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     }
   }
 
-
+  // Handle /tm get and its args.
   private boolean handleGet(CommandSender sender, Player player, String[] args) {
     if (args.length < 3) {
       sender.sendMessage("This sub-command requires more arguments! Check \"/transmute help\" for more info.");
@@ -117,6 +118,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     return true;
   }
 
+  // Handle /tm take and its args.
   private boolean handleTake(CommandSender sender, Player player, String[] args) {
     PlayerInventory inventory = ((Player)sender).getInventory();
     ItemStack item = inventory.getItemInMainHand();
@@ -221,6 +223,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     }
   }
 
+  // Handle /tm learn
   private boolean handleLearn(CommandSender sender) {
     PlayerInventory inventory = ((Player) sender).getInventory();
     ItemStack item = inventory.getItemInMainHand();
@@ -254,6 +257,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     }
   }
 
+  // Handle /tm analyze
   private boolean handleAnalyze(CommandSender sender) {
     PlayerInventory inventory = ((Player) sender).getInventory();
     HashMap<String, Integer> amountMap = new HashMap<>();
@@ -303,6 +307,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     return true;
   }
 
+  // Handle tab completion
   @Override
   public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
     List<String> completions = new ArrayList<>();
@@ -332,6 +337,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     return completions;
   }
 
+  // Method to convert "WORD_WORD" to "Word Word"
   public String capitalize(String to) {
     String[] words = to.split("_");
     String newword = "";
@@ -343,6 +349,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     return newword.substring(0, newword.length()-1);
   }
 
+  // The response found in /tm help or the paper in the GUI
   public static boolean helpResponse(CommandSender sender) {
     sender.sendMessage(ChatColor.LIGHT_PURPLE + "-----[ " + ChatColor.AQUA + "Welcome to TransmuteIt!" + ChatColor.LIGHT_PURPLE + " ]-----");
     sender.sendMessage(ChatColor.YELLOW + "/transmute help" + ChatColor.GRAY + " - " + ChatColor.GREEN + "This command.");
@@ -373,10 +380,12 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     return true;
   }
 
+  // Helpful command formatter that gives it colors
   private static String helpCommandFormatting(String command, String description) {
     return ChatColor.YELLOW + command + ChatColor.GRAY + " - " + ChatColor.GREEN + description;
   }
 
+  // Response if there's missing permissions.
   public static boolean missingPermissionResponse(CommandSender sender, String missingo) {
     sender.sendMessage(ChatColor.RED + "You are missing the proper permission to run this command! You need: " + ChatColor.GREEN + missingo);
     return true;

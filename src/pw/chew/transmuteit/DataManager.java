@@ -36,11 +36,11 @@ public class DataManager {
     createDataFileIfNoneExists(uuid);
     prepareDataFile(uuid);
     File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-    String data = "";
+    StringBuilder data = new StringBuilder();
     try {
       Scanner scanner = new Scanner(userFile);
       while (scanner.hasNextLine()) {
-        data += (scanner.nextLine());
+        data.append(scanner.nextLine());
       }
       scanner.close();
     } catch (FileNotFoundException e) {
@@ -48,7 +48,7 @@ public class DataManager {
     }
     JSONObject bob;
     try {
-      bob = new JSONObject(data);
+      bob = new JSONObject(data.toString());
     } catch(JSONException e) {
       e.printStackTrace();
       bob = new JSONObject("{\"emc\":0,\"discoveries\":[]}");
@@ -83,11 +83,11 @@ public class DataManager {
   public void prepareDataFile(UUID uuid) {
     File userFile = new File(getDataFolder(), uuid.toString() + ".json");
     PrintWriter writer;
-    String data = "";
+    StringBuilder data = new StringBuilder();
     try {
       Scanner scanner = new Scanner(userFile);
       while (scanner.hasNextLine()) {
-        data += (scanner.nextLine());
+        data.append(scanner.nextLine());
       }
       scanner.close();
     } catch (FileNotFoundException e) {
@@ -100,7 +100,7 @@ public class DataManager {
     }
     JSONObject bob;
     try {
-      bob = new JSONObject(data);
+      bob = new JSONObject(data.toString());
     } catch(JSONException e) {
       e.printStackTrace();
       bob = new JSONObject("{\"emc\":0,\"discoveries\":[]}");

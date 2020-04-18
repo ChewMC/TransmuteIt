@@ -19,7 +19,7 @@ import java.text.NumberFormat;
 import java.util.*;
 
 public class DiscoveriesGUI implements InventoryHolder, Listener {
-  private Inventory inv;
+  private final Inventory inv;
 
   public DiscoveriesGUI() {
     inv = Bukkit.createInventory(this, 54, "Discoveries - Click to Transmute");
@@ -31,13 +31,13 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
   }
 
   // You can call this whenever you want to put the items in
-  public void initializeItems(UUID uuid, String args[]) {
+  public void initializeItems(UUID uuid, String[] args) {
     boolean search = false;
-    String term = "";
+    StringBuilder term = new StringBuilder();
     if(args.length > 0) {
       search = true;
-      for(int i = 0; i < args.length; i++) {
-        term += args[i].toUpperCase();
+      for (String arg : args) {
+        term.append(arg.toUpperCase());
       }
     }
     List<Object> discoveries = new DataManager().discoveries(uuid);
@@ -46,19 +46,19 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
       strings.add(Objects.toString(object, null));
     }
     Collections.sort(strings);
-    for(int i = 0; i < strings.size(); i++) {
-      String nameraw = strings.get(i).toString();
+    for (String string : strings) {
+      String nameraw = string.toString();
       String nameformatted = nameraw.replace("_", " ");
       try {
         int emc = TransmuteIt.json.getInt(nameraw);
         if (search) {
-          if (nameraw.contains(term) || nameformatted.contains(term)) {
+          if (nameraw.contains(term.toString()) || nameformatted.contains(term.toString())) {
             inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)));
           }
         } else {
           inv.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)));
         }
-      } catch(JSONException e) {
+      } catch (JSONException e) {
         new DataManager().removeDiscovery(uuid, nameraw);
       }
 
@@ -123,8 +123,6 @@ public class DiscoveriesGUI implements InventoryHolder, Listener {
       int amount = 1;
       if(e.isShiftClick()) {
         amount = 64;
-      } else if(e.isLeftClick() || e.isRightClick()) {
-        amount = 1;
       }
       int value;
       try {
