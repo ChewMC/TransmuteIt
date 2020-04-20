@@ -42,7 +42,7 @@ public class SetEMCCommand implements CommandExecutor {
             TransmuteIt.json.remove(name);
             sender.sendMessage("Item " + name + "'s EMC Value has been removed");
           }
-          writeToEMCFile();
+          TransmuteIt.data.writeToEMCFile();
           // If there's no JSON file or it's not IN the JSON file
         } catch(org.json.JSONException e) {
           sender.sendMessage("That item is " + amount + " of " + name + ". It has no set EMC value!");
@@ -56,15 +56,5 @@ public class SetEMCCommand implements CommandExecutor {
 
     // If the player (or console) uses our command correctly, we can return true
     return true;
-  }
-
-  public void writeToEMCFile() {
-    try {
-      PrintWriter writer = new PrintWriter(TransmuteIt.emcFile);
-      TransmuteIt.json.write(writer);
-      writer.close();
-    } catch(FileNotFoundException e) {
-      System.out.println("[TransmuteIt] Unable to write to EMC file! EMC will NOT save!");
-    }
   }
 }

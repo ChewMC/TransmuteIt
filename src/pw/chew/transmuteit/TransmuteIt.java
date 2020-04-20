@@ -19,9 +19,9 @@ import java.util.UUID;
 
 public class TransmuteIt extends JavaPlugin {
   // Files & Config
-  static File emcFile;
   static JSONObject json;
   FileConfiguration config;
+  static DataManager data;
 
   // Vault Hook
   static Economy econ;
@@ -38,6 +38,9 @@ public class TransmuteIt extends JavaPlugin {
     config.addDefault("economy", false);
     config.options().copyDefaults(true);
     saveDefaultConfig();
+
+    // Setup DataManager
+    data = new DataManager();
 
     // bStats
     int pluginId = 6819;
@@ -58,21 +61,18 @@ public class TransmuteIt extends JavaPlugin {
     }
 
     // Load EMC
-    while (true) {
-      try {
-        loadEMC();
-        break;
+     try {
+       json = data.loadEMC();
       } catch (FileNotFoundException e) {
-        System.out.println("[TransmuteIt] EMC File missing! Attempting to grab defaults from JAR.");
-        try {
-          copyFileFromJar();
-        } catch (IOException f) {
-          System.out.println("[TransmuteIt] Failed getting file! Cya!");
-          this.getPluginLoader().disablePlugin(this);
-          break;
-        }
-      }
-    }
+       System.out.println("[TransmuteIt] EMC File missing! Attempting to grab defaults from JAR.");
+       try {
+         data.copyFileFromJar();
+         json = data.loadEMC();
+       } catch (IOException f) {
+         System.out.println("[TransmuteIt] Failed getting file! Cya!");
+         this.getPluginLoader().disablePlugin(this);
+       }
+     }
 
 
     // Load Commands
@@ -112,29 +112,5 @@ public class TransmuteIt extends JavaPlugin {
     }
     econ = rsp.getProvider();
     return true;
-  }
-
-  // Load EMC values from JSON file
-  public void loadEMC() throws FileNotFoundException {
-    emcFile = new File(getDataFolder(), "emc.json");
-    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    HashMap<String, Object> map;
-    map = gson.fromJson(new FileReader(emcFile), HashMap.class);
-    String gsson = gson.toJson(map);
-    json = new JSONObject(gsson);
-  }
-
-  // Copy default EMC values from JSON file hidden in the JAR.
-  private void copyFileFromJar() throws IOException {
-    String name = "/emc.json";
-    File target = new File(getDataFolder(), "emc.json");
-    if (!target.exists()) {
-      InputStream initialStream = getClass().getResourceAsStream(name);
-      byte[] buffer = new byte[initialStream.available()];
-      initialStream.read(buffer);
-      FileOutputStream out = new FileOutputStream(target);
-      out.write(buffer);
-      out.close();
-    }
   }
 }

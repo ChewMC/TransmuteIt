@@ -1,5 +1,7 @@
 package pw.chew.transmuteit;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -10,6 +12,8 @@ import java.io.*;
 import java.util.*;
 
 public class DataManager {
+  static File emcFile;
+
   public DataManager() {
 
   }
@@ -67,7 +71,7 @@ public class DataManager {
     }
   }
 
-  private void copyFileFromJar(UUID uuid) throws IOException {
+  public void copyFileFromJar(UUID uuid) throws IOException {
     String name = "/default.json";
     File target = new File(getDataFolder(), uuid.toString() + ".json");
     if (!target.exists()) {
@@ -176,10 +180,46 @@ public class DataManager {
     }
   }
 
+  // Load EMC values from JSON file
+  public JSONObject loadEMC() throws FileNotFoundException {
+    File dataFolder = Bukkit.getPluginManager().getPlugin("TransmuteIt").getDataFolder();
+    emcFile = new File(dataFolder, "emc.json");
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    HashMap<String, Object> map;
+    map = gson.fromJson(new FileReader(emcFile), HashMap.class);
+    String gsson = gson.toJson(map);
+    return new JSONObject(gsson);
+  }
+
+  public void writeToEMCFile() {
+    try {
+      PrintWriter writer = new PrintWriter(emcFile);
+      TransmuteIt.json.write(writer);
+      writer.close();
+    } catch(FileNotFoundException e) {
+      System.out.println("[TransmuteIt] Unable to write to EMC file! EMC will NOT save!");
+    }
+  }
+
   public boolean discovered(UUID uuid, String item) {
     JSONObject data = getData(uuid);
     List<Object> bob = data.getJSONArray("discoveries").toList();
     return bob.contains(item);
+  }
+
+  // Copy default EMC values from JSON file hidden in the JAR.
+  public void copyFileFromJar() throws IOException {
+    String name = "/emc.json";
+    File dataFolder = Bukkit.getPluginManager().getPlugin("TransmuteIt").getDataFolder();
+    File target = new File(dataFolder, "emc.json");
+    if (!target.exists()) {
+      InputStream initialStream = getClass().getResourceAsStream(name);
+      byte[] buffer = new byte[initialStream.available()];
+      initialStream.read(buffer);
+      FileOutputStream out = new FileOutputStream(target);
+      out.write(buffer);
+      out.close();
+    }
   }
 
   public List<Object> discoveries(UUID uuid) {
