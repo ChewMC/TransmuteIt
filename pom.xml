@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>pw.chew.transmuteit</groupId>
   <artifactId>TransmuteIt</artifactId>
-  <version>0.4.0-b${build}</version>
+  <version>0.5.0-b${build}</version>
   <name>TransmuteIt</name>
 
   <distributionManagement>
@@ -72,6 +72,11 @@
       <version>2.10.4</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>com.github.stefvanschie.inventoryframework</groupId>
+      <artifactId>IF</artifactId>
+      <version>0.5.19</version>
+    </dependency>
   </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -101,6 +106,10 @@
         <!-- Do not include the <configuration>...</configuration> part if you are using Sponge! -->
         <configuration>
           <relocations>
+            <relocation>
+              <pattern>com.github.stefvanschie.inventoryframework</pattern>
+              <shadedPattern>pw.chew.transmuteit.inventoryframework</shadedPattern>
+            </relocation>
             <relocation>
               <pattern>org.bstats</pattern>
               <shadedPattern>pw.chew.transmuteit</shadedPattern>

@@ -4,7 +4,7 @@
   <groupId>pw.chew.transmuteit</groupId>
   <artifactId>TransmuteIt</artifactId>
   <name>TransmuteIt</name>
-  <version>0.4.0-b${build}</version>
+  <version>0.5.0-b${build}</version>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -47,6 +47,10 @@
         </executions>
         <configuration>
           <relocations>
+            <relocation>
+              <pattern>com.github.stefvanschie.inventoryframework</pattern>
+              <shadedPattern>pw.chew.transmuteit.inventoryframework</shadedPattern>
+            </relocation>
             <relocation>
               <pattern>org.bstats</pattern>
               <shadedPattern>pw.chew.transmuteit</shadedPattern>
