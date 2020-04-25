@@ -118,7 +118,7 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
                     new DataManager().writeDiscovery(uuid, name);
                 }
                 player.sendMessage(ChatColor.GREEN + "+ " + NumberFormat.getInstance().format(amount * emc) + " EMC [Total: " + NumberFormat.getInstance().format(newEMC) + " EMC]");
-                player.sendMessage(ChatColor.RED + "- " + amount + " " + new DiscoveriesGUI().capitalize(name));
+                player.sendMessage(ChatColor.RED + "- " + amount + " " + new DiscoveriesCommand().capitalize(name));
                 // If there's no JSON file or it's not IN the JSON file
             } catch(org.json.JSONException f) {
                 player.sendMessage("This item has no set EMC value!");

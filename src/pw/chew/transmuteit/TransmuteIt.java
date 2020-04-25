@@ -88,7 +88,6 @@ public class TransmuteIt extends JavaPlugin {
     this.getCommand("transmute").setTabCompleter(transmute);
 
     // Register Events
-    getServer().getPluginManager().registerEvents(new DiscoveriesGUI(), this);
     getServer().getPluginManager().registerEvents(new TransmuteGUI(), this);
     getServer().getPluginManager().registerEvents(new TransmuteTakeGUI(), this);
 

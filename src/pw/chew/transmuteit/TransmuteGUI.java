@@ -85,18 +85,11 @@ public class TransmuteGUI implements InventoryHolder, Listener {
 
         if(e.getRawSlot() == 12) {
             TransmuteCommand.helpResponse(player);
-            List<HumanEntity> viewers = e.getInventory().getViewers();
-            for(int i = 0; i < viewers.size(); i++) {
-                if(viewers.get(0).getUniqueId() == player.getUniqueId()) {
-                    viewers.get(0).closeInventory();
-                }
-            }
+            player.closeInventory();
         }
 
         if(e.getRawSlot() == 14) {
-            DiscoveriesGUI gui = new DiscoveriesGUI();
-            gui.initializeItems(player.getUniqueId(), new String[0]);
-            gui.openInventory(player);
+            player.performCommand("discoveries");
         }
 
         if(e.getRawSlot() == 16) {
