@@ -1,6 +1,6 @@
 # TransmuteIt
 
-![Spigot Downloads](https://img.shields.io/spiget/downloads/76287?style=flat-square)
+[![Spigot Downloads](https://img.shields.io/spiget/downloads/76287?style=flat-square)](https://www.spigotmc.org/resources/transmuteit.76287)
 
 Welcome to TransmuteIt, my 2nd plugin!
 
