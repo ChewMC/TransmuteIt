@@ -54,6 +54,7 @@ permissions:
       transmute.command.get: true
       transmute.command.analyze: true
       transmute.command.learn: true
+      transmute.command.version: true
   transmute.*:
     default: op
     children:

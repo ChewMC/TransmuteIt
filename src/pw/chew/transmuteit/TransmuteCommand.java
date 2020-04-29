@@ -1,5 +1,6 @@
 package pw.chew.transmuteit;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -10,8 +11,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.util.StringUtil;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.NumberFormat;
 import java.util.*;
 
@@ -67,6 +75,12 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
           return this.handleAnalyze(sender);
         } else {
           return missingPermissionResponse(sender, "transmute.command.analyze");
+        }
+      case "version":
+        if(sender.hasPermission("transmute.command.version")) {
+          return this.handleVersion(sender);
+        } else {
+          return missingPermissionResponse(sender, "transmute.command.version");
         }
       default:
         sender.sendMessage("Invalid sub-command! Need help? Try \"/transmute help\"");
@@ -307,12 +321,72 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     return true;
   }
 
+  public boolean handleVersion(CommandSender sender) {
+    Plugin plugin = Bukkit.getPluginManager().getPlugin("TransmuteIt");
+    String current = plugin.getDescription().getVersion();
+    String cversion = current.split("-")[0];
+    int cbuild;
+    try {
+      cbuild = Integer.parseInt(current.split("b")[1]);
+    } catch (NumberFormatException e) {
+      cbuild = 0;
+    }
+    sender.sendMessage("Running TransmuteIt Version: " + current);
+    sender.sendMessage("Checking for new updates...");
+
+    int finalCbuild = cbuild;
+    Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+      String[] response = getLatestVersion();
+      int lbuild = Integer.parseInt(response[0]);
+      String lversion = response[1];
+
+      int behind = lbuild - finalCbuild;
+      if(behind == 0) {
+        sender.sendMessage("You are running the latest build!");
+      } else {
+        sender.sendMessage("You are " + behind + " builds behind! (Latest: " + lversion + "-b" + lbuild + ")");
+      }
+    });
+
+    return true;
+  }
+
+  public String[] getLatestVersion() {
+    try {
+      // We're connecting to TransmuteIt's Jenkins REST api
+      URL url = new URL("https://jenkins.chew.pw/job/TransmuteIt/lastSuccessfulBuild/api/json");
+      // Creating a connection
+      URLConnection request = url.openConnection();
+      request.setRequestProperty("User-Agent", "TransmuteIt Itself owo");
+      request.connect();
+
+      // Get response
+      BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
+      String inputLine;
+      StringBuilder response = new StringBuilder();
+
+      while ((inputLine = in.readLine()) != null) {
+        response.append(inputLine);
+      }
+      in.close();
+
+      // Convert to a JSON object
+      JSONObject root = new JSONObject(response.toString()); // Convert the response to a json element
+      String lbuild = root.getString("id");
+      String lversion = root.getJSONArray("artifacts").getJSONObject(0).getString("displayPath").split("-")[1];
+      return new String[]{lbuild, lversion};
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      return null;
+    }
+  }
+
   // Handle tab completion
   @Override
   public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
     List<String> completions = new ArrayList<>();
     List<String> commands = new ArrayList<>();
-    String[] completes = {"get", "take", "learn", "analyze"};
+    String[] completes = {"get", "take", "learn", "analyze", "version"};
 
     if (args.length == 1) {
       commands.add("help");
@@ -353,6 +427,9 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
   public static boolean helpResponse(CommandSender sender) {
     sender.sendMessage(ChatColor.LIGHT_PURPLE + "-----[ " + ChatColor.AQUA + "Welcome to TransmuteIt!" + ChatColor.LIGHT_PURPLE + " ]-----");
     sender.sendMessage(ChatColor.YELLOW + "/transmute help" + ChatColor.GRAY + " - " + ChatColor.GREEN + "This command.");
+    if(sender.hasPermission("transmute.command.version")) {
+      sender.sendMessage(helpCommandFormatting("/transmute version", "Gets the version of the plugin and checks for updates."));
+    }
     if(sender.hasPermission("transmute.command.take")) {
       sender.sendMessage(helpCommandFormatting("/transmute take (amount)", "Take [amount] of held item and convert to EMC."));
     }
