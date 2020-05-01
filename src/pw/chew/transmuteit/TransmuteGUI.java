@@ -89,6 +89,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
         }
 
         if(e.getRawSlot() == 14) {
+            player.closeInventory();
             player.performCommand("discoveries");
         }
 

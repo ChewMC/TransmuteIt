@@ -27,6 +27,15 @@ import java.util.*;
 public class DiscoveriesCommand implements CommandExecutor, Listener {
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (sender instanceof Player) {
+      UUID uuid = ((Player) sender).getUniqueId();
+      List<Object> discoveries = new DataManager().discoveries(uuid);
+      List<String> strings = new ArrayList<>(discoveries.size());
+
+      if(discoveries.size() == 0) {
+        sender.sendMessage(ChatColor.RED + "You haven't discovered anything yet! Hold an item and type \"/tm learn\" or \"/tm take\" to discover an item!");
+        return true;
+      }
+
       // Initialize GUI and background
       Gui gui = new Gui(Bukkit.getPluginManager().getPlugin("TransmuteIt"), 6, "Your Discoveries");
       OutlinePane background = new OutlinePane(0, 0, 9, 6);
@@ -44,9 +53,6 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
           term.append(arg.toUpperCase());
         }
       }
-      UUID uuid = ((Player) sender).getUniqueId();
-      List<Object> discoveries = new DataManager().discoveries(uuid);
-      List<String> strings = new ArrayList<>(discoveries.size());
       for (Object object : discoveries) {
         strings.add(Objects.toString(object, null));
       }
@@ -84,7 +90,7 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
       pane.setOnClick(this::onItemClick);
       gui.addPane(pane);
 
-      //page selection
+      //page selection (only if more than 1 pane)
       StaticPane back = new StaticPane(2, 5, 1, 1);
       StaticPane forward = new StaticPane(6, 5, 1, 1);
 
@@ -115,8 +121,10 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
         gui.update();
       }), 0, 0);
 
-      gui.addPane(back);
-      gui.addPane(forward);
+      if(panes != 1) {
+        gui.addPane(back);
+        gui.addPane(forward);
+      }
 
       gui.show((HumanEntity) sender);
       // gui.initializeItems(player.getUniqueId(), args);
