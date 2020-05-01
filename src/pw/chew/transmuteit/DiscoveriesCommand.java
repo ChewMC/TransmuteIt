@@ -52,7 +52,7 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
       }
       Collections.sort(strings);
       PaginatedPane pane = new PaginatedPane(0, 0, 9, 5);
-      int panes = (int) Math.ceil((float)discoveries.size() / 32);
+      int panes = (int) Math.ceil((float)discoveries.size() / 28);
       int discovery = 0;
       for(int i = 0; i < panes; i++) {
         StaticPane pagePane = new StaticPane(1, 1, 7, 4);
