@@ -62,3 +62,4 @@ permissions:
       transmute.player: true
       transmute.player.emc.others: true
       transmute.player.discoveries.other: true
+      transmute.admin.notices: true
