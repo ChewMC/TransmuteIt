@@ -3,7 +3,6 @@ package pw.chew.transmuteit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,11 +12,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 public class TransmuteGUI implements InventoryHolder, Listener {
@@ -38,7 +37,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
         int emc = bob.getEMC(uuid, player);
         int discoveries = bob.discoveries(uuid).size();
         int totalDiscoveries = TransmuteIt.json.length();
-        inv.setItem(10, createGuiItem(Material.getMaterial("PLAYER_HEAD"), "You", ChatColor.YELLOW + "EMC: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc), ChatColor.YELLOW + "Discoveries: " + ChatColor.GREEN + discoveries + " / " + totalDiscoveries));
+        inv.setItem(10, createSkullItem(player, ChatColor.YELLOW + "EMC: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc), ChatColor.YELLOW + "Discoveries: " + ChatColor.GREEN + discoveries + " / " + totalDiscoveries));
         inv.setItem(12, createGuiItem(Material.getMaterial("PAPER"), "Help!", "Click to view help!"));
         inv.setItem(14, createGuiItem(Material.getMaterial("ENCHANTING_TABLE"), "Discoveries", "" + "Click to view your discoveries."));
         inv.setItem(16, createGuiItem(Material.getMaterial("BUCKET"), "Transmute Take", "" + "Turn items INTO EMC from your inventory!"));
@@ -50,11 +49,23 @@ public class TransmuteGUI implements InventoryHolder, Listener {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.RESET + name);
 
-        ArrayList<String> metaLore = new ArrayList<String>(Arrays.asList(lore));
+        ArrayList<String> metaLore = new ArrayList<>(Arrays.asList(lore));
 
         meta.setLore(metaLore);
         item.setItemMeta(meta);
         return item;
+    }
+
+    private ItemStack createSkullItem(Player player, String... lore) {
+        ItemStack head = new ItemStack(Material.getMaterial("PLAYER_HEAD"));
+        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
+        skullMeta.setDisplayName(ChatColor.RESET + "You");
+        ArrayList<String> metaLore = new ArrayList<>(Arrays.asList(lore));
+        skullMeta.setLore(metaLore);
+        skullMeta.setOwningPlayer(player);
+        head.setItemMeta(skullMeta);
+
+        return head;
     }
 
     // You can open the inventory with this
