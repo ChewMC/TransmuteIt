@@ -15,7 +15,7 @@ import java.io.IOException;
 public class TransmuteIt extends JavaPlugin {
   // Files & Config
   static JSONObject json;
-  FileConfiguration config;
+  static FileConfiguration config;
   static DataManager data;
   static boolean outdatedConfig = false;
 

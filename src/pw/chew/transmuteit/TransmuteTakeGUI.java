@@ -85,11 +85,17 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
 
             Material type = item.getType();
             String name = type.toString();
+
+            boolean loreAllowed = TransmuteIt.config.getBoolean("lore");
             // If it's nothing
                 // If it's something
             try {
                 DataManager bob = new DataManager();
                 int emc = TransmuteIt.json.getInt(type.toString());
+                if(!loreAllowed && item.getItemMeta().hasLore()) {
+                    player.sendMessage(ChatColor.RED + "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
+                    return;
+                }
                 int currentDurability = 0;
                 ItemMeta meta = item.getItemMeta();
                 Damageable damage;

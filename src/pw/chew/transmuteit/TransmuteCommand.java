@@ -136,6 +136,11 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
   private boolean handleTake(CommandSender sender, Player player, String[] args) {
     PlayerInventory inventory = ((Player)sender).getInventory();
     ItemStack item = inventory.getItemInMainHand();
+    boolean loreAllowed = TransmuteIt.config.getBoolean("lore");
+    if(!loreAllowed && item.getItemMeta().hasLore()) {
+      player.sendMessage(ChatColor.RED + "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
+      return true;
+    }
     Material type = item.getType();
     String name = type.toString();
     // If it's nothing
@@ -241,6 +246,11 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
   private boolean handleLearn(CommandSender sender) {
     PlayerInventory inventory = ((Player) sender).getInventory();
     ItemStack item = inventory.getItemInMainHand();
+    boolean loreAllowed = TransmuteIt.config.getBoolean("lore");
+    if(!loreAllowed && item.getItemMeta().hasLore()) {
+      sender.sendMessage(ChatColor.RED + "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
+      return true;
+    }
     Material type = item.getType();
     String name = type.toString();
     // If it's nothing
