@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 public class TransmuteTakeGUI implements InventoryHolder, Listener {
-    private Inventory inv;
+    private final Inventory inv;
 
     public TransmuteTakeGUI() {
         inv = Bukkit.createInventory(this, 9, "Click Items to Transmute");
@@ -45,7 +45,7 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.RESET + name);
 
-        ArrayList<String> metaLore = new ArrayList<String>(Arrays.asList(lore));
+        ArrayList<String> metaLore = new ArrayList<>(Arrays.asList(lore));
 
         meta.setLore(metaLore);
         item.setItemMeta(meta);

@@ -16,7 +16,6 @@ import org.bukkit.util.StringUtil;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -39,7 +38,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         if(args.length == 0) {
             if(sender.hasPermission("transmute.gui")) {
                 TransmuteGUI gui = new TransmuteGUI();
-                gui.initializeItems(player.getUniqueId(), args, player);
+                gui.initializeItems(player.getUniqueId(), player);
                 gui.openInventory(player);
                 return true;
             } else {

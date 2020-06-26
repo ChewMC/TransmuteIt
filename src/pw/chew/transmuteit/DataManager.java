@@ -19,7 +19,7 @@ public class DataManager {
     }
 
     public static File getDataFolder() {
-        File dataFolder = ((TransmuteIt)Bukkit.getPluginManager().getPlugin("TransmuteIt")).getDataFolder();
+        File dataFolder = Bukkit.getPluginManager().getPlugin("TransmuteIt").getDataFolder();
         File loc = new File(dataFolder + "/data");
         if(!loc.exists()) {
             loc.mkdirs();

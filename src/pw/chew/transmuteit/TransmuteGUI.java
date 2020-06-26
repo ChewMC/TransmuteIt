@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 public class TransmuteGUI implements InventoryHolder, Listener {
-    private Inventory inv;
+    private final Inventory inv;
 
     public TransmuteGUI() {
         inv = Bukkit.createInventory(this, 27, "TransmuteIt - Home Page (WIP)");
@@ -32,7 +32,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
     }
 
     // You can call this whenever you want to put the items in
-    public void initializeItems(UUID uuid, String args[], Player player) {
+    public void initializeItems(UUID uuid, Player player) {
         DataManager bob = new DataManager();
         int emc = bob.getEMC(uuid, player);
         int discoveries = bob.discoveries(uuid).size();
@@ -57,7 +57,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
     }
 
     private ItemStack createSkullItem(Player player, String... lore) {
-        ItemStack head = new ItemStack(Material.getMaterial("PLAYER_HEAD"));
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
         skullMeta.setDisplayName(ChatColor.RESET + "You");
         ArrayList<String> metaLore = new ArrayList<>(Arrays.asList(lore));
