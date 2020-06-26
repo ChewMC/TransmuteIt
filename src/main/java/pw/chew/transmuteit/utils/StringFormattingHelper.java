@@ -1,15 +1,25 @@
 package pw.chew.transmuteit.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StringFormattingHelper {
     // Method to convert "WORD_WORD" to "Word Word"
     public static String capitalize(String to) {
         String[] words = to.split("_");
-        String newword = "";
-        for (String word : words) {
-            String rest = word.substring(1).toLowerCase();
-            String first = word.substring(0, 1).toUpperCase();
-            newword = newword + first + rest + " ";
+        if(words.length == 0) {
+            return "";
         }
-        return newword.substring(0, newword.length()-1);
+        List<CharSequence> output = new ArrayList<>();
+        for (String word : words) {
+            if(word.length() == 0) {
+                output.add("");
+            } else {
+                String rest = word.substring(1).toLowerCase();
+                String first = word.substring(0, 1).toUpperCase();
+                output.add(first + rest);
+            }
+        }
+        return String.join(" ", output);
     }
 }

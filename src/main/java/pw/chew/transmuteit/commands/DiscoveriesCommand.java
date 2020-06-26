@@ -43,7 +43,7 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
             // Initialize GUI and background
             Gui gui = new Gui(Bukkit.getPluginManager().getPlugin("TransmuteIt"), 6, "Your Discoveries");
             OutlinePane background = new OutlinePane(0, 0, 9, 6);
-            background.addItem(createGuiItem(Material.getMaterial("BLUE_STAINED_GLASS_PANE"), ""));
+            background.addItem(createGuiItem(Material.BLUE_STAINED_GLASS_PANE, ""));
             background.setRepeat(true);
             background.setOnClick(event -> event.setCancelled(true));
             gui.addPane(background);
