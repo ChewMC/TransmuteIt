@@ -25,6 +25,8 @@ import java.net.URLConnection;
 import java.text.NumberFormat;
 import java.util.*;
 
+import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
+
 public class TransmuteCommand implements CommandExecutor, TabCompleter {
 
     // /transmute command handler.
@@ -421,18 +423,6 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         }
         Collections.sort(completions);
         return completions;
-    }
-
-    // Method to convert "WORD_WORD" to "Word Word"
-    public String capitalize(String to) {
-        String[] words = to.split("_");
-        String newword = "";
-        for (String word : words) {
-            String rest = word.substring(1).toLowerCase();
-            String first = word.substring(0, 1).toUpperCase();
-            newword = newword + first + rest + " ";
-        }
-        return newword.substring(0, newword.length()-1);
     }
 
     // The response found in /tm help or the paper in the GUI

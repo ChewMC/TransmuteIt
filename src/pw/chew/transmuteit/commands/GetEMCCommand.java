@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
+
 public class GetEMCCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
@@ -76,7 +78,7 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
             } else {
                 // If it's something
                 sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bItem Information" + ChatColor.COLOR_CHAR + "d ]--------");
-                sender.sendMessage(ChatColor.YELLOW + "Friendly Name: " + ChatColor.GREEN + new TransmuteCommand().capitalize(name));
+                sender.sendMessage(ChatColor.YELLOW + "Friendly Name: " + ChatColor.GREEN + capitalize(name));
                 sender.sendMessage(ChatColor.YELLOW + "Raw Name: " + ChatColor.GREEN + name);
                 try {
                     int emc = TransmuteIt.json.getInt(type.toString());

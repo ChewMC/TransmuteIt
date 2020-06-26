@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 
+import static pw.chew.transmuteit.utils.GuiHelper.createGuiItem;
+
 public class TransmuteGUI implements InventoryHolder, Listener {
     private final Inventory inv;
 
@@ -42,19 +44,6 @@ public class TransmuteGUI implements InventoryHolder, Listener {
         inv.setItem(12, createGuiItem(Material.getMaterial("PAPER"), "Help!", "Click to view help!"));
         inv.setItem(14, createGuiItem(Material.getMaterial("ENCHANTING_TABLE"), "Discoveries", "" + "Click to view your discoveries."));
         inv.setItem(16, createGuiItem(Material.getMaterial("BUCKET"), "Transmute Take", "" + "Turn items INTO EMC from your inventory!"));
-    }
-
-    // Nice little method to create a gui item with a custom name, and description
-    private ItemStack createGuiItem(Material material, String name, String...lore) {
-        ItemStack item = new ItemStack(material, 1);
-        ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName(ChatColor.RESET + name);
-
-        ArrayList<String> metaLore = new ArrayList<>(Arrays.asList(lore));
-
-        meta.setLore(metaLore);
-        item.setItemMeta(meta);
-        return item;
     }
 
     private ItemStack createSkullItem(Player player, String... lore) {

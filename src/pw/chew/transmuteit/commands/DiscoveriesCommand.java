@@ -26,6 +26,8 @@ import pw.chew.transmuteit.TransmuteIt;
 import java.text.NumberFormat;
 import java.util.*;
 
+import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
+
 public class DiscoveriesCommand implements CommandExecutor, Listener {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
@@ -171,20 +173,6 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
         item.setItemMeta(meta);
 
         return item;
-    }
-
-    public String capitalize(String to) {
-        if(to.equals("")) {
-            return "";
-        }
-        String[] words = to.split("_");
-        StringBuilder newword = new StringBuilder();
-        for (String word : words) {
-            String rest = word.substring(1).toLowerCase();
-            String first = word.substring(0, 1).toUpperCase();
-            newword.append(first).append(rest).append(" ");
-        }
-        return newword.toString();
     }
 
     public void onItemClick(InventoryClickEvent e) {
