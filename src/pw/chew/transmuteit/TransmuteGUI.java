@@ -13,6 +13,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import pw.chew.transmuteit.commands.TransmuteCommand;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;

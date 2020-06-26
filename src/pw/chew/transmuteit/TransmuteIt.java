@@ -7,21 +7,23 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.JSONObject;
+import pw.chew.transmuteit.commands.*;
 import pw.chew.transmuteit.expansions.TransmuteItExpansion;
+import pw.chew.transmuteit.listeners.JoinListener;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class TransmuteIt extends JavaPlugin {
     // Files & Config
-    static JSONObject json;
-    static FileConfiguration config;
-    static DataManager data;
-    static boolean outdatedConfig = false;
+    public static JSONObject json;
+    public static FileConfiguration config;
+    public static DataManager data;
+    public static boolean outdatedConfig = false;
 
     // Vault Hook
-    static Economy econ;
-    static boolean useEconomy = false;
+    public static Economy econ;
+    public static boolean useEconomy = false;
 
     // Fired when plugin is first enabled
     public void onEnable() {

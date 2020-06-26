@@ -1,4 +1,4 @@
-package pw.chew.transmuteit;
+package pw.chew.transmuteit.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,6 +14,9 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.StringUtil;
 import org.json.JSONObject;
+import pw.chew.transmuteit.DataManager;
+import pw.chew.transmuteit.TransmuteGUI;
+import pw.chew.transmuteit.TransmuteIt;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

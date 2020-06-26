@@ -1,4 +1,4 @@
-package pw.chew.transmuteit;
+package pw.chew.transmuteit.commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -12,6 +12,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.StringUtil;
+import pw.chew.transmuteit.TransmuteIt;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
