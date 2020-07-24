@@ -71,21 +71,20 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
                         int[] coord = coords(j);
                         String string = strings.get(discovery);
                         discovery++;
-                        String nameraw = string;
-                        String nameformatted = nameraw.replace("_", " ");
+                        String nameformatted = string.replace("_", " ");
                         try {
-                            int emc = TransmuteIt.json.getInt(nameraw);
+                            int emc = TransmuteIt.json.getInt(string);
                             if (search) {
-                                if (nameraw.contains(term.toString()) || nameformatted.contains(term.toString())) {
-                                    pagePane.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)), coord[0], coord[1]);
+                                if (string.contains(term.toString()) || nameformatted.contains(term.toString())) {
+                                    pagePane.addItem(createGuiItem(Material.getMaterial(string), string, "Raw Name: " + string, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)), coord[0], coord[1]);
                                 } else {
                                     j--;
                                 }
                             } else {
-                                pagePane.addItem(createGuiItem(Material.getMaterial(nameraw), nameraw, "Raw Name: " + nameraw, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)), coord[0], coord[1]);
+                                pagePane.addItem(createGuiItem(Material.getMaterial(string), string, "Raw Name: " + string, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)), coord[0], coord[1]);
                             }
                         } catch (JSONException e) {
-                            new DataManager().removeDiscovery(uuid, nameraw);
+                            new DataManager().removeDiscovery(uuid, string);
                         }
                     }
                 }

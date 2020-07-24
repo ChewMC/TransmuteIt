@@ -320,14 +320,14 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         Object[] keys = amountMap.keySet().toArray();
         Arrays.sort(keys);
         int total = 0;
-        for(int i = 0; i < keys.length; i++) {
-            String name = (String) keys[i];
+        for (Object key : keys) {
+            String name = (String) key;
             int amount = amountMap.get(name);
             try {
                 int emc = TransmuteIt.json.getInt(name);
                 sender.sendMessage(ChatColor.YELLOW + capitalize(name) + ": " + ChatColor.GREEN + NumberFormat.getInstance().format(emc * amount) + " EMC (" + NumberFormat.getInstance().format(emc) + " EMC each for " + amount + " items)");
                 total += emc * amount;
-            } catch(org.json.JSONException e) {
+            } catch (org.json.JSONException e) {
                 sender.sendMessage(ChatColor.YELLOW + capitalize(name) + ": " + ChatColor.GREEN + "No EMC Value!");
             }
         }

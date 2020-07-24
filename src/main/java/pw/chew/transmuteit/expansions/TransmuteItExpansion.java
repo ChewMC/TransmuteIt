@@ -1,13 +1,12 @@
 package pw.chew.transmuteit.expansions;
 
-import org.bukkit.OfflinePlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import pw.chew.transmuteit.DataManager;
 import pw.chew.transmuteit.TransmuteIt;
 
 public class TransmuteItExpansion extends PlaceholderExpansion {
-    private TransmuteIt plugin;
+    private final TransmuteIt plugin;
 
     /**
      * Since we register the expansion inside our own plugin, we
@@ -89,7 +88,7 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
      * <br>Since version 2.9.1 can you use OfflinePlayers in your requests.
      *
      * @param  player
-     *         A {@link org.bukkit.Player Player}.
+     *         A {@link org.bukkit Player}.
      * @param  identifier
      *         A String containing the identifier/value.
      *

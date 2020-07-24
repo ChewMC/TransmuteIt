@@ -16,7 +16,7 @@ The design is to mimic it as much as possible, as a result:
 
 ## Discrepancies from ProjectE
 
-* EMC calculations aren't smart. You can't just set the EMC value for gold ingot and expect it to auto-calculate gold blocks being ingot times 9. I'm sure it's possible, but I really don't wanna spend the time.
+* EMC calculations aren't smart. You can't just set the EMC value for a gold ingot and expect it to auto-calculate gold blocks being ingot times 9. I'm sure it's possible, but I really don't wanna spend the time.
 * It's just the transmuting, as long as you have the perms, you can transmute. No tablet, no blocks, just commands.
 * As of now, there's no "Tome of Knowledge" to unlock all the discoveries, maybe I'll add a perm for that.
 * Enchantments aren't calculated into the EMC value (yet).

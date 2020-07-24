@@ -14,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import pw.chew.transmuteit.commands.DiscoveriesCommand;
 
 import java.text.NumberFormat;
 import java.util.UUID;
