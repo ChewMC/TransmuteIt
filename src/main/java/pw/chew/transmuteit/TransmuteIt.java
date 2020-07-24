@@ -47,10 +47,10 @@ public class TransmuteIt extends JavaPlugin {
 
         // Setup Vault Hook
         if(!setupEconomy()) {
-            System.out.println("[TransmuteIt] Could not find vault (or there's no economy hooked into it), economy won't work!");
+            this.getLogger().warning("Could not find vault (or there's no economy hooked into it), economy won't work!");
             useEconomy = false;
         } else {
-            System.out.println("[TransmuteIt] Vault HOOKED! Let's get this cash!");
+            this.getLogger().info("Vault HOOKED! Let's get this cash!");
             useEconomy = config.getBoolean("economy");
         }
 
@@ -63,16 +63,15 @@ public class TransmuteIt extends JavaPlugin {
         try {
             json = data.loadEMC();
         } catch (FileNotFoundException e) {
-            System.out.println("[TransmuteIt] EMC File missing! Attempting to grab defaults from JAR.");
+            this.getLogger().info("EMC File missing! Attempting to grab defaults from JAR.");
             try {
                 data.copyFileFromJar();
                 json = data.loadEMC();
             } catch (IOException f) {
-                System.out.println("[TransmuteIt] Failed getting file! Cya!");
+                this.getLogger().severe("Failed getting file! Shutting down.");
                 this.getPluginLoader().disablePlugin(this);
             }
         }
-
 
         // Load Commands
         TransmuteCommand transmute = new TransmuteCommand();
