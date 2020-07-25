@@ -23,6 +23,7 @@ import java.util.List;
 import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
 
 public class GetEMCCommand implements CommandExecutor, TabCompleter {
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             // All this basically is just "Get the held item's name"

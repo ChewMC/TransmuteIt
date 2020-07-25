@@ -29,6 +29,7 @@ import java.util.*;
 import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
 
 public class DiscoveriesCommand implements CommandExecutor, Listener {
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             UUID uuid = ((Player) sender).getUniqueId();

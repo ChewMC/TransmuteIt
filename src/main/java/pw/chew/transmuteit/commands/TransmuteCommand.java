@@ -28,8 +28,8 @@ import java.util.*;
 import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
 
 public class TransmuteCommand implements CommandExecutor, TabCompleter {
-
     // /transmute command handler.
+    @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         // If sender is not a player
