@@ -48,7 +48,7 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
     // Check for clicks on items
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (e.getInventory().getHolder().getClass() != this.getClass()) {
+        if (e.getInventory().getHolder() != null && e.getInventory().getHolder().getClass() != this.getClass()) {
             return;
         }
         if (e.getClick().equals(ClickType.NUMBER_KEY)){
