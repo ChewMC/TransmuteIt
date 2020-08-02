@@ -141,7 +141,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         PlayerInventory inventory = ((Player)sender).getInventory();
         ItemStack item = inventory.getItemInMainHand();
         boolean loreAllowed = TransmuteIt.config.getBoolean("lore");
-        if(!loreAllowed && item.getItemMeta().hasLore()) {
+        if(!loreAllowed && item.getItemMeta() != null && item.getItemMeta().hasLore()) {
             player.sendMessage(ChatColor.RED + "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
             return true;
         }
