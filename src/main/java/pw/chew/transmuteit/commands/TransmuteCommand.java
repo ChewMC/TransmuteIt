@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import pw.chew.transmuteit.DataManager;
 import pw.chew.transmuteit.TransmuteGUI;
 import pw.chew.transmuteit.TransmuteIt;
+import pw.chew.transmuteit.TransmuteTakeGUI;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -148,8 +149,10 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         Material type = item.getType();
         String name = type.toString();
         // If it's nothing
-        if(name.equals("AIR")) {
-            sender.sendMessage("Please hold an item to transmute it!");
+        if(type == Material.AIR) {
+            TransmuteTakeGUI gui = new TransmuteTakeGUI();
+            gui.initializeItems(player.getUniqueId(), player);
+            gui.openInventory(player);
             return true;
         }
         boolean enchantments = item.getEnchantments().size() > 0;
@@ -215,8 +218,10 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
                     if (taken != takeAmount) {
                         int inStack = itemStack.getAmount();
                         if (inStack + taken <= takeAmount) {
-                            itemStack.setAmount(0);
-                            taken += inStack;
+                            if(!loreAllowed && item.getItemMeta() != null && item.getItemMeta().hasLore()) {
+                                itemStack.setAmount(0);
+                                taken += inStack;
+                            }
                         } else {
                             itemStack.setAmount(Math.abs(takeAmount - taken - inStack));
                             taken = takeAmount;
