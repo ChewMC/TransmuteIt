@@ -215,17 +215,17 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             } else {
                 int taken = 0;
                 for (ItemStack itemStack : items) {
-                    if (taken != takeAmount) {
-                        int inStack = itemStack.getAmount();
-                        if (inStack + taken <= takeAmount) {
-                            if(!loreAllowed && item.getItemMeta() != null && item.getItemMeta().hasLore()) {
-                                itemStack.setAmount(0);
-                                taken += inStack;
-                            }
-                        } else {
-                            itemStack.setAmount(Math.abs(takeAmount - taken - inStack));
-                            taken = takeAmount;
-                        }
+                    if(taken == takeAmount)
+                        continue;
+                    if(!loreAllowed && item.getItemMeta() != null && item.getItemMeta().hasLore())
+                        continue;
+                    int inStack = itemStack.getAmount();
+                    if (inStack + taken <= takeAmount) {
+                        itemStack.setAmount(0);
+                        taken += inStack;
+                    } else {
+                        itemStack.setAmount(Math.abs(takeAmount - taken - inStack));
+                        taken = takeAmount;
                     }
                 }
             }
@@ -256,14 +256,14 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         PlayerInventory inventory = ((Player) sender).getInventory();
         ItemStack item = inventory.getItemInMainHand();
         boolean loreAllowed = TransmuteIt.config.getBoolean("lore");
-        if(!loreAllowed && item.getItemMeta().hasLore()) {
+        if(!loreAllowed && item.getItemMeta() != null && item.getItemMeta().hasLore()) {
             sender.sendMessage(ChatColor.RED + "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
             return true;
         }
         Material type = item.getType();
         String name = type.toString();
         // If it's nothing
-        if (name.equals("AIR")) {
+        if (type.isAir()) {
             sender.sendMessage("Please hold an item to learn it!");
             return true;
         }
