@@ -3,6 +3,8 @@ package pw.chew.transmuteit;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,7 +45,7 @@ public class TransmuteIt extends JavaPlugin {
 
         // bStats
         int pluginId = 6819;
-        Metrics metrics = new Metrics(this, pluginId);
+        new Metrics(this, pluginId);
 
         // Setup Vault Hook
         if(!setupEconomy()) {
@@ -74,16 +76,13 @@ public class TransmuteIt extends JavaPlugin {
         }
 
         // Load Commands
-        TransmuteCommand transmute = new TransmuteCommand();
+        TransmuteCommand transmute = new TransmuteCommand(data);
 
-        this.getCommand("getemc").setExecutor(new GetEMCCommand());
-        this.getCommand("transmute").setExecutor(transmute);
-        this.getCommand("emc").setExecutor(new EMCCommand());
-        this.getCommand("setemc").setExecutor(new SetEMCCommand());
-        this.getCommand("discoveries").setExecutor(new DiscoveriesCommand());
-
-        // Load tab completes
-        this.getCommand("transmute").setTabCompleter(transmute);
+        loadCommand("getemc", new GetEMCCommand());
+        loadCommand("transmute", transmute).setTabCompleter(transmute);
+        loadCommand("emc", new EMCCommand());
+        loadCommand("setemc", new SetEMCCommand());
+        loadCommand("discoveries", new DiscoveriesCommand());
 
         // Register Events
         getServer().getPluginManager().registerEvents(new TransmuteGUI(), this);
@@ -97,6 +96,16 @@ public class TransmuteIt extends JavaPlugin {
     // Fired when plugin is disabled
     public void onDisable() {
 
+    }
+
+    public PluginCommand loadCommand(String command, CommandExecutor executor) {
+        PluginCommand pluginCommand = getCommand(command);
+        if(pluginCommand == null) {
+            getLogger().severe("Command " + command + " could not load!");
+            return null;
+        }
+        pluginCommand.setExecutor(executor);
+        return pluginCommand;
     }
 
     // Setup Vault Economy Hook
