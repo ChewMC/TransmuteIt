@@ -1,10 +1,10 @@
 name: TransmuteIt
 main: pw.chew.transmuteit.TransmuteIt
 version: 0.5.0-b${build}
-api-version: 1.15
+api-version: "1.15"
 description: It's just ProjectE Transmutation for Spigot
 author: Chewsterchew
-website: https://github.com/Chew/TransmuteIt
+website: https://github.com/ChewMC/TransmuteIt
 softdepend: [Vault, PlaceholderAPI]
 commands:
   transmute:
@@ -14,31 +14,26 @@ commands:
     usage: "Usage: /transmute"
     permission: transmute.main
     permission-message: The admins have revoked your ability to run this command!
-    default: true
   setEMC:
     description: Set the EMC value of the held item.
     usage: "Usage: /setEMC <amount>"
     permission: transmute.admin.setemc
     permission-message: The admins have revoked your ability to run this command!
-    default: op
   getEMC:
     description: Get the EMC value of the held item.
     usage: "Usage: /getEMC"
     permission: transmute.command.getemc
     permission-message: The admins have revoked your ability to run this command!
-    default: true
   emc:
     description: Get your EMC value.
     usage: "Usage: /emc"
     permission: transmute.player.emc
     permission-message: The admins have revoked your ability to run this command!
-    default: true
   discoveries:
     description: Get your discoveries.
     usage: "Usage: /discoveries"
     permission: transmute.player.discoveries
     permission-message: The admins have revoked your ability to run this command!
-    default: true
 
 permissions:
   transmute.player:
