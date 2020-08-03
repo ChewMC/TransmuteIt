@@ -29,6 +29,12 @@ import java.util.*;
 import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
 
 public class TransmuteCommand implements CommandExecutor, TabCompleter {
+    private final DataManager dataManager;
+
+    public TransmuteCommand(DataManager dataManager) {
+        this.dataManager = dataManager;
+    }
+
     // /transmute command handler.
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -58,35 +64,15 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             case "help":
                 return helpResponse(sender);
             case "get":
-                if(sender.hasPermission("transmute.command.get")) {
-                    return this.handleGet(sender, player, args);
-                } else {
-                    return missingPermissionResponse(sender, "transmute.command.get");
-                }
+                return this.handleGet(sender, player, args);
             case "take":
-                if(sender.hasPermission("transmute.command.take")) {
-                    return this.handleTake(sender, player, args);
-                } else {
-                    return missingPermissionResponse(sender, "transmute.command.take");
-                }
+                return this.handleTake(sender, player, args);
             case "learn":
-                if(sender.hasPermission("transmute.command.learn")) {
-                    return this.handleLearn(sender);
-                } else {
-                    return missingPermissionResponse(sender, "transmute.command.learn");
-                }
+                return this.handleLearn(sender);
             case "analyze":
-                if(sender.hasPermission("transmute.command.analyze")) {
-                    return this.handleAnalyze(sender);
-                } else {
-                    return missingPermissionResponse(sender, "transmute.command.analyze");
-                }
+                return this.handleAnalyze(sender);
             case "version":
-                if(sender.hasPermission("transmute.command.version")) {
-                    return this.handleVersion(sender);
-                } else {
-                    return missingPermissionResponse(sender, "transmute.command.version");
-                }
+                return this.handleVersion(sender);
             default:
                 sender.sendMessage("Invalid sub-command! Need help? Try \"/transmute help\"");
                 return true;
@@ -95,6 +81,9 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
 
     // Handle /tm get and its args.
     private boolean handleGet(CommandSender sender, Player player, String[] args) {
+        if(missingPermission(sender, "transmute.command.get")) {
+            return true;
+        }
         if (args.length < 3) {
             sender.sendMessage("This sub-command requires more arguments! Check \"/transmute help\" for more info.");
             return true;
@@ -109,8 +98,8 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if(new DataManager().discovered(uuid, name)) {
-            int emc = new DataManager().getEMC(uuid, player);
+        if(dataManager.discovered(uuid, name)) {
+            int emc = dataManager.getEMC(uuid, player);
             int value;
             try {
                 value = TransmuteIt.json.getInt(name);
@@ -126,8 +115,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             PlayerInventory inventory = player.getInventory();
             ItemStack item = new ItemStack(Material.getMaterial(name), amount);
             inventory.addItem(item);
-            DataManager bob = new DataManager();
-            bob.writeEMC(uuid, emc - (value * amount), player);
+            dataManager.writeEMC(uuid, emc - (value * amount), player);
             sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");
             sender.sendMessage(ChatColor.GREEN + "+ " + amount + " " + capitalize(name));
             sender.sendMessage(ChatColor.RED + "- " + NumberFormat.getInstance().format(amount * value) + " EMC [Total: " + NumberFormat.getInstance().format(emc - (value * amount)) + " EMC]");
@@ -139,6 +127,9 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
 
     // Handle /tm take and its args.
     private boolean handleTake(CommandSender sender, Player player, String[] args) {
+        if(missingPermission(sender, "transmute.command.take")) {
+            return true;
+        }
         PlayerInventory inventory = ((Player)sender).getInventory();
         ItemStack item = inventory.getItemInMainHand();
         boolean loreAllowed = TransmuteIt.config.getBoolean("lore");
@@ -203,7 +194,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
 
         // If it's something
         try {
-            DataManager bob = new DataManager();
+            DataManager bob = dataManager;
             int emc = TransmuteIt.json.getInt(type.toString());
             short currentDurability = item.getDurability();
             short maxDurability = type.getMaxDurability();
@@ -230,7 +221,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
                 }
             }
             UUID uuid = ((Player)sender).getUniqueId();
-            int current = new DataManager().getEMC(uuid, player);
+            int current = dataManager.getEMC(uuid, player);
             int newEMC = current + (takeAmount * emc);
             bob.writeEMC(uuid, newEMC, player);
             sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");
@@ -239,7 +230,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
                 if(bob.discoveries(uuid).size() == 0) {
                     sender.sendMessage(ChatColor.ITALIC + "" + ChatColor.COLOR_CHAR + "7Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
                 }
-                new DataManager().writeDiscovery(uuid, name);
+                dataManager.writeDiscovery(uuid, name);
             }
             sender.sendMessage(ChatColor.GREEN + "+ " + NumberFormat.getInstance().format(takeAmount * emc) + " EMC [Total: " + NumberFormat.getInstance().format(newEMC) + " EMC]");
             sender.sendMessage(ChatColor.RED + "- " + takeAmount + " " + capitalize(name));
@@ -253,6 +244,9 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
 
     // Handle /tm learn
     private boolean handleLearn(CommandSender sender) {
+        if(missingPermission(sender, "transmute.command.learn")) {
+            return true;
+        }
         PlayerInventory inventory = ((Player) sender).getInventory();
         ItemStack item = inventory.getItemInMainHand();
         boolean loreAllowed = TransmuteIt.config.getBoolean("lore");
@@ -270,7 +264,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         // If it's something
         try {
             TransmuteIt.json.getInt(type.toString());
-            DataManager bob = new DataManager();
+            DataManager bob = dataManager;
             UUID uuid = ((Player) sender).getUniqueId();
             sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");
             if (!bob.discovered(uuid, name)) {
@@ -278,7 +272,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
                 if (bob.discoveries(uuid).size() == 0) {
                     sender.sendMessage(ChatColor.COLOR_CHAR + "7" + ChatColor.ITALIC + "Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
                 }
-                new DataManager().writeDiscovery(uuid, name);
+                dataManager.writeDiscovery(uuid, name);
             } else {
                 sender.sendMessage(ChatColor.COLOR_CHAR + "cYou've already discovered " + name + "!");
             }
@@ -292,6 +286,9 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
 
     // Handle /tm analyze
     private boolean handleAnalyze(CommandSender sender) {
+        if(missingPermission(sender, "transmute.command.analyze")) {
+            return true;
+        }
         PlayerInventory inventory = ((Player) sender).getInventory();
         HashMap<String, Integer> amountMap = new HashMap<>();
         HashMap<String, Integer> emcValueMap = new HashMap<>();
@@ -341,6 +338,9 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     }
 
     public boolean handleVersion(CommandSender sender) {
+        if(missingPermission(sender, "transmute.command.version")) {
+            return true;
+        }
         Plugin plugin = Bukkit.getPluginManager().getPlugin("TransmuteIt");
         String current = plugin.getDescription().getVersion();
         String cversion = current.split("-")[0];
@@ -410,7 +410,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             commands.add("help");
             for (String complete : completes) {
-                if (sender.hasPermission("transmute.command." + complete)) {
+                if (checkCommandPermission(sender, complete)) {
                     commands.add(complete);
                 }
             }
@@ -419,7 +419,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             StringUtil.copyPartialMatches(args[1], commands, completions);
         } else if (args[0].equals("get")) {
             if(args.length == 2) {
-                List<Object> discoveries = new DataManager().discoveries(((Player)sender).getUniqueId());
+                List<Object> discoveries = dataManager.discoveries(((Player)sender).getUniqueId());
                 for (Object discovery : discoveries) {
                     commands.add(discovery.toString());
                 }
@@ -469,9 +469,15 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         return ChatColor.YELLOW + command + ChatColor.GRAY + " - " + ChatColor.GREEN + description;
     }
 
-    // Response if there's missing permissions.
-    public static boolean missingPermissionResponse(CommandSender sender, String missingo) {
-        sender.sendMessage(ChatColor.RED + "You are missing the proper permission to run this command! You need: " + ChatColor.GREEN + missingo);
+    // Query permission, notify if missing, return true/false if they have it
+    public static boolean missingPermission(CommandSender sender, String permission) {
+        if(sender.hasPermission(permission))
+            return false;
+        sender.sendMessage(ChatColor.RED + "You are missing the permission needed to run this command! You need: " + ChatColor.GREEN + permission);
         return true;
+    }
+
+    public static boolean checkCommandPermission(CommandSender sender, String command) {
+        return sender.hasPermission("transmute.command." + command);
     }
 }
