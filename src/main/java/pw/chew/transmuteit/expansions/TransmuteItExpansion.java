@@ -1,7 +1,7 @@
 package pw.chew.transmuteit.expansions;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
-import org.bukkit.entity.Player;
+import org.bukkit.OfflinePlayer;
 import pw.chew.transmuteit.DataManager;
 import pw.chew.transmuteit.TransmuteIt;
 
@@ -95,7 +95,7 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
      * @return possibly-null String of the requested identifier.
      */
     @Override
-    public String onPlaceholderRequest(Player player, String identifier){
+    public String onRequest(OfflinePlayer player, String identifier){
 
         if(player == null){
             return "";
@@ -105,7 +105,7 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
 
         // %someplugin_placeholder1%
         if(identifier.equals("emc")){
-            int emc = bob.getEMC(player.getUniqueId(), player);
+            int emc = bob.getEMC(player.getUniqueId(), player.getPlayer());
             return emc + "";
         }
 
