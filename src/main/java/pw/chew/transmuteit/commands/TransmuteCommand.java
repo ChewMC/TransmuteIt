@@ -142,7 +142,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         // If it's nothing
         if(type == Material.AIR) {
             TransmuteTakeGUI gui = new TransmuteTakeGUI();
-            gui.initializeItems(player.getUniqueId(), player);
+            gui.initializeItems();
             gui.openInventory(player);
             return true;
         }

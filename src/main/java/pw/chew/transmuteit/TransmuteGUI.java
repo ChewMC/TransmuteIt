@@ -95,7 +95,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
 
         if(e.getRawSlot() == 16) {
             TransmuteTakeGUI gui = new TransmuteTakeGUI();
-            gui.initializeItems(player.getUniqueId(), player);
+            gui.initializeItems();
             gui.openInventory(player);
         }
 

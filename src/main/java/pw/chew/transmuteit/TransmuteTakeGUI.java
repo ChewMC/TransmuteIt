@@ -34,9 +34,9 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
     }
 
     // You can call this whenever you want to put the items in
-    public void initializeItems(UUID uuid, Player player) {
+    public void initializeItems() {
         for(int i=0; i < 9; i++) {
-            inv.setItem(i, createGuiItem(Material.getMaterial("GRAY_STAINED_GLASS_PANE"), ""));
+            inv.setItem(i, createGuiItem(Material.GRAY_STAINED_GLASS_PANE, ""));
         }
     }
 
