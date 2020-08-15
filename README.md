@@ -29,4 +29,4 @@ I appreciate any and all feedback. Make sure to leave it on the [Issues tab](htt
 
 ## Builds
 
-Dev builds are occasionally on my [Jenkins server](https://jenkins.chew.pw/job/TransmuteIt/). The most stable builds are on the [SpigotMC resource page](https://www.spigotmc.org/resources/transmuteit.76287/). If you do use the builds, make sure to stay as up to date as possible! It is also available on [Bukkit](https://dev.bukkit.org/projects/transmuteit).
+Dev builds are occasionally on my [Jenkins server](https://jenkins.chew.pw/job/ChewMC/job/TransmuteIt/). The most stable builds are on the [SpigotMC resource page](https://www.spigotmc.org/resources/transmuteit.76287/). If you do use the builds, make sure to stay as up to date as possible! It is also available on [Bukkit](https://dev.bukkit.org/projects/transmuteit).
