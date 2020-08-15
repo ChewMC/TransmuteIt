@@ -35,9 +35,11 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
 
     // You can call this whenever you want to put the items in
     public void initializeItems() {
-        for(int i=0; i < 9; i++) {
+        for(int i=0; i < 8; i++) {
             inv.setItem(i, createGuiItem(Material.GRAY_STAINED_GLASS_PANE, ""));
         }
+        // Setting return button
+        inv.setItem(8, createGuiItem(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Return", ChatColor.RED + "Click to return to the main menu."));
     }
 
     // You can open the inventory with this
@@ -59,9 +61,19 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
         Player player = (Player) e.getWhoClicked();
         ItemStack clickedItem = e.getCurrentItem();
         PlayerInventory inventory = player.getInventory();
+        ItemStack returnButton = createGuiItem(Material.RED_STAINED_GLASS_PANE, ChatColor.RED + "Return", ChatColor.RED + "Click to return to the main menu.");
 
         // verify current item is not null
         if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
+
+        // Verify if clicked item is the return button
+        if (clickedItem.equals(returnButton)) {
+            player.closeInventory();
+            TransmuteGUI mainMenu = new TransmuteGUI();
+            mainMenu.initializeItems(player.getUniqueId(), player);
+            mainMenu.openInventory(player);
+            return;
+        }
 
         int selectedItem = e.getRawSlot();
         if(selectedItem > 8) {
