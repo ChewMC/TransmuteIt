@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import static pw.chew.transmuteit.utils.I18n.tl;
 import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
 
 public class GetEMCCommand implements CommandExecutor, TabCompleter {
@@ -52,7 +53,7 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
                 try {
                     type = Material.getMaterial(args[0].toUpperCase());
                 } catch(IllegalArgumentException e) {
-                    sender.sendMessage(ChatColor.RED + "An item with the name \"" + args[0].toUpperCase() + "\" does not exist!");
+                    sender.sendMessage(ChatColor.RED + tl("no_item_exist").replace("%{name}", args[0].toUpperCase()));
                     return true;
                 }
             }
@@ -61,7 +62,7 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
             try {
                 inventoryItems = inventory.all(type);
             } catch(IllegalArgumentException e) {
-                sender.sendMessage(ChatColor.RED + "An item with the name \"" + args[0].toUpperCase() + "\" does not exist!");
+                sender.sendMessage(ChatColor.RED + tl("no_item_exist").replace("%{name}", args[0].toUpperCase()));
                 return true;
             }
             ItemStack[] inventoryItemsThanks = inventoryItems.values().toArray(new ItemStack[0]);
@@ -75,34 +76,34 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
             String name = type.toString();
             // If it's nothing
             if(name.equals("AIR")) {
-                sender.sendMessage(ChatColor.RED + "Please hold an item to find its EMC value!");
+                sender.sendMessage(ChatColor.RED + tl("hold_item_please"));
             } else {
                 // If it's something
-                sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bItem Information" + ChatColor.COLOR_CHAR + "d ]--------");
-                sender.sendMessage(ChatColor.YELLOW + "Friendly Name: " + ChatColor.GREEN + capitalize(name));
-                sender.sendMessage(ChatColor.YELLOW + "Raw Name: " + ChatColor.GREEN + name);
+                sender.sendMessage(ChatColor.LIGHT_PURPLE + "--------[ " + ChatColor.AQUA + tl("item_information") + ChatColor.LIGHT_PURPLE + " ]--------");
+                sender.sendMessage(ChatColor.YELLOW + tl("friendly_name") + ": " + ChatColor.GREEN + capitalize(name));
+                sender.sendMessage(ChatColor.YELLOW + tl("raw_name") + ": " + ChatColor.GREEN + name);
                 try {
                     int emc = TransmuteIt.json.getInt(type.toString());
                     int normal_emc = emc;
                     if(maxDurability > 0 && !arg) {
                         emc = (int)((double)emc * (((double)maxDurability-(double)currentDurability)/(double)maxDurability));
                     }
-                    sender.sendMessage(ChatColor.YELLOW + "Single EMC Value: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc));
+                    sender.sendMessage(ChatColor.YELLOW + tl("single_emc_value") + ": " + ChatColor.GREEN + NumberFormat.getInstance().format(emc));
                     if(!arg) {
-                        sender.sendMessage(ChatColor.YELLOW + "Hand EMC Value: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc * amount) + " (for " + amount + " items)");
+                        sender.sendMessage(ChatColor.YELLOW + tl("hand_emc_value") + ": " + ChatColor.GREEN + NumberFormat.getInstance().format(emc * amount) + " (for " + amount + " items)");
                     }
                     if(inventoryAmount > 0) {
-                        sender.sendMessage(ChatColor.YELLOW + "Inventory EMC Value: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc * inventoryAmount) + " (for " + inventoryAmount + " items)");
+                        sender.sendMessage(ChatColor.YELLOW + tl("inventory_emc_value") + ": " + ChatColor.GREEN + NumberFormat.getInstance().format(emc * inventoryAmount) + " (for " + inventoryAmount + " items)");
                     }
                     // If there's no JSON file or it's not IN the JSON file
                 } catch(org.json.JSONException e) {
-                    sender.sendMessage(ChatColor.YELLOW + "EMC Value: " + ChatColor.GREEN + "None!");
+                    sender.sendMessage(ChatColor.YELLOW + tl("emc_value") + ": " + ChatColor.GREEN + tl("none"));
                 }
             }
 
         } else {
             // Sorry Jimbo, Players only!
-            sender.sendMessage("[TransmuteIt] Only players may run this command.");
+            sender.sendMessage("[TransmuteIt] " + tl("only_players"));
         }
 
         // If the player (or console) uses our command correctly, we can return true

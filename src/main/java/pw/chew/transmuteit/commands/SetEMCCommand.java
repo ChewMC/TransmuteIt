@@ -9,13 +9,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import pw.chew.transmuteit.TransmuteIt;
 
+import static pw.chew.transmuteit.utils.I18n.tl;
+
 public class SetEMCCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
 
             if(args.length == 0) {
-                sender.sendMessage("Please enter a value! (If you intend to clear the EMC, put 0)");
+                sender.sendMessage(tl("enter_value"));
                 return true;
             }
 
@@ -30,27 +32,27 @@ public class SetEMCCommand implements CommandExecutor {
             String name = type.toString();
             // If it's nothing
             if(name.equals("AIR")) {
-                sender.sendMessage("Please hold an item to set its EMC value!");
+                sender.sendMessage(tl("hold_item_set"));
             } else {
                 // If it's something
                 try {
                     if(input > 0) {
                         TransmuteIt.json.put(name, input);
-                        sender.sendMessage("Item " + name + "'s EMC Value has been set to " + input);
+                        sender.sendMessage(tl("item_emc_set").replace("%{name}", name).replace("%{value}", "" + input));
                     } else {
                         TransmuteIt.json.remove(name);
-                        sender.sendMessage("Item " + name + "'s EMC Value has been removed");
+                        sender.sendMessage(tl("emc_removed").replace("%{name}", name));
                     }
                     TransmuteIt.data.writeToEMCFile();
                     // If there's no JSON file or it's not IN the JSON file
                 } catch(org.json.JSONException e) {
-                    sender.sendMessage("That item is " + amount + " of " + name + ". It has no set EMC value!");
+                    sender.sendMessage(tl("that_item_is").replace("%{amount}", amount + "").replace("%{name}", name));
                 }
             }
 
         } else {
             // Sorry Jimbo, Players only!
-            sender.sendMessage("[TransmuteIt] Only players may run this command.");
+            sender.sendMessage("[TransmuteIt] " + tl("only_players"));
         }
 
         // If the player (or console) uses our command correctly, we can return true

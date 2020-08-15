@@ -1,6 +1,6 @@
 /*
-This file is originally from EssentialsX.
-Code: https://github.com/EssentialsX/Essentials/blob/2.x/Essentials/src/com/earth2me/essentials/I18n.java
+This file is originally from EssentialsX and has been modified for use in this plugin.
+Original Source: https://github.com/EssentialsX/Essentials/blob/a09df9b/Essentials/src/com/earth2me/essentials/I18n.java
  */
 
 package pw.chew.transmuteit.utils;
