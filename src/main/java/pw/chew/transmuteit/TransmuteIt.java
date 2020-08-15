@@ -37,6 +37,7 @@ public class TransmuteIt extends JavaPlugin {
             outdatedConfig = true;
         }
         config.addDefault("lore", true);
+        config.addDefault("lang",  "en");
         config.options().copyDefaults(true);
         saveDefaultConfig();
 

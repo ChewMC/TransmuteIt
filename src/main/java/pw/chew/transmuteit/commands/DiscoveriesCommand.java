@@ -22,6 +22,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.json.JSONException;
 import pw.chew.transmuteit.DataManager;
 import pw.chew.transmuteit.TransmuteIt;
+import pw.chew.transmuteit.utils.I18n;
 
 import java.text.NumberFormat;
 import java.util.*;
@@ -37,7 +38,7 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
             List<String> strings = new ArrayList<>(discoveries.size());
 
             if(discoveries.size() == 0) {
-                sender.sendMessage(ChatColor.RED + "You haven't discovered anything yet! Hold an item and type \"/tm learn\" or \"/tm take\" to discover an item!");
+                sender.sendMessage(ChatColor.RED + I18n.tl("no_discoveries"));
                 return true;
             }
 
@@ -77,12 +78,12 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
                             int emc = TransmuteIt.json.getInt(string);
                             if (search) {
                                 if (string.contains(term.toString()) || nameformatted.contains(term.toString())) {
-                                    pagePane.addItem(createGuiItem(Material.getMaterial(string), string, "Raw Name: " + string, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)), coord[0], coord[1]);
+                                    pagePane.addItem(createGuiItem(Material.getMaterial(string), string, I18n.tl("raw_name") + ": " + string, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)), coord[0], coord[1]);
                                 } else {
                                     j--;
                                 }
                             } else {
-                                pagePane.addItem(createGuiItem(Material.getMaterial(string), string, "Raw Name: " + string, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)), coord[0], coord[1]);
+                                pagePane.addItem(createGuiItem(Material.getMaterial(string), string, I18n.tl("raw_name") + ": " + string, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)), coord[0], coord[1]);
                             }
                         } catch (JSONException e) {
                             new DataManager().removeDiscovery(uuid, string);
@@ -98,8 +99,8 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
             StaticPane back = new StaticPane(2, 5, 1, 1);
             StaticPane forward = new StaticPane(6, 5, 1, 1);
 
-            ItemStack backArrow = createItemStack(Material.getMaterial("ARROW"), "Back");
-            ItemStack nextArrow = createItemStack(Material.getMaterial("ARROW"), "Next");
+            ItemStack backArrow = createItemStack(Material.getMaterial("ARROW"), I18n.tl("back"));
+            ItemStack nextArrow = createItemStack(Material.getMaterial("ARROW"), I18n.tl("next"));
 
             back.addItem(new GuiItem(backArrow, event -> {
                 pane.setPage(pane.getPage() - 1);
@@ -134,7 +135,7 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
             // gui.initializeItems(player.getUniqueId(), args);
             // gui.openInventory(player);
         } else {
-            sender.sendMessage("[TransmuteIt] Only players may run this command.");
+            sender.sendMessage("[TransmuteIt] " + I18n.tl("only_players"));
         }
 
         // If the player (or console) uses our command correct, we can return true
@@ -205,11 +206,11 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
             try {
                 value = TransmuteIt.json.getInt(name);
             } catch(org.json.JSONException f) {
-                player.sendMessage("This item no longer has an EMC value!");
+                player.sendMessage(I18n.tl("emc_no_longer"));
                 return;
             }
             if((value * amount) > emc) {
-                player.sendMessage("You don't have enough EMC!");
+                player.sendMessage(I18n.tl("not_enough_emc"));
                 return;
             }
 
@@ -218,20 +219,20 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
             inventory.addItem(item);
             DataManager bob = new DataManager();
             bob.writeEMC(uuid, emc - (value * amount), player);
-            player.sendMessage("Successfully transmuted " + (value * amount) + " EMC into " + amount + " " + name);
+            player.sendMessage(I18n.tl("successfully_transmuted").replace("%{emc}", "" + (value * amount)).replace("%{amount}", amount + "").replace("%{name}", name));
         } else {
             try {
                 DataManager bob = new DataManager();
                 if(!bob.discovered(uuid, name)) {
-                    player.sendMessage("You've discovered " + name + "!");
+                    player.sendMessage(I18n.tl("youve_discovered").replace("%{name}", name));
                     if(bob.discoveries(uuid).size() == 0) {
-                        player.sendMessage("Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
+                        player.sendMessage(I18n.tl("now_you_can_run").replace("%{name}", name));
                     }
                     new DataManager().writeDiscovery(uuid, name);
                 }
                 // If there's no JSON file or it's not IN the JSON file
             } catch(org.json.JSONException f) {
-                player.sendMessage("This item has no set EMC value!");
+                player.sendMessage(I18n.tl("no_set_emc"));
             }
         }
     }
