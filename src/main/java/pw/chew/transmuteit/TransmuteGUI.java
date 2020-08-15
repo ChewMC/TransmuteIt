@@ -43,6 +43,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
         inv.setItem(12, createGuiItem(Material.getMaterial("PAPER"), "Help!", "Click to view help!"));
         inv.setItem(14, createGuiItem(Material.getMaterial("ENCHANTING_TABLE"), "Discoveries", "" + "Click to view your discoveries."));
         inv.setItem(16, createGuiItem(Material.getMaterial("BUCKET"), "Transmute Take", "" + "Turn items INTO EMC from your inventory!"));
+        inv.setItem(26, createGuiItem(Material.getMaterial("BARRIER"), ChatColor.RED + "Close", ChatColor.RED + "Click to close the GUI."));
     }
 
     private ItemStack createSkullItem(Player player, String... lore) {
@@ -97,6 +98,10 @@ public class TransmuteGUI implements InventoryHolder, Listener {
             TransmuteTakeGUI gui = new TransmuteTakeGUI();
             gui.initializeItems();
             gui.openInventory(player);
+        }
+
+        if(e.getRawSlot() == 26) {
+            player.closeInventory();
         }
 
 
