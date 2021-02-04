@@ -373,7 +373,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     public String[] getLatestVersion() {
         try {
             // We're connecting to TransmuteIt's Jenkins REST api
-            URL url = new URL("https://jenkins.chew.pw/job/TransmuteIt/lastSuccessfulBuild/api/json");
+            URL url = new URL("https://jenkins.chew.pw/job/ChewMC/job/TransmuteIt/lastSuccessfulBuild/api/json");
             // Creating a connection
             URLConnection request = url.openConnection();
             request.setRequestProperty("User-Agent", "TransmuteIt Itself owo");
