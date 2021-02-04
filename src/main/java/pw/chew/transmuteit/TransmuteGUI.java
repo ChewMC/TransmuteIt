@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -25,7 +24,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
     private final Inventory inv;
 
     public TransmuteGUI() {
-        inv = Bukkit.createInventory(this, 27, "TransmuteIt - Home Page (WIP)");
+        inv = Bukkit.createInventory(this, 27, "TransmuteIt - Home Page");
     }
 
     @Override
@@ -40,10 +39,10 @@ public class TransmuteGUI implements InventoryHolder, Listener {
         int discoveries = bob.discoveries(uuid).size();
         int totalDiscoveries = TransmuteIt.json.length();
         inv.setItem(10, createSkullItem(player, ChatColor.YELLOW + "EMC: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc), ChatColor.YELLOW + "Discoveries: " + ChatColor.GREEN + discoveries + " / " + totalDiscoveries));
-        inv.setItem(12, createGuiItem(Material.getMaterial("PAPER"), "Help!", "Click to view help!"));
-        inv.setItem(14, createGuiItem(Material.getMaterial("ENCHANTING_TABLE"), "Discoveries", "" + "Click to view your discoveries."));
-        inv.setItem(16, createGuiItem(Material.getMaterial("BUCKET"), "Transmute Take", "" + "Turn items INTO EMC from your inventory!"));
-        inv.setItem(26, createGuiItem(Material.getMaterial("BARRIER"), ChatColor.RED + "Close", ChatColor.RED + "Click to close the GUI."));
+        inv.setItem(12, createGuiItem(Material.PAPER, "Help!", "Click to view help!"));
+        inv.setItem(14, createGuiItem(Material.ENCHANTING_TABLE, "Discoveries", "" + "Click to view your discoveries."));
+        inv.setItem(16, createGuiItem(Material.BUCKET, "Transmute Take", "" + "Turn items INTO EMC from your inventory!"));
+        inv.setItem(26, createGuiItem(Material.BARRIER, ChatColor.RED + "Close", ChatColor.RED + "Click to close the GUI."));
     }
 
     private ItemStack createSkullItem(Player player, String... lore) {
@@ -69,9 +68,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
         if (e.getInventory().getHolder() == null || e.getInventory().getHolder().getClass() != this.getClass()) {
             return;
         }
-        if (e.getClick().equals(ClickType.NUMBER_KEY)){
-            e.setCancelled(true);
-        }
+
         e.setCancelled(true);
 
         Player player = (Player) e.getWhoClicked();

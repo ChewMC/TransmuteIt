@@ -98,8 +98,8 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
             StaticPane back = new StaticPane(2, 5, 1, 1);
             StaticPane forward = new StaticPane(6, 5, 1, 1);
 
-            ItemStack backArrow = createItemStack(Material.getMaterial("ARROW"), "Back");
-            ItemStack nextArrow = createItemStack(Material.getMaterial("ARROW"), "Next");
+            ItemStack backArrow = createItemStack(Material.ARROW, "Back");
+            ItemStack nextArrow = createItemStack(Material.ARROW, "Next");
 
             back.addItem(new GuiItem(backArrow, event -> {
                 pane.setPage(pane.getPage() - 1);
