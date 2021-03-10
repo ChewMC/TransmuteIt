@@ -2,24 +2,41 @@ package pw.chew.transmuteit;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.UUID;
 
 public class DataManager {
-    static File emcFile;
+    private static File emcFile;
+    private static TransmuteIt plugin;
+    private static boolean useEconomy;
+    private static Economy econ;
+    private static JSONObject json;
 
-    public DataManager() {
-
+    public DataManager(TransmuteIt transmuteIt, boolean useEconomyConfig, Economy economy, JSONObject jsonData) {
+        plugin = transmuteIt;
+        useEconomy = useEconomyConfig;
+        econ = economy;
+        json = jsonData;
     }
 
     public static File getDataFolder() {
-        File dataFolder = Bukkit.getPluginManager().getPlugin("TransmuteIt").getDataFolder();
+        File dataFolder = plugin.getDataFolder();
         File loc = new File(dataFolder + "/data");
         if(!loc.exists()) {
             loc.mkdirs();
@@ -28,8 +45,8 @@ public class DataManager {
     }
 
     public int getEMC(UUID uuid, Player player) {
-        if(TransmuteIt.useEconomy) {
-            double emc = TransmuteIt.econ.getBalance(player);
+        if(useEconomy) {
+            double emc = econ.getBalance(player);
             return (int)emc;
         } else {
             return getData(uuid).getInt("emc");
@@ -66,7 +83,7 @@ public class DataManager {
             try {
                 copyFileFromJar(uuid);
             } catch (IOException e) {
-                System.out.println("[TransmuteIt] Unable to create EMC file! EMC will NOT save!");
+                plugin.getLogger().severe("Unable to create EMC file! EMC will NOT save!");
             }
         }
     }
@@ -122,10 +139,10 @@ public class DataManager {
     }
 
     public void writeEMC(UUID uuid, int amount, Player player) {
-        if(TransmuteIt.useEconomy) {
-            double balance = TransmuteIt.econ.getBalance(player);
-            EconomyResponse r = TransmuteIt.econ.withdrawPlayer(player, balance);
-            EconomyResponse s = TransmuteIt.econ.depositPlayer(player, amount);
+        if(useEconomy) {
+            double balance = econ.getBalance(player);
+            EconomyResponse r = econ.withdrawPlayer(player, balance);
+            EconomyResponse s = econ.depositPlayer(player, amount);
         } else {
             File userFile = new File(getDataFolder(), uuid.toString() + ".json");
             try {
@@ -135,7 +152,7 @@ public class DataManager {
                 data.write(writer);
                 writer.close();
             } catch(FileNotFoundException e) {
-                System.out.println("[TransmuteIt] Unable to write to EMC file! EMC will NOT save!");
+                plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
             }
         }
     }
@@ -150,7 +167,7 @@ public class DataManager {
             data.write(writer);
             writer.close();
         } catch(FileNotFoundException e) {
-            System.out.println("[TransmuteIt] Unable to write to EMC file! EMC will NOT save!");
+            plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
     }
 
@@ -163,7 +180,7 @@ public class DataManager {
             data.write(writer);
             writer.close();
         } catch(FileNotFoundException e) {
-            System.out.println("[TransmuteIt] Unable to write to EMC file! EMC will NOT save!");
+            plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
     }
 
@@ -176,13 +193,13 @@ public class DataManager {
             data.write(writer);
             writer.close();
         } catch(FileNotFoundException e) {
-            System.out.println("[TransmuteIt] Unable to write to EMC file! EMC will NOT save!");
+            plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
     }
 
     // Load EMC values from JSON file
     public JSONObject loadEMC() throws FileNotFoundException {
-        File dataFolder = Bukkit.getPluginManager().getPlugin("TransmuteIt").getDataFolder();
+        File dataFolder = plugin.getDataFolder();
         emcFile = new File(dataFolder, "emc.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         HashMap<String, Object> map;
@@ -194,10 +211,10 @@ public class DataManager {
     public void writeToEMCFile() {
         try {
             PrintWriter writer = new PrintWriter(emcFile);
-            TransmuteIt.json.write(writer);
+            json.write(writer);
             writer.close();
         } catch(FileNotFoundException e) {
-            System.out.println("[TransmuteIt] Unable to write to EMC file! EMC will NOT save!");
+            plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
     }
 
@@ -210,7 +227,7 @@ public class DataManager {
     // Copy default EMC values from JSON file hidden in the JAR.
     public void copyFileFromJar() throws IOException {
         String name = "/emc.json";
-        File dataFolder = Bukkit.getPluginManager().getPlugin("TransmuteIt").getDataFolder();
+        File dataFolder = plugin.getDataFolder();
         File target = new File(dataFolder, "emc.json");
         if (!target.exists()) {
             InputStream initialStream = getClass().getResourceAsStream(name);
@@ -228,7 +245,7 @@ public class DataManager {
     }
 
     public JSONObject getEMCValues() {
-        return TransmuteIt.json;
+        return json;
     }
 
     public int getAmountOfItemsWithEMC() {

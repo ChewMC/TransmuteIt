@@ -9,7 +9,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.JSONObject;
-import pw.chew.transmuteit.commands.*;
+import pw.chew.transmuteit.commands.DiscoveriesCommand;
+import pw.chew.transmuteit.commands.EMCCommand;
+import pw.chew.transmuteit.commands.GetEMCCommand;
+import pw.chew.transmuteit.commands.SetEMCCommand;
+import pw.chew.transmuteit.commands.TransmuteCommand;
 import pw.chew.transmuteit.expansions.TransmuteItExpansion;
 import pw.chew.transmuteit.listeners.JoinListener;
 
@@ -18,30 +22,30 @@ import java.io.IOException;
 
 public class TransmuteIt extends JavaPlugin {
     // Files & Config
-    public static JSONObject json;
-    public static FileConfiguration config;
-    public static DataManager data;
-    public static boolean outdatedConfig = false;
+    private static JSONObject json;
+    private static FileConfiguration config;
+    private static DataManager data;
+    private static boolean outdatedConfig = false;
 
     // Vault Hook
-    public static Economy econ;
-    public static boolean useEconomy = false;
+    private static Economy econ;
+    private static boolean useEconomy = false;
 
     // Fired when plugin is first enabled
     public void onEnable() {
         // Get and save config
         config = this.getConfig();
         config.addDefault("economy", false);
+        config.addDefault("lore", true);
         if(!config.contains("lore", true)) {
             this.getLogger().warning("Your config is outdated! Please delete your config and re-generate it.");
             outdatedConfig = true;
         }
-        config.addDefault("lore", true);
         config.options().copyDefaults(true);
         saveDefaultConfig();
 
         // Setup DataManager
-        data = new DataManager();
+        data = new DataManager(this, useEconomy, econ, json);
 
         // bStats
         int pluginId = 6819;
@@ -58,7 +62,7 @@ public class TransmuteIt extends JavaPlugin {
 
         // Set up PAPI Hook
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
-            new TransmuteItExpansion(this).register();
+            new TransmuteItExpansion(this, data).register();
         }
 
         // Load EMC
@@ -76,18 +80,18 @@ public class TransmuteIt extends JavaPlugin {
         }
 
         // Load Commands
-        TransmuteCommand transmute = new TransmuteCommand(data);
+        TransmuteCommand transmute = new TransmuteCommand(json, data, config);
 
-        loadCommand("getemc", new GetEMCCommand());
+        loadCommand("getemc", new GetEMCCommand(json));
         loadCommand("transmute", transmute).setTabCompleter(transmute);
-        loadCommand("emc", new EMCCommand());
-        loadCommand("setemc", new SetEMCCommand());
-        loadCommand("discoveries", new DiscoveriesCommand());
+        loadCommand("emc", new EMCCommand(data));
+        loadCommand("setemc", new SetEMCCommand(json, data));
+        loadCommand("discoveries", new DiscoveriesCommand(this, data, json));
 
         // Register Events
-        getServer().getPluginManager().registerEvents(new TransmuteGUI(), this);
-        getServer().getPluginManager().registerEvents(new TransmuteTakeGUI(), this);
-        getServer().getPluginManager().registerEvents(new JoinListener(), this);
+        getServer().getPluginManager().registerEvents(new TransmuteGUI(json, data, config), this);
+        getServer().getPluginManager().registerEvents(new TransmuteTakeGUI(json, data, config), this);
+        getServer().getPluginManager().registerEvents(new JoinListener(outdatedConfig), this);
 
         // Magic Time
         getLogger().info("Booted!");

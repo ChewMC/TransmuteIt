@@ -7,6 +7,7 @@ import pw.chew.transmuteit.TransmuteIt;
 
 public class TransmuteItExpansion extends PlaceholderExpansion {
     private final TransmuteIt plugin;
+    private static DataManager dataManager;
 
     /**
      * Since we register the expansion inside our own plugin, we
@@ -16,8 +17,9 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
      * @param plugin
      *        The instance of our plugin.
      */
-    public TransmuteItExpansion(TransmuteIt plugin){
+    public TransmuteItExpansion(TransmuteIt plugin, DataManager data) {
         this.plugin = plugin;
+        dataManager = data;
     }
 
     /**
@@ -101,27 +103,25 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
             return "";
         }
 
-        DataManager bob = new DataManager();
-
         // %someplugin_placeholder1%
         if(identifier.equals("emc")){
-            int emc = bob.getEMC(player.getUniqueId(), player.getPlayer());
+            int emc = dataManager.getEMC(player.getUniqueId(), player.getPlayer());
             return emc + "";
         }
 
         if(identifier.equals("discoveries")) {
-            int discoveries = bob.discoveries(player.getUniqueId()).size();
+            int discoveries = dataManager.discoveries(player.getUniqueId()).size();
             return discoveries + "";
         }
 
         if(identifier.equals("total_discoveries")) {
-            int discoveries = bob.getAmountOfItemsWithEMC();
+            int discoveries = dataManager.getAmountOfItemsWithEMC();
             return discoveries + "";
         }
 
         if(identifier.contains("discovered_")) {
             String name = identifier.split("discovered_")[1];
-            boolean discovered = bob.discovered(player.getUniqueId(), name.toUpperCase());
+            boolean discovered = dataManager.discovered(player.getUniqueId(), name.toUpperCase());
             if(discovered) {
                 return "1";
             } else {

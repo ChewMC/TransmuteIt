@@ -12,7 +12,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.StringUtil;
-import pw.chew.transmuteit.TransmuteIt;
+import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -23,6 +23,12 @@ import java.util.List;
 import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
 
 public class GetEMCCommand implements CommandExecutor, TabCompleter {
+    private static JSONObject json;
+
+    public GetEMCCommand(JSONObject jsonData) {
+        json = jsonData;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
@@ -82,7 +88,7 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
                 sender.sendMessage(ChatColor.YELLOW + "Friendly Name: " + ChatColor.GREEN + capitalize(name));
                 sender.sendMessage(ChatColor.YELLOW + "Raw Name: " + ChatColor.GREEN + name);
                 try {
-                    int emc = TransmuteIt.json.getInt(type.toString());
+                    int emc = json.getInt(type.toString());
                     int normal_emc = emc;
                     if(maxDurability > 0 && !arg) {
                         emc = (int)((double)emc * (((double)maxDurability-(double)currentDurability)/(double)maxDurability));
@@ -115,7 +121,7 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
         List<String> commands = new ArrayList<>();
 
         if (args.length == 1) {
-            String[] items = TransmuteIt.json.keySet().toArray(new String[0]);
+            String[] items = json.keySet().toArray(new String[0]);
             Collections.addAll(commands, items);
             StringUtil.copyPartialMatches(args[0], commands, completions);
         }

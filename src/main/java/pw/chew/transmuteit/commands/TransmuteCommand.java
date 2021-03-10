@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -16,7 +17,6 @@ import org.bukkit.util.StringUtil;
 import org.json.JSONObject;
 import pw.chew.transmuteit.DataManager;
 import pw.chew.transmuteit.TransmuteGUI;
-import pw.chew.transmuteit.TransmuteIt;
 import pw.chew.transmuteit.TransmuteTakeGUI;
 
 import java.io.BufferedReader;
@@ -24,15 +24,24 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
 
 public class TransmuteCommand implements CommandExecutor, TabCompleter {
-    private final DataManager dataManager;
+    private static JSONObject json;
+    private static DataManager dataManager;
+    private static FileConfiguration config;
 
-    public TransmuteCommand(DataManager dataManager) {
-        this.dataManager = dataManager;
+    public TransmuteCommand(JSONObject jsonData, DataManager data, FileConfiguration configFile) {
+        json = jsonData;
+        dataManager = data;
+        config = configFile;
     }
 
     // /transmute command handler.
@@ -49,7 +58,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         // Show GUI or /tm help, permission depending, if no ARGs are specified
         if(args.length == 0) {
             if(sender.hasPermission("transmute.gui")) {
-                TransmuteGUI gui = new TransmuteGUI();
+                TransmuteGUI gui = new TransmuteGUI(json, dataManager, config);
                 gui.initializeItems(player.getUniqueId(), player);
                 gui.openInventory(player);
                 return true;
@@ -102,7 +111,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             int emc = dataManager.getEMC(uuid, player);
             int value;
             try {
-                value = TransmuteIt.json.getInt(name);
+                value = json.getInt(name);
             } catch(org.json.JSONException e) {
                 sender.sendMessage("This item no longer has an EMC value!");
                 return true;
@@ -132,7 +141,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         }
         PlayerInventory inventory = ((Player)sender).getInventory();
         ItemStack item = inventory.getItemInMainHand();
-        boolean loreAllowed = TransmuteIt.config.getBoolean("lore");
+        boolean loreAllowed = config.getBoolean("lore");
         if(!loreAllowed && item.getItemMeta() != null && item.getItemMeta().hasLore()) {
             player.sendMessage(ChatColor.RED + "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
             return true;
@@ -141,7 +150,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         String name = type.toString();
         // If it's nothing
         if(type == Material.AIR) {
-            TransmuteTakeGUI gui = new TransmuteTakeGUI();
+            TransmuteTakeGUI gui = new TransmuteTakeGUI(json, dataManager, config);
             gui.initializeItems();
             gui.openInventory(player);
             return true;
@@ -195,7 +204,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         // If it's something
         try {
             DataManager bob = dataManager;
-            int emc = TransmuteIt.json.getInt(type.toString());
+            int emc = json.getInt(type.toString());
             short currentDurability = item.getDurability();
             short maxDurability = type.getMaxDurability();
             if(maxDurability > 0) {
@@ -249,7 +258,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         }
         PlayerInventory inventory = ((Player) sender).getInventory();
         ItemStack item = inventory.getItemInMainHand();
-        boolean loreAllowed = TransmuteIt.config.getBoolean("lore");
+        boolean loreAllowed = config.getBoolean("lore");
         if(!loreAllowed && item.getItemMeta() != null && item.getItemMeta().hasLore()) {
             sender.sendMessage(ChatColor.RED + "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
             return true;
@@ -263,7 +272,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         }
         // If it's something
         try {
-            TransmuteIt.json.getInt(type.toString());
+            json.getInt(type.toString());
             DataManager bob = dataManager;
             UUID uuid = ((Player) sender).getUniqueId();
             sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");
@@ -304,7 +313,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
                 }
                 int emc = -1;
                 try {
-                    emc = TransmuteIt.json.getInt(name);
+                    emc = json.getInt(name);
                 } catch(org.json.JSONException ignored) {
 
                 }
@@ -326,7 +335,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             String name = (String) key;
             int amount = amountMap.get(name);
             try {
-                int emc = TransmuteIt.json.getInt(name);
+                int emc = json.getInt(name);
                 sender.sendMessage(ChatColor.YELLOW + capitalize(name) + ": " + ChatColor.GREEN + NumberFormat.getInstance().format(emc * amount) + " EMC (" + NumberFormat.getInstance().format(emc) + " EMC each for " + amount + " items)");
                 total += emc * amount;
             } catch (org.json.JSONException e) {

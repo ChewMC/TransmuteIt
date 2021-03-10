@@ -7,9 +7,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import pw.chew.transmuteit.TransmuteIt;
+import org.json.JSONException;
+import org.json.JSONObject;
+import pw.chew.transmuteit.DataManager;
 
 public class SetEMCCommand implements CommandExecutor {
+    private static JSONObject json;
+    private static DataManager dataManager;
+
+    public SetEMCCommand(JSONObject jsonData, DataManager data) {
+        json = jsonData;
+        dataManager = data;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
@@ -35,15 +45,15 @@ public class SetEMCCommand implements CommandExecutor {
                 // If it's something
                 try {
                     if(input > 0) {
-                        TransmuteIt.json.put(name, input);
+                        json.put(name, input);
                         sender.sendMessage("Item " + name + "'s EMC Value has been set to " + input);
                     } else {
-                        TransmuteIt.json.remove(name);
+                        json.remove(name);
                         sender.sendMessage("Item " + name + "'s EMC Value has been removed");
                     }
-                    TransmuteIt.data.writeToEMCFile();
+                    dataManager.writeToEMCFile();
                     // If there's no JSON file or it's not IN the JSON file
-                } catch(org.json.JSONException e) {
+                } catch(JSONException e) {
                     sender.sendMessage("That item is " + amount + " of " + name + ". It has no set EMC value!");
                 }
             }

@@ -5,7 +5,6 @@ import com.github.stefvanschie.inventoryframework.GuiItem;
 import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -14,26 +13,41 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.json.JSONException;
+import org.json.JSONObject;
 import pw.chew.transmuteit.DataManager;
 import pw.chew.transmuteit.TransmuteIt;
 
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
 
 public class DiscoveriesCommand implements CommandExecutor, Listener {
+    private final TransmuteIt plugin;
+    private static DataManager dataManager;
+    private static JSONObject json;
+
+    public DiscoveriesCommand(TransmuteIt plugin, DataManager data, JSONObject jsonData) {
+        this.plugin = plugin;
+        dataManager = data;
+        json = jsonData;
+    }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             UUID uuid = ((Player) sender).getUniqueId();
-            List<Object> discoveries = new DataManager().discoveries(uuid);
+            List<Object> discoveries = dataManager.discoveries(uuid);
             List<String> strings = new ArrayList<>(discoveries.size());
 
             if(discoveries.size() == 0) {
@@ -42,7 +56,7 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
             }
 
             // Initialize GUI and background
-            Gui gui = new Gui(Bukkit.getPluginManager().getPlugin("TransmuteIt"), 6, "Your Discoveries");
+            Gui gui = new Gui(plugin, 6, "Your Discoveries");
             OutlinePane background = new OutlinePane(0, 0, 9, 6);
             background.addItem(createGuiItem(Material.BLUE_STAINED_GLASS_PANE, ""));
             background.setRepeat(true);
@@ -74,7 +88,7 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
                         discovery++;
                         String nameformatted = string.replace("_", " ");
                         try {
-                            int emc = TransmuteIt.json.getInt(string);
+                            int emc = json.getInt(string);
                             if (search) {
                                 if (string.contains(term.toString()) || nameformatted.contains(term.toString())) {
                                     pagePane.addItem(createGuiItem(Material.getMaterial(string), string, "Raw Name: " + string, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)), coord[0], coord[1]);
@@ -85,7 +99,7 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
                                 pagePane.addItem(createGuiItem(Material.getMaterial(string), string, "Raw Name: " + string, "§r§eEMC: §f" + NumberFormat.getInstance().format(emc)), coord[0], coord[1]);
                             }
                         } catch (JSONException e) {
-                            new DataManager().removeDiscovery(uuid, string);
+                            dataManager.removeDiscovery(uuid, string);
                         }
                     }
                 }
@@ -176,9 +190,6 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
     }
 
     public void onItemClick(InventoryClickEvent e) {
-        if (e.getClick().equals(ClickType.NUMBER_KEY)){
-            e.setCancelled(true);
-        }
         e.setCancelled(true);
 
         Player player = (Player) e.getWhoClicked();
@@ -188,22 +199,21 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
         if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
 
         if(!clickedItem.getItemMeta().hasLore()) {
-            e.setCancelled(true);
             return;
         }
 
         UUID uuid = player.getUniqueId();
         String name = clickedItem.getType().toString();
 
-        if(new DataManager().discovered(uuid, name)) {
-            int emc = new DataManager().getEMC(uuid, player);
+        if(dataManager.discovered(uuid, name)) {
+            int emc = dataManager.getEMC(uuid, player);
             int amount = 1;
             if(e.isShiftClick()) {
                 amount = 64;
             }
             int value;
             try {
-                value = TransmuteIt.json.getInt(name);
+                value = json.getInt(name);
             } catch(org.json.JSONException f) {
                 player.sendMessage("This item no longer has an EMC value!");
                 return;
@@ -216,21 +226,19 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
             PlayerInventory inventory = player.getInventory();
             ItemStack item = new ItemStack(Material.getMaterial(name), amount);
             inventory.addItem(item);
-            DataManager bob = new DataManager();
-            bob.writeEMC(uuid, emc - (value * amount), player);
+            dataManager.writeEMC(uuid, emc - (value * amount), player);
             player.sendMessage("Successfully transmuted " + (value * amount) + " EMC into " + amount + " " + name);
         } else {
             try {
-                DataManager bob = new DataManager();
-                if(!bob.discovered(uuid, name)) {
+                if(!dataManager.discovered(uuid, name)) {
                     player.sendMessage("You've discovered " + name + "!");
-                    if(bob.discoveries(uuid).size() == 0) {
+                    if(dataManager.discoveries(uuid).size() == 0) {
                         player.sendMessage("Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
                     }
-                    new DataManager().writeDiscovery(uuid, name);
+                    dataManager.writeDiscovery(uuid, name);
                 }
                 // If there's no JSON file or it's not IN the JSON file
-            } catch(org.json.JSONException f) {
+            } catch(JSONException f) {
                 player.sendMessage("This item has no set EMC value!");
             }
         }
