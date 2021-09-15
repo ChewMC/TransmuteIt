@@ -38,16 +38,16 @@ public class DataManager {
     public static File getDataFolder() {
         File dataFolder = plugin.getDataFolder();
         File loc = new File(dataFolder + "/data");
-        if(!loc.exists()) {
+        if (!loc.exists()) {
             loc.mkdirs();
         }
         return loc;
     }
 
     public int getEMC(UUID uuid, Player player) {
-        if(useEconomy) {
+        if (useEconomy) {
             double emc = econ.getBalance(player);
-            return (int)emc;
+            return (int) emc;
         } else {
             return getData(uuid).getInt("emc");
         }
@@ -70,7 +70,7 @@ public class DataManager {
         JSONObject bob;
         try {
             bob = new JSONObject(data.toString());
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             bob = new JSONObject("{\"emc\":0,\"discoveries\":[]}");
         }
@@ -79,7 +79,7 @@ public class DataManager {
 
     public void createDataFileIfNoneExists(UUID uuid) {
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-        if(!userFile.exists()) {
+        if (!userFile.exists()) {
             try {
                 copyFileFromJar(uuid);
             } catch (IOException e) {
@@ -116,20 +116,20 @@ public class DataManager {
         }
         try {
             writer = new PrintWriter(userFile);
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             return;
         }
         JSONObject bob;
         try {
             bob = new JSONObject(data.toString());
-        } catch(JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             bob = new JSONObject("{\"emc\":0,\"discoveries\":[]}");
         }
-        if(bob.length() < 2) {
-            if(!bob.has("emc")) {
+        if (bob.length() < 2) {
+            if (!bob.has("emc")) {
                 bob.put("emc", 0);
-            } else if(!bob.has("discoveries")){
+            } else if (!bob.has("discoveries")) {
                 Map<String, Object> discoveries = new HashMap<>();
                 bob.put("discoveries", discoveries);
             }
@@ -139,7 +139,7 @@ public class DataManager {
     }
 
     public void writeEMC(UUID uuid, int amount, Player player) {
-        if(useEconomy) {
+        if (useEconomy) {
             double balance = econ.getBalance(player);
             EconomyResponse r = econ.withdrawPlayer(player, balance);
             EconomyResponse s = econ.depositPlayer(player, amount);
@@ -151,7 +151,7 @@ public class DataManager {
                 PrintWriter writer = new PrintWriter(userFile);
                 data.write(writer);
                 writer.close();
-            } catch(FileNotFoundException e) {
+            } catch (FileNotFoundException e) {
                 plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
             }
         }
@@ -166,7 +166,7 @@ public class DataManager {
             PrintWriter writer = new PrintWriter(userFile);
             data.write(writer);
             writer.close();
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
     }
@@ -179,7 +179,7 @@ public class DataManager {
             PrintWriter writer = new PrintWriter(userFile);
             data.write(writer);
             writer.close();
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
     }
@@ -192,7 +192,7 @@ public class DataManager {
             PrintWriter writer = new PrintWriter(userFile);
             data.write(writer);
             writer.close();
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
     }
@@ -213,7 +213,7 @@ public class DataManager {
             PrintWriter writer = new PrintWriter(emcFile);
             json.write(writer);
             writer.close();
-        } catch(FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
     }
