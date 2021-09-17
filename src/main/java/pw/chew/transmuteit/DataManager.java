@@ -58,12 +58,8 @@ public class DataManager {
         prepareDataFile(uuid);
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
         StringBuilder data = new StringBuilder();
-        try {
-            Scanner scanner = new Scanner(userFile);
-            while (scanner.hasNextLine()) {
-                data.append(scanner.nextLine());
-            }
-            scanner.close();
+        try (Scanner scanner = new Scanner(userFile)) {
+            while (scanner.hasNextLine()) data.append(scanner.nextLine());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -101,39 +97,32 @@ public class DataManager {
 
     public void prepareDataFile(UUID uuid) {
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-        PrintWriter writer;
         StringBuilder data = new StringBuilder();
-        try {
-            Scanner scanner = new Scanner(userFile);
-            while (scanner.hasNextLine()) {
-                data.append(scanner.nextLine());
-            }
-            scanner.close();
+        try (Scanner scanner = new Scanner(userFile)) {
+            while (scanner.hasNextLine()) data.append(scanner.nextLine());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        try {
-            writer = new PrintWriter(userFile);
-        } catch (FileNotFoundException e) {
-            return;
-        }
-        JSONObject bob;
-        try {
-            bob = new JSONObject(data.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-            bob = new JSONObject("{\"emc\":0,\"discoveries\":[]}");
-        }
-        if (bob.length() < 2) {
-            if (!bob.has("emc")) {
-                bob.put("emc", 0);
-            } else if (!bob.has("discoveries")) {
-                Map<String, Object> discoveries = new HashMap<>();
-                bob.put("discoveries", discoveries);
+        try (PrintWriter writer = new PrintWriter(userFile)) {
+            JSONObject bob;
+            try {
+                bob = new JSONObject(data.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                bob = new JSONObject("{\"emc\":0,\"discoveries\":[]}");
             }
+            if (bob.length() < 2) {
+                if (!bob.has("emc")) {
+                    bob.put("emc", 0);
+                } else if (!bob.has("discoveries")) {
+                    Map<String, Object> discoveries = new HashMap<>();
+                    bob.put("discoveries", discoveries);
+                }
+            }
+            bob.write(writer);
+        } catch (FileNotFoundException ignored) {
+            // TODO - check
         }
-        bob.write(writer);
-        writer.close();
     }
 
     public void writeEMC(UUID uuid, int amount, Player player) {
@@ -144,12 +133,10 @@ public class DataManager {
             return;
         }
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-        try {
-            JSONObject data = getData(uuid);
-            data.put("emc", amount);
-            PrintWriter writer = new PrintWriter(userFile);
+        JSONObject data = getData(uuid);
+        data.put("emc", amount);
+        try (PrintWriter writer = new PrintWriter(userFile)) {
             data.write(writer);
-            writer.close();
         } catch (FileNotFoundException e) {
             plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
@@ -157,13 +144,10 @@ public class DataManager {
 
     public void writeEmptyDiscovery(UUID uuid) {
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-        try {
-            JSONObject data = getData(uuid);
-            Map<String, Object> discoveries = new HashMap<>();
-            data.put("discoveries", discoveries);
-            PrintWriter writer = new PrintWriter(userFile);
+        JSONObject data = getData(uuid);
+        data.put("discoveries", new HashMap<>());
+        try (PrintWriter writer = new PrintWriter(userFile)) {
             data.write(writer);
-            writer.close();
         } catch (FileNotFoundException e) {
             plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
@@ -171,12 +155,10 @@ public class DataManager {
 
     public void writeDiscovery(UUID uuid, String item) {
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-        try {
-            JSONObject data = getData(uuid);
-            data.getJSONArray("discoveries").put(item);
-            PrintWriter writer = new PrintWriter(userFile);
+        JSONObject data = getData(uuid);
+        data.getJSONArray("discoveries").put(item);
+        try (PrintWriter writer = new PrintWriter(userFile)) {
             data.write(writer);
-            writer.close();
         } catch (FileNotFoundException e) {
             plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
@@ -184,12 +166,10 @@ public class DataManager {
 
     public void removeDiscovery(UUID uuid, String item) {
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-        try {
-            JSONObject data = getData(uuid);
-            data.getJSONArray("discoveries").toList().remove(item);
-            PrintWriter writer = new PrintWriter(userFile);
+        JSONObject data = getData(uuid);
+        data.getJSONArray("discoveries").toList().remove(item);
+        try (PrintWriter writer = new PrintWriter(userFile)) {
             data.write(writer);
-            writer.close();
         } catch (FileNotFoundException e) {
             plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
@@ -207,10 +187,8 @@ public class DataManager {
     }
 
     public void writeToEMCFile() {
-        try {
-            PrintWriter writer = new PrintWriter(emcFile);
+        try (PrintWriter writer = new PrintWriter(emcFile)) {
             json.write(writer);
-            writer.close();
         } catch (FileNotFoundException e) {
             plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
