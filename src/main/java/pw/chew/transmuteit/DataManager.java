@@ -46,26 +46,14 @@ public class DataManager {
     }
 
     public JSONObject getData(UUID uuid) {
-        createDataFileIfNoneExists(uuid);
-        return prepareDataFile(uuid);
-    }
-
-    public void createDataFileIfNoneExists(UUID uuid) {
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-        if (userFile.exists()) return;
-        try {
-            copyFileFromJar(uuid);
-        } catch (IOException e) {
-            plugin.getLogger().severe("Unable to create EMC file! EMC will NOT save!");
+        if (!userFile.exists()) {
+            try {
+                copyFileFromJar(uuid);
+            } catch (IOException e) {
+                plugin.getLogger().severe("Unable to create EMC file! EMC will NOT save!");
+            }
         }
-    }
-
-    public void copyFileFromJar(UUID uuid) throws IOException {
-        copyFileFromJar(getDataFolder(), "/default.json", uuid.toString() + ".json");
-    }
-
-    public JSONObject prepareDataFile(UUID uuid) {
-        File userFile = new File(getDataFolder(), uuid.toString() + ".json");
         StringBuilder data = new StringBuilder();
         try (Scanner scanner = new Scanner(userFile)) {
             while (scanner.hasNextLine()) data.append(scanner.nextLine());
@@ -90,6 +78,10 @@ public class DataManager {
             // TODO - check
         }
         return new JSONObject(DEFAULT_EMC);
+    }
+
+    public void copyFileFromJar(UUID uuid) throws IOException {
+        copyFileFromJar(getDataFolder(), "/default.json", uuid.toString() + ".json");
     }
 
     public void writeEMC(UUID uuid, int amount, Player player) {
