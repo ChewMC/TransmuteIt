@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class DataManager {
     private static File emcFile;
@@ -124,42 +125,25 @@ public class DataManager {
             EconomyResponse s = econ.depositPlayer(player, amount);
             return;
         }
-        File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-        JSONObject data = getData(uuid);
-        data.put("emc", amount);
-        try (PrintWriter writer = new PrintWriter(userFile)) {
-            data.write(writer);
-        } catch (FileNotFoundException e) {
-            plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
-        }
+        getDataAndWrite(uuid, data -> data.put("emc", amount));
     }
 
     public void writeEmptyDiscovery(UUID uuid) {
-        File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-        JSONObject data = getData(uuid);
-        data.put("discoveries", new HashMap<>());
-        try (PrintWriter writer = new PrintWriter(userFile)) {
-            data.write(writer);
-        } catch (FileNotFoundException e) {
-            plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
-        }
+        getDataAndWrite(uuid, data -> data.put("discoveries", new HashMap<>()));
     }
 
     public void writeDiscovery(UUID uuid, String item) {
-        File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-        JSONObject data = getData(uuid);
-        data.getJSONArray("discoveries").put(item);
-        try (PrintWriter writer = new PrintWriter(userFile)) {
-            data.write(writer);
-        } catch (FileNotFoundException e) {
-            plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
-        }
+        getDataAndWrite(uuid, data -> data.getJSONArray("discoveries").put(item));
     }
 
     public void removeDiscovery(UUID uuid, String item) {
+        getDataAndWrite(uuid, data -> data.getJSONArray("discoveries").toList().remove(item));
+    }
+
+    private void getDataAndWrite(UUID uuid, Consumer<JSONObject> task) {
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
         JSONObject data = getData(uuid);
-        data.getJSONArray("discoveries").toList().remove(item);
+        task.accept(data);
         try (PrintWriter writer = new PrintWriter(userFile)) {
             data.write(writer);
         } catch (FileNotFoundException e) {
