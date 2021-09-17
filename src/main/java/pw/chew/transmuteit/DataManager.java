@@ -58,22 +58,7 @@ public class DataManager {
 
     public JSONObject getData(UUID uuid) {
         createDataFileIfNoneExists(uuid);
-        prepareDataFile(uuid);
-        File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-        StringBuilder data = new StringBuilder();
-        try (Scanner scanner = new Scanner(userFile)) {
-            while (scanner.hasNextLine()) data.append(scanner.nextLine());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        JSONObject bob;
-        try {
-            bob = new JSONObject(data.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-            bob = new JSONObject("{\"emc\":0,\"discoveries\":[]}");
-        }
-        return bob;
+        return prepareDataFile(uuid);
     }
 
     public void createDataFileIfNoneExists(UUID uuid) {
@@ -90,7 +75,7 @@ public class DataManager {
         copyFileFromJar(getDataFolder(), "/default.json", uuid.toString() + ".json");
     }
 
-    public void prepareDataFile(UUID uuid) {
+    public JSONObject prepareDataFile(UUID uuid) {
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
         StringBuilder data = new StringBuilder();
         try (Scanner scanner = new Scanner(userFile)) {
@@ -104,20 +89,18 @@ public class DataManager {
                 bob = new JSONObject(data.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
-                bob = new JSONObject("{\"emc\":0,\"discoveries\":[]}");
+                bob = new JSONObject(DEFAULT_EMC);
             }
             if (bob.length() < 2) {
-                if (!bob.has("emc")) {
-                    bob.put("emc", 0);
-                } else if (!bob.has("discoveries")) {
-                    Map<String, Object> discoveries = new HashMap<>();
-                    bob.put("discoveries", discoveries);
-                }
+                if (!bob.has("emc")) bob.put("emc", 0);
+                if (!bob.has("discoveries")) bob.put("discoveries", new HashMap<>());
             }
             bob.write(writer);
+            return bob;
         } catch (FileNotFoundException ignored) {
             // TODO - check
         }
+        return new JSONObject(DEFAULT_EMC);
     }
 
     public void writeEMC(UUID uuid, int amount, Player player) {
