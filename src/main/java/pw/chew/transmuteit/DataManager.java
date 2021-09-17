@@ -120,9 +120,7 @@ public class DataManager {
 
     public void writeEMC(UUID uuid, int amount, Player player) {
         if (useEconomy) {
-            double balance = econ.getBalance(player);
-            EconomyResponse r = econ.withdrawPlayer(player, balance);
-            EconomyResponse s = econ.depositPlayer(player, amount);
+            econ.depositPlayer(player, amount - econ.getBalance(player));
             return;
         }
         getDataAndWrite(uuid, data -> data.put("emc", amount));
