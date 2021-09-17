@@ -51,7 +51,7 @@ public class DataManager {
             try {
                 copyFileFromJar(uuid);
             } catch (IOException e) {
-                plugin.getLogger().severe("Unable to create EMC file! EMC will NOT save!");
+                plugin.getLogger().severe("Unable to create EMC file for UUID " + uuid + "! EMC will NOT save for this player!");
             }
         }
         StringBuilder data = new StringBuilder();
@@ -89,29 +89,29 @@ public class DataManager {
             econ.depositPlayer(player, amount - econ.getBalance(player));
             return;
         }
-        getDataAndWrite(uuid, data -> data.put("emc", amount));
+        getDataAndWrite(uuid, data -> data.put("emc", amount), "Setting EMC to " + amount);
     }
 
     public void writeEmptyDiscovery(UUID uuid) {
-        getDataAndWrite(uuid, data -> data.put("discoveries", new HashMap<>()));
+        getDataAndWrite(uuid, data -> data.put("discoveries", new HashMap<>()), "Emptying discoveries");
     }
 
     public void writeDiscovery(UUID uuid, String item) {
-        getDataAndWrite(uuid, data -> data.getJSONArray("discoveries").put(item));
+        getDataAndWrite(uuid, data -> data.getJSONArray("discoveries").put(item), "Adding discovery " + item);
     }
 
     public void removeDiscovery(UUID uuid, String item) {
-        getDataAndWrite(uuid, data -> data.getJSONArray("discoveries").toList().remove(item));
+        getDataAndWrite(uuid, data -> data.getJSONArray("discoveries").toList().remove(item), "Removing discovery " + item);
     }
 
-    private void getDataAndWrite(UUID uuid, Consumer<JSONObject> task) {
+    private void getDataAndWrite(UUID uuid, Consumer<JSONObject> task, String action) {
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
         JSONObject data = getData(uuid);
         task.accept(data);
         try (PrintWriter writer = new PrintWriter(userFile)) {
             data.write(writer);
         } catch (FileNotFoundException e) {
-            plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
+            plugin.getLogger().severe("Unable to write to EMC file for UUID " + uuid + "! EMC will NOT save for this player! Attempted action: " + action);
         }
     }
 
@@ -128,7 +128,7 @@ public class DataManager {
         try (PrintWriter writer = new PrintWriter(emcFile)) {
             json.write(writer);
         } catch (FileNotFoundException e) {
-            plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
+            plugin.getLogger().severe("Unable to write to the main EMC file! EMC will NOT save!");
         }
     }
 
