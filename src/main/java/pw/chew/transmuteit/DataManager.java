@@ -38,19 +38,19 @@ public class DataManager {
     public static File getDataFolder() {
         File dataFolder = plugin.getDataFolder();
         File loc = new File(dataFolder + "/data");
-        if (!loc.exists()) {
-            loc.mkdirs();
-        }
+        if (!loc.exists()) loc.mkdirs();
         return loc;
     }
 
+    /**
+     * Used to get the EMC of a given player. TODO - only require one argument
+     *
+     * @param uuid The UUID of the player being queried.
+     * @param player The player being queried.
+     * @return The amount of EMC the player has stored.
+     */
     public int getEMC(UUID uuid, Player player) {
-        if (useEconomy) {
-            double emc = econ.getBalance(player);
-            return (int) emc;
-        } else {
-            return getData(uuid).getInt("emc");
-        }
+        return useEconomy ? (int) econ.getBalance(player) : getData(uuid).getInt("emc");
     }
 
     public JSONObject getData(UUID uuid) {
@@ -79,26 +79,24 @@ public class DataManager {
 
     public void createDataFileIfNoneExists(UUID uuid) {
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-        if (!userFile.exists()) {
-            try {
-                copyFileFromJar(uuid);
-            } catch (IOException e) {
-                plugin.getLogger().severe("Unable to create EMC file! EMC will NOT save!");
-            }
+        if (userFile.exists()) return;
+        try {
+            copyFileFromJar(uuid);
+        } catch (IOException e) {
+            plugin.getLogger().severe("Unable to create EMC file! EMC will NOT save!");
         }
     }
 
     public void copyFileFromJar(UUID uuid) throws IOException {
         String name = "/default.json";
         File target = new File(getDataFolder(), uuid.toString() + ".json");
-        if (!target.exists()) {
-            InputStream initialStream = getClass().getResourceAsStream(name);
-            byte[] buffer = new byte[initialStream.available()];
-            initialStream.read(buffer);
-            FileOutputStream out = new FileOutputStream(target);
-            out.write(buffer);
-            out.close();
-        }
+        if (target.exists()) return;
+        InputStream initialStream = getClass().getResourceAsStream(name);
+        byte[] buffer = new byte[initialStream.available()];
+        initialStream.read(buffer);
+        FileOutputStream out = new FileOutputStream(target);
+        out.write(buffer);
+        out.close();
     }
 
     public void prepareDataFile(UUID uuid) {
@@ -143,17 +141,17 @@ public class DataManager {
             double balance = econ.getBalance(player);
             EconomyResponse r = econ.withdrawPlayer(player, balance);
             EconomyResponse s = econ.depositPlayer(player, amount);
-        } else {
-            File userFile = new File(getDataFolder(), uuid.toString() + ".json");
-            try {
-                JSONObject data = getData(uuid);
-                data.put("emc", amount);
-                PrintWriter writer = new PrintWriter(userFile);
-                data.write(writer);
-                writer.close();
-            } catch (FileNotFoundException e) {
-                plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
-            }
+            return;
+        }
+        File userFile = new File(getDataFolder(), uuid.toString() + ".json");
+        try {
+            JSONObject data = getData(uuid);
+            data.put("emc", amount);
+            PrintWriter writer = new PrintWriter(userFile);
+            data.write(writer);
+            writer.close();
+        } catch (FileNotFoundException e) {
+            plugin.getLogger().severe("Unable to write to EMC file! EMC will NOT save!");
         }
     }
 
@@ -229,14 +227,13 @@ public class DataManager {
         String name = "/emc.json";
         File dataFolder = plugin.getDataFolder();
         File target = new File(dataFolder, "emc.json");
-        if (!target.exists()) {
-            InputStream initialStream = getClass().getResourceAsStream(name);
-            byte[] buffer = new byte[initialStream.available()];
-            initialStream.read(buffer);
-            FileOutputStream out = new FileOutputStream(target);
-            out.write(buffer);
-            out.close();
-        }
+        if (target.exists()) return;
+        InputStream initialStream = getClass().getResourceAsStream(name);
+        byte[] buffer = new byte[initialStream.available()];
+        initialStream.read(buffer);
+        FileOutputStream out = new FileOutputStream(target);
+        out.write(buffer);
+        out.close();
     }
 
     public List<Object> discoveries(UUID uuid) {
