@@ -85,7 +85,7 @@ public class DataManager {
     }
 
     public void copyFileFromJar(UUID uuid) throws IOException {
-        copyFileFromJar("/default.json", uuid.toString() + ".json");
+        copyFileFromJar(getDataFolder(), "/default.json", uuid.toString() + ".json");
     }
 
     public void prepareDataFile(UUID uuid) {
@@ -176,11 +176,11 @@ public class DataManager {
 
     // Copy default EMC values from JSON file hidden in the JAR.
     public void copyFileFromJar() throws IOException {
-        copyFileFromJar("/emc.json", "emc.json");
+        copyFileFromJar(plugin.getDataFolder(),"emc.json", "emc.json");
     }
 
-    private void copyFileFromJar(String resource, String child) throws IOException {
-        File target = new File(getDataFolder(), child);
+    private void copyFileFromJar(File folder, String resource, String child) throws IOException {
+        File target = new File(folder, child);
         if (target.exists()) return;
         InputStream initialStream = getClass().getResourceAsStream(resource);
         byte[] buffer = new byte[initialStream.available()];
