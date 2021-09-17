@@ -29,6 +29,8 @@ public class DataManager {
     private static Economy econ;
     private static JSONObject json;
 
+    private static final String DEFAULT_EMC = "{\"emc\":0,\"discoveries\":[]}";
+
     public DataManager(TransmuteIt transmuteIt, boolean useEconomyConfig, Economy economy, JSONObject jsonData) {
         plugin = transmuteIt;
         useEconomy = useEconomyConfig;
