@@ -108,7 +108,6 @@ public class DataManager {
         try (PrintWriter writer = new PrintWriter(userFile)) {
             bob.write(writer);
         } catch (FileNotFoundException ignored) {
-            // TODO - check
         }
         // And return it!
         return bob;
