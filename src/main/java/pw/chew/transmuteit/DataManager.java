@@ -51,7 +51,8 @@ public class DataManager {
     }
 
     /**
-     * Used to get the EMC of a given player. TODO - only require one argument
+     * Used to get the EMC of a given player.
+     * TODO - only require one argument
      *
      * @param uuid The UUID of the player being queried.
      * @param player The player being queried.
