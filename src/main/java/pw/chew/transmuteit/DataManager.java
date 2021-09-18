@@ -27,7 +27,17 @@ public class DataManager {
         json = jsonData;
     }
 
+    /*
+     * GETTERS
+     */
+
+    /**
+     * An internal method for getting the data folder.
+     *
+     * @return The File object for /plugins/TransmuteIt/data
+     */
     public static File getDataFolder() {
+        // Get the main plugin data folder ("TransmuteIt")
         File dataFolder = plugin.getDataFolder();
         File loc = new File(dataFolder + "/data");
         if (!loc.exists()) loc.mkdirs();
@@ -42,19 +52,30 @@ public class DataManager {
      * @return The amount of EMC the player has stored.
      */
     public int getEMC(UUID uuid, Player player) {
+        // If using Vault, use its API, otherwise get the player's EMC from their data file
         return useEconomy ? (int) econ.getBalance(player) : getData(uuid).getInt("emc");
     }
 
+    /**
+     * Gets a player's data.
+     *
+     * @param uuid The player's UUID.
+     * @return The JSONObject representation of the player's data.
+     */
     public JSONObject getData(UUID uuid) {
+        // Get the File object representing the player's data
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
+        // If it doesn't exist, copy a default file from the main jar
         if (!userFile.exists()) {
             try {
                 copyFileFromJar(uuid);
             } catch (IOException e) {
+                // If all else fails, say the file couldn't be created and return a default EMC file
                 plugin.getLogger().severe("Unable to create EMC file for UUID " + uuid + "! EMC will NOT save for this player!");
             }
         }
         StringBuilder data = new StringBuilder();
+        // Read the file and write all data into the data string builder
         try (Scanner scanner = new Scanner(userFile)) {
             while (scanner.hasNextLine()) data.append(scanner.nextLine());
         } catch (FileNotFoundException e) {
@@ -80,34 +101,69 @@ public class DataManager {
         return new JSONObject(DEFAULT_EMC);
     }
 
+    /**
+     * Copies the default data file for individual players to a player's data file.
+     *
+     * @param uuid The UUID of the player.
+     * @throws IOException When you swear on my christian minecraft server
+     */
     public void copyFileFromJar(UUID uuid) throws IOException {
         copyFileFromJar(getDataFolder(), "/default.json", uuid.toString() + ".json");
     }
 
+    /**
+     * Writes a set amount of EMC to a player's data file. TODO - remove redundant argument
+     *
+     * @param uuid The UUID of the player.
+     * @param amount The amount to set to.
+     * @param player The player itself.
+     */
     public void writeEMC(UUID uuid, int amount, Player player) {
+        // If we're using Vault, use the vault API and take it from there.
         if (useEconomy) {
             econ.depositPlayer(player, amount - econ.getBalance(player));
             return;
         }
+        // If not, use the inbuilt method.
         getDataAndWrite(uuid, data -> data.put("emc", amount), "Setting EMC to " + amount);
     }
 
+    /**
+     * Resets a player's discoveries.
+     *
+     * @param uuid The UUID of the player.
+     */
     public void writeEmptyDiscovery(UUID uuid) {
         getDataAndWrite(uuid, data -> data.put("discoveries", new HashMap<>()), "Emptying discoveries");
     }
 
+    /**
+     * Adds a new item to a player's discoveries.
+     *
+     * @param uuid The UUID of the player.
+     * @param item The item to be discovered.
+     */
     public void writeDiscovery(UUID uuid, String item) {
         getDataAndWrite(uuid, data -> data.getJSONArray("discoveries").put(item), "Adding discovery " + item);
     }
 
+    /**
+     * Removes an item from a player's discoveries.
+     *
+     * @param uuid The UUID of the player.
+     * @param item The item to be removed.
+     */
     public void removeDiscovery(UUID uuid, String item) {
         getDataAndWrite(uuid, data -> data.getJSONArray("discoveries").toList().remove(item), "Removing discovery " + item);
     }
 
     private void getDataAndWrite(UUID uuid, Consumer<JSONObject> task, String action) {
+        // Get the player's data file.
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
         JSONObject data = getData(uuid);
+        // Run the task required/specified.
         task.accept(data);
+        // Then proceed to write the data.
         try (PrintWriter writer = new PrintWriter(userFile)) {
             data.write(writer);
         } catch (FileNotFoundException e) {
@@ -115,7 +171,9 @@ public class DataManager {
         }
     }
 
-    // Load EMC values from JSON file
+    /**
+     * Loads the EMC data for the core plugin.
+     */
     public JSONObject loadEMC() throws FileNotFoundException {
         emcFile = new File(plugin.getDataFolder(), "emc.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
