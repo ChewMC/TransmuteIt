@@ -140,7 +140,7 @@ public class DataManager {
 
     // Copy default EMC values from JSON file hidden in the JAR.
     public void copyFileFromJar() throws IOException {
-        copyFileFromJar(plugin.getDataFolder(),"emc.json", "emc.json");
+        copyFileFromJar(plugin.getDataFolder(),"/emc.json", "emc.json");
     }
 
     private void copyFileFromJar(File folder, String resource, String child) throws IOException {
