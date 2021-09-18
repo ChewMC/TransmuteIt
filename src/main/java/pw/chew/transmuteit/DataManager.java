@@ -2,6 +2,7 @@ package pw.chew.transmuteit;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.entity.Player;
 import org.json.JSONException;
@@ -77,6 +78,7 @@ public class DataManager {
             } catch (IOException e) {
                 // If all else fails, say the file couldn't be created and return a default EMC file
                 plugin.getLogger().severe("Unable to create EMC file for UUID " + uuid + "! EMC will NOT save for this player!");
+                return new JSONObject(DEFAULT_EMC);
             }
         }
         StringBuilder data = new StringBuilder();
@@ -86,24 +88,30 @@ public class DataManager {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        // The JSON object for storing the dats
+        JSONObject bob;
+        try {
+            // Attempts to load the provided data
+            bob = new JSONObject(data.toString());
+        } catch (JSONException e) {
+            // If that fails, load the default data and send an error in the console
+            plugin.getLogger().severe("Failed to load the EMC file for UUID " + uuid + "! Loading the default file...");
+            e.printStackTrace();
+            bob = new JSONObject(DEFAULT_EMC);
+        }
+        // If there's data missing from the player file, re-add it where necessary
+        if (bob.length() < 2) {
+            if (!bob.has("emc")) bob.put("emc", 0);
+            if (!bob.has("discoveries")) bob.put("discoveries", new HashMap<>());
+        }
+        // Then write it to the file
         try (PrintWriter writer = new PrintWriter(userFile)) {
-            JSONObject bob;
-            try {
-                bob = new JSONObject(data.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-                bob = new JSONObject(DEFAULT_EMC);
-            }
-            if (bob.length() < 2) {
-                if (!bob.has("emc")) bob.put("emc", 0);
-                if (!bob.has("discoveries")) bob.put("discoveries", new HashMap<>());
-            }
             bob.write(writer);
-            return bob;
         } catch (FileNotFoundException ignored) {
             // TODO - check
         }
-        return new JSONObject(DEFAULT_EMC);
+        // And return it!
+        return bob;
     }
 
     /**
