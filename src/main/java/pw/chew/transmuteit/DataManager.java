@@ -39,8 +39,13 @@ public class DataManager {
     public static File getDataFolder() {
         // Get the main plugin data folder ("TransmuteIt")
         File dataFolder = plugin.getDataFolder();
-        File loc = new File(dataFolder + "/data");
-        if (!loc.exists()) loc.mkdirs();
+        // Get the internal data folder
+        File loc = new File(dataFolder, "data");
+        // If it doesn't exist, make sure it can be created
+        if (!loc.exists()) {
+            if (!loc.mkdir()) plugin.getLogger().severe("Failed to create the data folder!");
+        }
+        // Return the folder
         return loc;
     }
 
