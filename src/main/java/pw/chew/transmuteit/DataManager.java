@@ -228,6 +228,14 @@ public class DataManager {
         copyFileFromJar(plugin.getDataFolder(), "/emc.json", "emc.json");
     }
 
+    /**
+     * Copies a default file - such as emc.json or default.json - from the jar file into the provided destination folder.
+     *
+     * @param folder The folder that the file gets copied into.
+     * @param resource The name of the internal resource to be copied.
+     * @param child The name of the file that the resource is copied to.
+     * @throws IOException Something internally goes wrong when reading/writing the file.
+     */
     private void copyFileFromJar(File folder, String resource, String child) throws IOException {
         File target = new File(folder, child);
         if (target.exists()) return;
