@@ -182,7 +182,20 @@ public class DataManager {
     public JSONObject loadEMC() throws FileNotFoundException {
         emcFile = new File(plugin.getDataFolder(), "emc.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        HashMap<String, Object> map = gson.fromJson(new FileReader(emcFile), HashMap.class);
+        HashMap<String, Object> map;
+        try {
+            map = gson.fromJson(new FileReader(emcFile), HashMap.class);
+
+        } catch (JsonSyntaxException ex) {
+            plugin.getLogger().severe("The main EMC file has a syntax error in it! Loading the default one...");
+            try {
+                copyFileFromJar();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return new JSONObject();
+            }
+            map = gson.fromJson(new FileReader(emcFile), HashMap.class);
+        }
         String gsson = gson.toJson(map);
         return new JSONObject(gsson);
     }
