@@ -233,7 +233,9 @@ public class DataManager {
         return bob.contains(item);
     }
 
-    // Copy default EMC values from JSON file hidden in the JAR.
+    /**
+     * Copy default EMC values from JSON file hidden in the JAR.
+     */
     public void copyFileFromJar() throws IOException {
         copyFileFromJar(plugin.getDataFolder(), "/emc.json", "emc.json");
     }
