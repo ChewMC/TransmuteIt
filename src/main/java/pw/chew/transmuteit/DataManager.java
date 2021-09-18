@@ -171,6 +171,13 @@ public class DataManager {
         getDataAndWrite(uuid, data -> data.getJSONArray("discoveries").toList().remove(item), "Removing discovery " + item);
     }
 
+    /**
+     * Gets and writes data to a player data file with a specified task.
+     *
+     * @param uuid The UUID of the player.
+     * @param task The task used to write data.
+     * @param action The action performed, used for debugging purposes in the event of failure.
+     */
     private void getDataAndWrite(UUID uuid, Consumer<JSONObject> task, String action) {
         // Get the player's data file.
         File userFile = new File(getDataFolder(), uuid.toString() + ".json");
