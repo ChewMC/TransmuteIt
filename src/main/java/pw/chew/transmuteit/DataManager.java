@@ -216,6 +216,9 @@ public class DataManager {
         return new JSONObject(gsson);
     }
 
+    /**
+     * Writes data to the emc.json file.
+     */
     public void writeToEMCFile() {
         try (PrintWriter writer = new PrintWriter(emcFile)) {
             json.write(writer);
