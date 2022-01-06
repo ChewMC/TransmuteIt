@@ -31,9 +31,8 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof Player player) {
             // All this basically is just "Get the held item's name"
-            Player player = (Player)sender;
             int maxDurability = 0;
             int currentDurability = 0;
             int amount = 0;

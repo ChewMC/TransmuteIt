@@ -49,12 +49,11 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         // If sender is not a player
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("[TransmuteIt] Only players may run this command.");
             return true;
         }
 
-        Player player = (Player)sender;
         // Show GUI or /tm help, permission depending, if no ARGs are specified
         if(args.length == 0) {
             if(sender.hasPermission("transmute.gui")) {
@@ -317,8 +316,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
                 } catch(org.json.JSONException ignored) {
 
                 }
-                if(item.getItemMeta() instanceof Damageable) {
-                    Damageable damage = ((Damageable) item.getItemMeta());
+                if(item.getItemMeta() instanceof Damageable damage) {
                     emcValueMap.put(name, damage.getDamage() * emc);
                 } else {
                     emcValueMap.put(name, emc);

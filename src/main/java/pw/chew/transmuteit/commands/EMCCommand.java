@@ -18,8 +18,7 @@ public class EMCCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player)sender;
+        if (sender instanceof Player player) {
             UUID uuid = player.getUniqueId();
             int emc = dataManager.getEMC(uuid, player);
             sender.sendMessage("You have " + NumberFormat.getInstance().format(emc) + " EMC!");

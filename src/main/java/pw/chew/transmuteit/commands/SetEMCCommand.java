@@ -22,7 +22,7 @@ public class SetEMCCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof Player player) {
 
             if(args.length == 0) {
                 sender.sendMessage("Please enter a value! (If you intend to clear the EMC, put 0)");
@@ -32,7 +32,6 @@ public class SetEMCCommand implements CommandExecutor {
             int input = Integer.parseInt(args[0]);
 
             // All this basically is just "Get the held item's name"
-            Player player = (Player)sender;
             PlayerInventory inventory = player.getInventory();
             ItemStack item = inventory.getItemInMainHand();
             int amount = item.getAmount();
