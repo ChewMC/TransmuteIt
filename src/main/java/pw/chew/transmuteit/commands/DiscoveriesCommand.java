@@ -1,7 +1,7 @@
 package pw.chew.transmuteit.commands;
 
-import com.github.stefvanschie.inventoryframework.Gui;
-import com.github.stefvanschie.inventoryframework.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.GuiItem;
+import com.github.stefvanschie.inventoryframework.gui.type.ChestGui;
 import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.StaticPane;
@@ -17,6 +17,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pw.chew.transmuteit.DataManager;
@@ -44,19 +45,19 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (sender instanceof Player) {
-            UUID uuid = ((Player) sender).getUniqueId();
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        if (sender instanceof Player player) {
+            UUID uuid = player.getUniqueId();
             List<Object> discoveries = dataManager.discoveries(uuid);
             List<String> strings = new ArrayList<>(discoveries.size());
 
-            if(discoveries.size() == 0) {
+            if (discoveries.isEmpty()) {
                 sender.sendMessage(ChatColor.RED + "You haven't discovered anything yet! Hold an item and type \"/tm learn\" or \"/tm take\" to discover an item!");
                 return true;
             }
 
             // Initialize GUI and background
-            Gui gui = new Gui(plugin, 6, "Your Discoveries");
+            ChestGui gui = new ChestGui(6, "Your Discoveries");
             OutlinePane background = new OutlinePane(0, 0, 9, 6);
             background.addItem(createGuiItem(Material.BLUE_STAINED_GLASS_PANE, ""));
             background.setRepeat(true);
