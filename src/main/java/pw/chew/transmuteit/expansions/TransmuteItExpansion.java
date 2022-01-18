@@ -105,7 +105,7 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
 
         // %someplugin_placeholder1%
         if(identifier.equals("emc")){
-            int emc = dataManager.getEMC(player.getUniqueId(), player.getPlayer());
+            int emc = dataManager.getEMC(player.getPlayer());
             return emc + "";
         }
 

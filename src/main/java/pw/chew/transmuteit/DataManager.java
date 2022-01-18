@@ -53,15 +53,13 @@ public class DataManager {
 
     /**
      * Used to get the EMC of a given player.
-     * TODO - only require one argument
      *
-     * @param uuid The UUID of the player being queried.
      * @param player The player being queried.
      * @return The amount of EMC the player has stored.
      */
-    public int getEMC(UUID uuid, Player player) {
+    public int getEMC(Player player) {
         // If using Vault, use its API, otherwise get the player's EMC from their data file
-        return useEconomy ? (int) econ.getBalance(player) : getData(uuid).getInt("emc");
+        return useEconomy ? (int) econ.getBalance(player) : getData(player.getUniqueId()).getInt("emc");
     }
 
     /**

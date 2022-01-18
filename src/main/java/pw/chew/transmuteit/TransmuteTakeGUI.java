@@ -119,7 +119,7 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
                 }
                 item.setAmount(0);
                 UUID uuid = player.getUniqueId();
-                int current = dataManager.getEMC(uuid, player);
+                int current = dataManager.getEMC(player);
                 int newEMC = current + (amount * emc);
                 dataManager.writeEMC(uuid, newEMC, player);
                 player.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");

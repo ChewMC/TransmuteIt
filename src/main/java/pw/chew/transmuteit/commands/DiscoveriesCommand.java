@@ -206,7 +206,7 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
         String name = clickedItem.getType().toString();
 
         if(dataManager.discovered(uuid, name)) {
-            int emc = dataManager.getEMC(uuid, player);
+            int emc = dataManager.getEMC(player);
             int amount = 1;
             if(e.isShiftClick()) {
                 amount = 64;

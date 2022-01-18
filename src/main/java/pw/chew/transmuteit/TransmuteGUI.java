@@ -42,7 +42,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
 
     // You can call this whenever you want to put the items in
     public void initializeItems(UUID uuid, Player player) {
-        int emc = dataManager.getEMC(uuid, player);
+        int emc = dataManager.getEMC(player);
         int discoveries = dataManager.discoveries(uuid).size();
         int totalDiscoveries = json.length();
         inv.setItem(10, createSkullItem(player, ChatColor.YELLOW + "EMC: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc), ChatColor.YELLOW + "Discoveries: " + ChatColor.GREEN + discoveries + " / " + totalDiscoveries));

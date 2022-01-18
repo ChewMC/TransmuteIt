@@ -255,7 +255,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         }
 
         UUID uuid = player.getUniqueId();
-        int current = dataManager.getEMC(uuid, player);
+        int current = dataManager.getEMC(player);
         long newEMC = current + emcChange;
         dataManager.writeEMC(uuid, (int) newEMC, player);
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "--------[ " + ChatColor.AQUA + "Transmuting Stats" + ChatColor.LIGHT_PURPLE + " ]--------");
