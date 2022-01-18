@@ -114,7 +114,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         }
 
         if(dataManager.discovered(uuid, name)) {
-            int emc = dataManager.getEMC(uuid, player);
+            int emc = dataManager.getEMC(player);
             int value;
             try {
                 value = json.getInt(name);
