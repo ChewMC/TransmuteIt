@@ -67,12 +67,12 @@ public class TransmuteIt extends JavaPlugin {
 
         // Load EMC
         try {
-            json = data.loadEMC();
+            data.loadEMC();
         } catch (FileNotFoundException e) {
             this.getLogger().info("EMC File missing! Attempting to grab defaults from JAR.");
             try {
                 data.copyFileFromJar();
-                json = data.loadEMC();
+                data.loadEMC();
             } catch (IOException f) {
                 this.getLogger().severe("Failed getting file! Shutting down.");
                 this.getPluginLoader().disablePlugin(this);
@@ -123,5 +123,9 @@ public class TransmuteIt extends JavaPlugin {
         }
         econ = rsp.getProvider();
         return true;
+    }
+
+    public static DataManager getDataManager() {
+        return data;
     }
 }

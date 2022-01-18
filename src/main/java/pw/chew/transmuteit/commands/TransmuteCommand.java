@@ -1,5 +1,6 @@
 package pw.chew.transmuteit.commands;
 
+import io.papermc.lib.PaperLib;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,10 +15,13 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.StringUtil;
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 import org.json.JSONObject;
 import pw.chew.transmuteit.DataManager;
 import pw.chew.transmuteit.TransmuteGUI;
 import pw.chew.transmuteit.TransmuteTakeGUI;
+import pw.chew.transmuteit.objects.TransmutableItem;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -39,7 +43,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     private static FileConfiguration config;
 
     public TransmuteCommand(JSONObject jsonData, DataManager data, FileConfiguration configFile) {
-        json = jsonData;
+        json = data.getEMCValues();
         dataManager = data;
         config = configFile;
     }
@@ -133,121 +137,135 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    // Handle /tm take and its args.
+    /**
+     * Handle /tm take and its args.
+     *
+     * @param sender The command sender
+     * @param player The player who executed this command
+     * @param args   The arguments
+     */
     private boolean handleTake(CommandSender sender, Player player, String[] args) {
-        if(missingPermission(sender, "transmute.command.take")) {
+        if (missingPermission(sender, "transmute.command.take")) {
             return true;
         }
-        PlayerInventory inventory = ((Player)sender).getInventory();
-        ItemStack item = inventory.getItemInMainHand();
+        PlayerInventory inventory = player.getInventory();
+        TransmutableItem item = new TransmutableItem(inventory.getItemInMainHand());
         boolean loreAllowed = config.getBoolean("lore");
-        if(!loreAllowed && item.getItemMeta() != null && item.getItemMeta().hasLore()) {
+        if (!loreAllowed && item.hasLore()) {
             player.sendMessage(ChatColor.RED + "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
             return true;
         }
         Material type = item.getType();
         String name = type.toString();
         // If it's nothing
-        if(type == Material.AIR) {
+        if (type.isAir()) {
             TransmuteTakeGUI gui = new TransmuteTakeGUI(json, dataManager, config);
             gui.initializeItems();
             gui.openInventory(player);
             return true;
         }
-        boolean enchantments = item.getEnchantments().size() > 0;
+
+        // Check to see if this can be transmuted
+        if (!item.hasEMC()) {
+            sender.sendMessage(ChatColor.RED + "This item has no set EMC value!");
+            return true;
+        }
+
+        boolean enchantments = item.isEnchanted();
         boolean confirm = false;
         ItemStack[] items = inventory.all(item.getType()).values().toArray(new ItemStack[0]);
         int amount = 0;
         for (ItemStack itemStack : items) {
             amount += itemStack.getAmount();
         }
-        int takeAmount;
+        int takeAmount = 0;
         boolean hand = false;
-        if(args.length >= 2) {
-            if(args[1].toLowerCase().equals("hand")) {
-                takeAmount = item.getAmount();
-                hand = true;
-            } else if(args[1].toLowerCase().equals("confirm")) {
-                takeAmount = 1;
-                confirm = true;
-            } else {
-                try {
-                    takeAmount = Integer.parseInt(args[1]);
-                } catch(NumberFormatException e) {
-                    sender.sendMessage("Invalid number input! Please enter a number!");
-                    return true;
+        switch (args.length) {
+            default -> takeAmount = amount;
+            case 2 -> {
+                if (args[1].equalsIgnoreCase("hand")) {
+                    takeAmount = item.getAmount();
+                    hand = true;
+                } else if (args[1].equalsIgnoreCase("confirm")) {
+                    takeAmount = 1;
+                    confirm = true;
+                } else {
+                    try {
+                        takeAmount = Integer.parseInt(args[1]);
+                    } catch (NumberFormatException e) {
+                        sender.sendMessage(ChatColor.RED + "Invalid number input! Please enter a number!");
+                        return true;
+                    }
                 }
             }
-        } else {
-            takeAmount = amount;
-        }
-        if(args.length >= 3) {
-            if (args[2].toLowerCase().equals("confirm")) {
-                confirm = true;
+            case 3 -> {
+                if (args[2].equalsIgnoreCase("confirm")) {
+                    confirm = true;
+                }
             }
         }
-        if(!confirm && enchantments) {
-            sender.sendMessage(ChatColor.YELLOW + "WARNING: " + ChatColor.RED + "This item has enchantments! They will NOT be calculated into the EMC, are you sure you want to transmute this? Add \"confirm\" to the command if so!");
+
+        if (!confirm && enchantments) {
+            String message = String.join(" ", Arrays.asList(
+                "This item has enchantments!",
+                (PaperLib.isPaper() ? "While EMC will be taken into account, you may not actually want to transmute this." : "They will NOT be calculated into the EMC."),
+                "Are you sure you want to transmute this?",
+                "Add \"confirm\" to the command if so!"
+            ));
+            sender.sendMessage(ChatColor.YELLOW + "WARNING: " + ChatColor.RED + message);
             return true;
         }
 
-        if(takeAmount <= 0) {
-            sender.sendMessage("Please select a value greater than 0!");
+        if (takeAmount <= 0) {
+            sender.sendMessage(ChatColor.RED + "Please select a value greater than 0!");
             return true;
         }
-        if(amount - takeAmount < 0) {
-            sender.sendMessage("You don't have enough of this item! (You only have " + amount + ")");
+
+        if (amount - takeAmount < 0) {
+            sender.sendMessage(ChatColor.RED + "You don't have enough of this item! (You only have " + amount + ")");
             return true;
         }
 
         // If it's something
-        try {
-            DataManager bob = dataManager;
-            int emc = json.getInt(type.toString());
-            short currentDurability = item.getDurability();
-            short maxDurability = type.getMaxDurability();
-            if(maxDurability > 0) {
-                emc = (int)((double)emc * (((double)maxDurability-(double)currentDurability)/(double)maxDurability));
-            }
-            if(hand) {
-                item.setAmount(0);
-            } else {
-                int taken = 0;
-                for (ItemStack itemStack : items) {
-                    if(taken == takeAmount)
-                        continue;
-                    if(!loreAllowed && item.getItemMeta() != null && item.getItemMeta().hasLore())
-                        continue;
-                    int inStack = itemStack.getAmount();
-                    if (inStack + taken <= takeAmount) {
-                        itemStack.setAmount(0);
-                        taken += inStack;
-                    } else {
-                        itemStack.setAmount(Math.abs(takeAmount - taken - inStack));
-                        taken = takeAmount;
-                    }
+        long emcChange = 0;
+        if (hand) {
+            emcChange = item.getEMC();
+            item.getItem().setAmount(0);
+        } else {
+            int taken = 0;
+            for (ItemStack itemStack : items) {
+                if (taken == takeAmount)
+                    continue;
+                if (!loreAllowed && item.hasLore())
+                    continue;
+                int inStack = itemStack.getAmount();
+                if (inStack + taken <= takeAmount) {
+                    emcChange += new TransmutableItem(itemStack).getEMC();
+                    itemStack.setAmount(0);
+                    taken += inStack;
+                } else {
+                    emcChange += new TransmutableItem(itemStack).getEMC(takeAmount);
+                    itemStack.setAmount(Math.abs(takeAmount - taken - inStack));
+                    taken = takeAmount;
                 }
             }
-            UUID uuid = ((Player)sender).getUniqueId();
-            int current = dataManager.getEMC(uuid, player);
-            int newEMC = current + (takeAmount * emc);
-            bob.writeEMC(uuid, newEMC, player);
-            sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");
-            if(!bob.discovered(uuid, name)) {
-                sender.sendMessage(ChatColor.COLOR_CHAR + "aYou've discovered " + name + "!");
-                if(bob.discoveries(uuid).size() == 0) {
-                    sender.sendMessage(ChatColor.ITALIC + "" + ChatColor.COLOR_CHAR + "7Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
-                }
-                dataManager.writeDiscovery(uuid, name);
-            }
-            sender.sendMessage(ChatColor.GREEN + "+ " + NumberFormat.getInstance().format(takeAmount * emc) + " EMC [Total: " + NumberFormat.getInstance().format(newEMC) + " EMC]");
-            sender.sendMessage(ChatColor.RED + "- " + takeAmount + " " + capitalize(name));
-            return true;
-            // If there's no JSON file or it's not IN the JSON file
-        } catch(org.json.JSONException e) {
-            sender.sendMessage("This item has no set EMC value!");
-            return true;
         }
+
+        UUID uuid = player.getUniqueId();
+        int current = dataManager.getEMC(uuid, player);
+        long newEMC = current + emcChange;
+        dataManager.writeEMC(uuid, (int) newEMC, player);
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + "--------[ " + ChatColor.AQUA + "Transmuting Stats" + ChatColor.LIGHT_PURPLE + " ]--------");
+        if (!dataManager.discovered(uuid, name)) {
+            sender.sendMessage(ChatColor.GREEN + "You've discovered " + name + "!");
+            if (dataManager.discoveries(uuid).size() == 0) {
+                sender.sendMessage(ChatColor.ITALIC + "" + ChatColor.GRAY + "Now you can run /transmute get " + name + " [amount] to get this item if you have enough EMC!");
+            }
+            dataManager.writeDiscovery(uuid, name);
+        }
+        sender.sendMessage(ChatColor.GREEN + "+ " + NumberFormat.getInstance().format(emcChange) + " EMC [Total: " + NumberFormat.getInstance().format(newEMC) + " EMC]");
+        sender.sendMessage(ChatColor.RED + "- " + takeAmount + " " + capitalize(name));
+        return true;
     }
 
     // Handle /tm learn

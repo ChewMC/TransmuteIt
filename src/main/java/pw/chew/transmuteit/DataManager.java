@@ -195,7 +195,7 @@ public class DataManager {
     /**
      * Loads the EMC data for the core plugin.
      */
-    public JSONObject loadEMC() throws FileNotFoundException {
+    public void loadEMC() throws FileNotFoundException {
         emcFile = new File(plugin.getDataFolder(), "emc.json");
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         HashMap<String, Object> map;
@@ -208,12 +208,12 @@ public class DataManager {
                 copyFileFromJar();
             } catch (IOException e) {
                 e.printStackTrace();
-                return new JSONObject();
+                json = new JSONObject();
             }
             map = gson.fromJson(new FileReader(emcFile), HashMap.class);
         }
         String gsson = gson.toJson(map);
-        return new JSONObject(gsson);
+        json = new JSONObject(gsson);
     }
 
     /**

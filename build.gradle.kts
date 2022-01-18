@@ -10,6 +10,7 @@ plugins {
     java
     `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("xyz.jpenilla.run-paper") version "1.0.6"
 }
 
 repositories {
@@ -17,7 +18,6 @@ repositories {
     mavenLocal() {
         content {
             includeGroup("org.bukkit")
-            includeGroup("org.spigotmc")
         }
     }
 
@@ -45,10 +45,11 @@ dependencies {
     implementation("org.json", "json", "20190722")
     implementation("org.bstats", "bstats-bukkit", "2.2.1")
     implementation("com.github.stefvanschie.inventoryframework", "IF", "0.10.3")
+    implementation("io.papermc", "paperlib", "1.0.7")
     compileOnly("com.github.MilkBowl", "VaultAPI", "1.7")
     compileOnly("me.clip", "placeholderapi", "2.10.8")
     compileOnly("org.jetbrains", "annotations", "22.0.0")
-    compileOnly("org.spigotmc", "spigot-api", "1.18.1-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper", "paper-api", "1.18.1-R0.1-SNAPSHOT")
 }
 
 // Set the default value to the current time as an ISO-8601 string
@@ -78,4 +79,12 @@ tasks.withType<JavaCompile>() {
 tasks.shadowJar {
     relocate("com.github.stefvanschie.inventoryframework", "pw.chew.transmuteit.inventoryframework")
     relocate("org.bstats", "pw.chew.transmuteit.bstats")
+    relocate("io.papermc.lib", "pw.chew.transmuteit.paperlib")
+    minimize()
+    archiveAppendix.set("")
+    archiveClassifier.set("")
+}
+
+tasks.runServer {
+    minecraftVersion("1.18.1")
 }
