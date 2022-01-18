@@ -23,11 +23,14 @@ import pw.chew.transmuteit.TransmuteGUI;
 import pw.chew.transmuteit.TransmuteTakeGUI;
 import pw.chew.transmuteit.objects.TransmutableItem;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -396,32 +399,22 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     }
 
     public String[] getLatestVersion() {
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest.Builder request = HttpRequest.newBuilder(URI.create("https://jenkins.chew.pw/job/ChewMC/job/TransmuteIt/lastSuccessfulBuild/api/json"))
+            .header("User-Agent", "TransmuteIt Itself owo")
+            .timeout(Duration.ofSeconds(5));
+
         try {
-            // We're connecting to TransmuteIt's Jenkins REST api
-            URL url = new URL("https://jenkins.chew.pw/job/ChewMC/job/TransmuteIt/lastSuccessfulBuild/api/json");
-            // Creating a connection
-            URLConnection request = url.openConnection();
-            request.setRequestProperty("User-Agent", "TransmuteIt Itself owo");
-            request.connect();
-
-            // Get response
-            BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-
+            HttpResponse<String> response = client.send(request.build(), handler -> HttpResponse.BodySubscribers.ofString(StandardCharsets.UTF_8));
             // Convert to a JSON object
-            JSONObject root = new JSONObject(response.toString()); // Convert the response to a json element
+            JSONObject root = new JSONObject(response.body()); // Convert the response to a json element
             String lbuild = root.getString("id");
             String lversion = root.getJSONArray("artifacts").getJSONObject(0).getString("displayPath").split("-")[1];
             return new String[]{lbuild, lversion};
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
+        } catch (IOException | InterruptedException e) {
+            // Rethrow exceptions as runtime
+            throw new RuntimeException(e.getMessage());
         }
     }
 
