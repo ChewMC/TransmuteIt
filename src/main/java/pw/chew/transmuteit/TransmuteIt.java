@@ -82,7 +82,7 @@ public class TransmuteIt extends JavaPlugin {
         // Load Commands
         TransmuteCommand transmute = new TransmuteCommand(json, data, config);
 
-        loadCommand("getemc", new GetEMCCommand(json));
+        loadCommand("getemc", new GetEMCCommand());
         loadCommand("transmute", transmute).setTabCompleter(transmute);
         loadCommand("emc", new EMCCommand(data));
         loadCommand("setemc", new SetEMCCommand(json, data));
