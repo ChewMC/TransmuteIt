@@ -16,12 +16,21 @@ The design is to mimic it as much as possible, as a result:
 
 ## Discrepancies from ProjectE
 
-* EMC calculations aren't smart. You can't just set the EMC value for a gold ingot and expect it to auto-calculate gold blocks being ingot times 9. I'm sure it's possible, but I really don't wanna spend the time.
+* EMC calculations aren't smart. You can't just set the EMC value for a gold ingot and expect it to auto-calculate gold blocks being ingot times 9. I'm sure it's possible, but I really don't want to spend the time.
 * It's just the transmuting, as long as you have the perms, you can transmute. No tablet, no blocks, just commands.
 * As of now, there's no "Tome of Knowledge" to unlock all the discoveries, maybe I'll add a perm for that.
-* Enchantments aren't calculated into the EMC value (yet).
 * Potions/Enchanted Books or other items that rely on metadata aren't tracked either. Only names so far.
 * EMC is limited to a Java int (2.1 billion), however if economy is enabled, it is limited to the Vault maximum.
+
+## Paper versus Spigot
+
+This plugin is compiled against and tested with [Paper](https://papermc.io).
+While it is compatible with Spigot, there may be some features that are missing.
+You may run into `NoSuchMethodError`s, or other issues.
+While you can report these, and they will be fixed, it's recommended to just use Paper to avoid any errors altogether.
+
+Current missing features:
+* Spigot doesn't have a `getRarity()` function on their `Enchantment` class, so enchantments are not calculated into the EMC value.
 
 ## Bugs / Feedback / Contribution
 
