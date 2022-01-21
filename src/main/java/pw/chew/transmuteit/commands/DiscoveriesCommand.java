@@ -42,10 +42,9 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
 
             // Initialize GUI and background
             ChestGui gui = new ChestGui(6, "Your Discoveries");
-            OutlinePane background = new OutlinePane(0, 0, 9, 6);
-            for (int i = 0; i < 9 * 6; i++) {
-                background.addItem(createGuiItem(Material.BLUE_STAINED_GLASS_PANE, ""));
-            }
+            OutlinePane background = new OutlinePane(0, 4, 9, 1);
+            background.addItem(createGuiItem(Material.BLUE_STAINED_GLASS_PANE, ""));
+            background.setRepeat(true);
             background.setOnClick(event -> event.setCancelled(true));
             gui.addPane(background);
 
@@ -59,12 +58,12 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
                 }
             }
             Collections.sort(discoveries);
-            PaginatedPane pane = new PaginatedPane(0, 0, 9, 5);
-            int panes = (int) Math.ceil((float)discoveries.size() / 28);
+            PaginatedPane pane = new PaginatedPane(0, 0, 9, 4);
+            int panes = (int) Math.ceil((float)discoveries.size() / 36);
             int discovery = 0;
             for(int i = 0; i < panes; i++) {
-                StaticPane pagePane = new StaticPane(1, 1, 7, 4);
-                for (int j = 0; j < 28; j++) {
+                StaticPane pagePane = new StaticPane(0, 0, 9, 4);
+                for (int j = 0; j < 36; j++) {
                     if(discovery < discoveries.size()) {
                         int[] coord = coords(j);
                         String string = discoveries.get(discovery);
@@ -125,9 +124,8 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
                 gui.addPane(forward);
             }
 
+            gui.setOnBottomClick(e -> e.setCancelled(true));
             gui.show(player);
-            // gui.initializeItems(player.getUniqueId(), args);
-            // gui.openInventory(player);
         } else {
             sender.sendMessage("[TransmuteIt] Only players may run this command.");
         }
@@ -139,9 +137,9 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
     private int[] coords(int loc) {
         int x;
         int y = 0;
-        if (loc >= 7) {
-            while (loc >= 7) {
-                loc -= 7;
+        if (loc >= 9) {
+            while (loc >= 9) {
+                loc -= 9;
                 y++;
             }
         }
@@ -182,6 +180,9 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
         if(!clickedItem.getItemMeta().hasLore()) {
             return;
         }
+
+        // Ignore slots outside the GUI
+        if (e.getRawSlot() >= (9 * 4)) return;
 
         // Ensure item has EMC and stuff
         TransmutableItem transmutableItem = new TransmutableItem(clickedItem);
