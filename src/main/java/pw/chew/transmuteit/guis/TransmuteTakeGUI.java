@@ -116,11 +116,11 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
                 long current = DataManager.getEMC(player);
                 long newEMC = current + (amount * emc);
                 DataManager.writeEMC(player, newEMC);
-                player.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");
+                player.sendMessage(ChatColor.LIGHT_PURPLE + "--------[ " + ChatColor.AQUA + "Transmuting Stats" + ChatColor.LIGHT_PURPLE + " ]--------");
                 if(!DataManager.hasDiscovered(player, name)) {
-                    player.sendMessage(ChatColor.COLOR_CHAR + "aYou've discovered " + name + "!");
+                    player.sendMessage(ChatColor.GREEN + "You've discovered " + name + "!");
                     if(DataManager.discoveries(player).size() == 0) {
-                        player.sendMessage(ChatColor.ITALIC + "" + ChatColor.COLOR_CHAR + "7Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
+                        player.sendMessage(ChatColor.ITALIC + "" + ChatColor.GRAY + "Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
                     }
                     DataManager.writeDiscovery(uuid, name);
                 }

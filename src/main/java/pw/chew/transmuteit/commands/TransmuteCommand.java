@@ -123,7 +123,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             ItemStack item = new ItemStack(Material.getMaterial(name), amount);
             inventory.addItem(item);
             DataManager.writeEMC(player, emc - requiredEMC);
-            sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");
+            sender.sendMessage(ChatColor.LIGHT_PURPLE + "--------[ " + ChatColor.AQUA + "Transmuting Stats" + ChatColor.LIGHT_PURPLE + " ]--------");
             sender.sendMessage(ChatColor.GREEN + "+ " + amount + " " + capitalize(name));
             sender.sendMessage(ChatColor.RED + "- " + NumberFormat.getInstance().format(requiredEMC) + " EMC [Total: " + NumberFormat.getInstance().format(emc - requiredEMC) + " EMC]");
         } else {
@@ -287,15 +287,15 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         int emc = DataManager.getItemEMC(type.toString());
         if (emc > 0) {
             UUID uuid = ((Player) sender).getUniqueId();
-            sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");
+            sender.sendMessage(ChatColor.LIGHT_PURPLE + "--------[ " + ChatColor.AQUA + "Transmuting Stats" + ChatColor.LIGHT_PURPLE + " ]--------");
             if (!DataManager.hasDiscovered(player, name)) {
-                sender.sendMessage(ChatColor.COLOR_CHAR + "aYou've discovered " + name + "!");
+                sender.sendMessage(ChatColor.GREEN + "You've discovered " + name + "!");
                 if (DataManager.hasNoDiscoveries(player)) {
-                    sender.sendMessage(ChatColor.COLOR_CHAR + "7" + ChatColor.ITALIC + "Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
+                    sender.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
                 }
                 DataManager.writeDiscovery(uuid, name);
             } else {
-                sender.sendMessage(ChatColor.COLOR_CHAR + "cYou've already discovered " + name + "!");
+                sender.sendMessage(ChatColor.RED + "You've already discovered " + name + "!");
             }
         } else {
             sender.sendMessage("This item has no set EMC value!");
@@ -331,7 +331,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
 
             }
         }
-        sender.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bInventory Analysis" + ChatColor.COLOR_CHAR + "d ]--------");
+        sender.sendMessage(ChatColor.LIGHT_PURPLE + "--------[ " + ChatColor.AQUA + "Inventory Analysis" + ChatColor.LIGHT_PURPLE + " ]--------");
         Object[] keys = amountMap.keySet().toArray();
         Arrays.sort(keys);
         int total = 0;
