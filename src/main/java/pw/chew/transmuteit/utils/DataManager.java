@@ -3,6 +3,7 @@ package pw.chew.transmuteit.utils;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pw.chew.transmuteit.TransmuteIt;
@@ -145,6 +146,21 @@ public class DataManager {
      */
     public static void writeDiscovery(UUID uuid, String item) {
         getDataAndWrite(uuid, data -> data.getJSONArray("discoveries").put(item), "Adding discovery " + item);
+    }
+
+    /**
+     * Adds multiple items to a player's discoveries.
+     *
+     * @param uuid The UUID of the player.
+     * @param items The items to be discovered.
+     */
+    public static void writeDiscoveries(UUID uuid, List<String> items) {
+        getDataAndWrite(uuid, data -> {
+            JSONArray discoveries = data.getJSONArray("discoveries");
+            for (String item : items) {
+                discoveries.put(item);
+            }
+        }, "Adding discoveries");
     }
 
     /**

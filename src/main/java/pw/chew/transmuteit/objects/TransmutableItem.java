@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * A wrapper for an ItemStack that can be transmuted.
  */
-public record TransmutableItem(ItemStack item) {
+public record TransmutableItem(@NotNull ItemStack item) {
     /**
      * The EMC bonus for enchantment
      */
@@ -46,6 +46,14 @@ public record TransmutableItem(ItemStack item) {
 
     public boolean isEnchanted() {
         return !item.getEnchantments().isEmpty();
+    }
+
+    /**
+     * Gets the name of this item.
+     * @return The name of this item
+     */
+    public String getName() {
+        return item.getType().name();
     }
 
     /**
