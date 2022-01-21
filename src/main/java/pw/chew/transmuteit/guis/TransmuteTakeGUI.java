@@ -16,6 +16,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import pw.chew.transmuteit.utils.ChatHelper;
 import pw.chew.transmuteit.utils.DataManager;
 
 import java.text.NumberFormat;
@@ -96,7 +97,7 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
             int emc = DataManager.getItemEMC(type.toString());
             if (emc > 0) {
                 if(!loreAllowed && item.getItemMeta().hasLore()) {
-                    player.sendMessage(ChatColor.RED + "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
+                    ChatHelper.sendError(player, "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
                     return;
                 }
                 int currentDurability = 0;

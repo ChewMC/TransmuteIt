@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import pw.chew.transmuteit.guis.TransmuteGUI;
 import pw.chew.transmuteit.guis.TransmuteTakeGUI;
 import pw.chew.transmuteit.objects.TransmutableItem;
+import pw.chew.transmuteit.utils.ChatHelper;
 import pw.chew.transmuteit.utils.DataManager;
 
 import java.io.IOException;
@@ -93,8 +94,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         if (args.length < 3) {
-            sender.sendMessage("This sub-command requires more arguments! Check \"/transmute help\" for more info.");
-            return true;
+            return ChatHelper.sendError(sender, "This sub-command requires more arguments! Check \"/transmute help\" for more info.");
         }
         UUID uuid = player.getUniqueId();
         String name = args[1].toUpperCase();
@@ -102,21 +102,18 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         try {
             amount = Integer.parseInt(args[2]);
         } catch(NumberFormatException e) {
-            sender.sendMessage("Invalid number input! Please enter a number!");
-            return true;
+            return ChatHelper.sendError(sender, "Invalid number input! Please enter a number!");
         }
 
         if (DataManager.hasDiscovered(player, name)) {
             long emc = DataManager.getEMC(player);
             int value = DataManager.getItemEMC(name);
             if (value == 0) {
-                sender.sendMessage("This item no longer has an EMC value!");
-                return true;
+                return ChatHelper.sendError(sender, "This item no longer has an EMC value!");
             }
             long requiredEMC = (long) value * amount;
             if (requiredEMC > emc) {
-                sender.sendMessage("You don't have enough EMC!");
-                return true;
+                return ChatHelper.sendError(sender, "You don't have enough EMC! You need %s more.", (emc - requiredEMC));
             }
 
             PlayerInventory inventory = player.getInventory();
@@ -127,7 +124,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.GREEN + "+ " + amount + " " + capitalize(name));
             sender.sendMessage(ChatColor.RED + "- " + NumberFormat.getInstance().format(requiredEMC) + " EMC [Total: " + NumberFormat.getInstance().format(emc - requiredEMC) + " EMC]");
         } else {
-            sender.sendMessage(ChatColor.RED + "Uh oh! You don't appear to have discovered " + name + ". Type \"/discoveries\" to view your discoveries.");
+            ChatHelper.sendError(sender, "Uh oh! You don't appear to have discovered %s. Type \"/discoveries\" to view your discoveries.", name);
         }
         return true;
     }
@@ -147,8 +144,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         TransmutableItem item = new TransmutableItem(inventory.getItemInMainHand());
         boolean loreAllowed = config.getBoolean("lore");
         if (!loreAllowed && item.hasLore()) {
-            player.sendMessage(ChatColor.RED + "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
-            return true;
+            return ChatHelper.sendError(sender, "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
         }
         Material type = item.getType();
         String name = type.toString();
@@ -162,8 +158,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
 
         // Check to see if this can be transmuted
         if (!item.hasEMC()) {
-            sender.sendMessage(ChatColor.RED + "This item has no set EMC value!");
-            return true;
+            return ChatHelper.sendError(sender, "This item has no set EMC value!");
         }
 
         boolean enchantments = item.isEnchanted();
@@ -188,8 +183,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
                     try {
                         takeAmount = Integer.parseInt(args[1]);
                     } catch (NumberFormatException e) {
-                        sender.sendMessage(ChatColor.RED + "Invalid number input! Please enter a number!");
-                        return true;
+                        return ChatHelper.sendError(sender, "Invalid number input! Please enter a number!");
                     }
                 }
             }
@@ -212,13 +206,11 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         }
 
         if (takeAmount <= 0) {
-            sender.sendMessage(ChatColor.RED + "Please select a value greater than 0!");
-            return true;
+            return ChatHelper.sendError(sender, "Please select a value greater than 0!");
         }
 
         if (amount - takeAmount < 0) {
-            sender.sendMessage(ChatColor.RED + "You don't have enough of this item! (You only have " + amount + ")");
-            return true;
+            return ChatHelper.sendError(sender, "You don't have enough of this item! (You only have %s)", amount);
         }
 
         // If it's something
@@ -273,15 +265,13 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         ItemStack item = inventory.getItemInMainHand();
         boolean loreAllowed = config.getBoolean("lore");
         if (!loreAllowed && item.getItemMeta() != null && item.getItemMeta().hasLore()) {
-            sender.sendMessage(ChatColor.RED + "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
-            return true;
+            return ChatHelper.sendError(sender, "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
         }
         Material type = item.getType();
         String name = type.toString();
         // If it's nothing
         if (type.isAir()) {
-            sender.sendMessage("Please hold an item to learn it!");
-            return true;
+            return ChatHelper.sendError(sender, "Please hold an item to learn it!");
         }
         // If it's something
         int emc = DataManager.getItemEMC(type.toString());
@@ -295,10 +285,10 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
                 }
                 DataManager.writeDiscovery(uuid, name);
             } else {
-                sender.sendMessage(ChatColor.RED + "You've already discovered " + name + "!");
+                ChatHelper.sendError(sender, "You've already discovered %s!", name);
             }
         } else {
-            sender.sendMessage("This item has no set EMC value!");
+            ChatHelper.sendError(sender, "This item has no set EMC value!");
         }
         return true;
     }
@@ -479,8 +469,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     public static boolean missingPermission(CommandSender sender, String permission) {
         if(sender.hasPermission(permission))
             return false;
-        sender.sendMessage(ChatColor.RED + "You are missing the permission needed to run this command! You need: " + ChatColor.GREEN + permission);
-        return true;
+        return ChatHelper.sendError(sender, "You are missing the permission needed to run this command! You need: " + ChatColor.GREEN + permission);
     }
 
     public static boolean checkCommandPermission(CommandSender sender, String command) {

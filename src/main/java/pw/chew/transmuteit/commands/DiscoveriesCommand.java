@@ -18,6 +18,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import pw.chew.transmuteit.objects.TransmutableItem;
+import pw.chew.transmuteit.utils.ChatHelper;
 import pw.chew.transmuteit.utils.DataManager;
 
 import java.text.NumberFormat;
@@ -36,8 +37,7 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
             List<String> discoveries = new ArrayList<>(DataManager.discoveries(player));
 
             if (discoveries.isEmpty()) {
-                sender.sendMessage(ChatColor.RED + "You haven't discovered anything yet! Hold an item and type \"/tm learn\" or \"/tm take\" to discover an item!");
-                return true;
+                return ChatHelper.sendError(sender, "You haven't discovered anything yet! Hold an item and type \"/tm learn\" or \"/tm take\" to discover an item!");
             }
 
             // Initialize GUI and background
@@ -186,7 +186,7 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
         // Ensure item has EMC and stuff
         TransmutableItem transmutableItem = new TransmutableItem(clickedItem);
         if (!transmutableItem.hasEMC()) {
-            player.sendMessage(ChatColor.RED + "This item no longer has an EMC value!");
+            ChatHelper.sendError(player, "This item no longer has an EMC value!");
             return;
         }
 
@@ -199,7 +199,7 @@ public class DiscoveriesCommand implements CommandExecutor, Listener {
             int value = transmutableItem.getItemEMC();
             long change = (long) value * amount;
             if (change > emc) {
-                player.sendMessage(ChatColor.RED + "You don't have enough EMC! You still need " + (change - emc) + " EMC.");
+                ChatHelper.sendError(player, "You don't have enough EMC! You still need %s EMC.", (change - emc));
                 return;
             }
 

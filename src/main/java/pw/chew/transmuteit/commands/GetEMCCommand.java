@@ -12,6 +12,7 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import pw.chew.transmuteit.objects.TransmutableItem;
+import pw.chew.transmuteit.utils.ChatHelper;
 import pw.chew.transmuteit.utils.DataManager;
 
 import java.text.NumberFormat;
@@ -31,8 +32,7 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
             TransmutableItem item;
             if (args.length == 0) {
                 if (player.getInventory().getItemInMainHand().getType().isAir()) {
-                    sender.sendMessage(ChatColor.RED + "Please hold an item to find its EMC value!");
-                    return true;
+                    return ChatHelper.sendError(sender, "Please hold an item to find its EMC value!");
                 }
 
                 item = new TransmutableItem(player.getInventory().getItemInMainHand());
@@ -85,8 +85,7 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
 
             // An option is required to get the EMC value
             if (args.length == 0) {
-                sender.sendMessage(ChatColor.RED + "Please specify an item!");
-                return true;
+                return ChatHelper.sendError(sender, "Please specify an item!");
             }
 
             // Get the item and return the EMC value

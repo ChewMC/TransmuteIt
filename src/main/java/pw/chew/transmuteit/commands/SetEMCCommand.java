@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
+import pw.chew.transmuteit.utils.ChatHelper;
 import pw.chew.transmuteit.utils.DataManager;
 
 public class SetEMCCommand implements CommandExecutor {
@@ -18,16 +19,14 @@ public class SetEMCCommand implements CommandExecutor {
         if (sender instanceof Player player) {
 
             if (args.length == 0) {
-                sender.sendMessage(ChatColor.RED + "Please enter a value! (If you intend to clear the EMC, put 0)");
-                return true;
+                return ChatHelper.sendError(sender, "Please enter a value! (If you intend to clear the EMC, put 0)");
             }
 
             int input = 0;
             try {
                 input = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                sender.sendMessage(ChatColor.RED + "Please enter a valid number!");
-                return true;
+                return ChatHelper.sendError(sender, "Please enter a valid number!");
             }
 
             // All this basically is just "Get the held item's name"
@@ -50,7 +49,7 @@ public class SetEMCCommand implements CommandExecutor {
                     }
                     // If there's no JSON file or it's not IN the JSON file
                 } catch(JSONException e) {
-                    sender.sendMessage(ChatColor.RED + "That item is " + amount + " of " + name + ". It has no set EMC value!");
+                    ChatHelper.sendError(sender, "That item is %s of %s. It has no set EMC value!", amount, name);
                 }
             }
 
