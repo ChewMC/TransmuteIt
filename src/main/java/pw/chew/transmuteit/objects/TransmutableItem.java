@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
-import pw.chew.transmuteit.TransmuteIt;
+import pw.chew.transmuteit.utils.DataManager;
 
 import java.util.Map;
 
@@ -56,7 +56,7 @@ public record TransmutableItem(ItemStack item) {
      */
     public int getItemEMC() {
         if (hasEMC()) {
-            return TransmuteIt.getDataManager().getEMCValues().getInt(item.getType().toString());
+            return DataManager.getItemEMC(item.getType().toString());
         } else {
             throw new IllegalArgumentException("No EMC value for item " + item.getType());
         }
@@ -68,7 +68,7 @@ public record TransmutableItem(ItemStack item) {
      * @return true if this item has an EMC value, false otherwise
      */
     public boolean hasEMC() {
-        return TransmuteIt.getDataManager().getEMCValues().has(item.getType().toString());
+        return DataManager.getItemEMC(item.getType().toString()) > 0;
     }
 
     /**

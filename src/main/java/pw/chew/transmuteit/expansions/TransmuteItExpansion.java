@@ -2,12 +2,12 @@ package pw.chew.transmuteit.expansions;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
-import pw.chew.transmuteit.DataManager;
+import org.jetbrains.annotations.NotNull;
 import pw.chew.transmuteit.TransmuteIt;
+import pw.chew.transmuteit.utils.DataManager;
 
 public class TransmuteItExpansion extends PlaceholderExpansion {
     private final TransmuteIt plugin;
-    private static DataManager dataManager;
 
     /**
      * Since we register the expansion inside our own plugin, we
@@ -17,9 +17,8 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
      * @param plugin
      *        The instance of our plugin.
      */
-    public TransmuteItExpansion(TransmuteIt plugin, DataManager data) {
+    public TransmuteItExpansion(TransmuteIt plugin) {
         this.plugin = plugin;
-        dataManager = data;
     }
 
     /**
@@ -52,7 +51,7 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
      * @return The name of the author as a String.
      */
     @Override
-    public String getAuthor(){
+    public @NotNull String getAuthor(){
         return plugin.getDescription().getAuthors().toString();
     }
 
@@ -66,7 +65,7 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
      * @return The identifier in {@code %<identifier>_<value>%} as String.
      */
     @Override
-    public String getIdentifier(){
+    public @NotNull String getIdentifier(){
         return "transmuteit";
     }
 
@@ -79,7 +78,7 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
      * @return The version as a String.
      */
     @Override
-    public String getVersion(){
+    public @NotNull String getVersion(){
         return plugin.getDescription().getVersion();
     }
 
@@ -97,7 +96,7 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
      * @return possibly-null String of the requested identifier.
      */
     @Override
-    public String onRequest(OfflinePlayer player, String identifier){
+    public String onRequest(OfflinePlayer player, @NotNull String identifier) {
 
         if(player == null){
             return "";
@@ -105,23 +104,23 @@ public class TransmuteItExpansion extends PlaceholderExpansion {
 
         // %someplugin_placeholder1%
         if(identifier.equals("emc")){
-            int emc = dataManager.getEMC(player.getPlayer());
+            long emc = DataManager.getEMC(player.getPlayer());
             return emc + "";
         }
 
         if(identifier.equals("discoveries")) {
-            int discoveries = dataManager.discoveries(player.getUniqueId()).size();
+            int discoveries = DataManager.discoveries(player).size();
             return discoveries + "";
         }
 
         if(identifier.equals("total_discoveries")) {
-            int discoveries = dataManager.getAmountOfItemsWithEMC();
+            int discoveries = DataManager.getAmountOfItemsWithEMC();
             return discoveries + "";
         }
 
         if(identifier.contains("discovered_")) {
             String name = identifier.split("discovered_")[1];
-            boolean discovered = dataManager.discovered(player.getUniqueId(), name.toUpperCase());
+            boolean discovered = DataManager.hasDiscovered(player, name.toUpperCase());
             if(discovered) {
                 return "1";
             } else {

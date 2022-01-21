@@ -8,23 +8,18 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.JSONObject;
 import pw.chew.transmuteit.commands.DiscoveriesCommand;
 import pw.chew.transmuteit.commands.EMCCommand;
 import pw.chew.transmuteit.commands.GetEMCCommand;
 import pw.chew.transmuteit.commands.SetEMCCommand;
 import pw.chew.transmuteit.commands.TransmuteCommand;
 import pw.chew.transmuteit.expansions.TransmuteItExpansion;
+import pw.chew.transmuteit.guis.TransmuteGUI;
+import pw.chew.transmuteit.guis.TransmuteTakeGUI;
 import pw.chew.transmuteit.listeners.JoinListener;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import pw.chew.transmuteit.utils.DataManager;
 
 public class TransmuteIt extends JavaPlugin {
-    // Files & Config
-    private static JSONObject json;
-    private static FileConfiguration config;
-    private static DataManager data;
     private static boolean outdatedConfig = false;
 
     // Vault Hook
@@ -34,7 +29,8 @@ public class TransmuteIt extends JavaPlugin {
     // Fired when plugin is first enabled
     public void onEnable() {
         // Get and save config
-        config = this.getConfig();
+        // Files & Config
+        FileConfiguration config = this.getConfig();
         config.addDefault("economy", false);
         config.addDefault("lore", true);
         if(!config.contains("lore", true)) {
@@ -45,7 +41,7 @@ public class TransmuteIt extends JavaPlugin {
         saveDefaultConfig();
 
         // Setup DataManager
-        data = new DataManager(this, useEconomy, econ, json);
+        DataManager.setInfo(this, useEconomy, econ);
 
         // bStats
         int pluginId = 6819;
@@ -62,35 +58,24 @@ public class TransmuteIt extends JavaPlugin {
 
         // Set up PAPI Hook
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
-            new TransmuteItExpansion(this, data).register();
+            new TransmuteItExpansion(this).register();
         }
 
         // Load EMC
-        try {
-            data.loadEMC();
-        } catch (FileNotFoundException e) {
-            this.getLogger().info("EMC File missing! Attempting to grab defaults from JAR.");
-            try {
-                data.copyFileFromJar();
-                data.loadEMC();
-            } catch (IOException f) {
-                this.getLogger().severe("Failed getting file! Shutting down.");
-                this.getPluginLoader().disablePlugin(this);
-            }
-        }
+        DataManager.loadEMC();
 
         // Load Commands
-        TransmuteCommand transmute = new TransmuteCommand(json, data, config);
+        TransmuteCommand transmute = new TransmuteCommand(config);
 
         loadCommand("getemc", new GetEMCCommand());
         loadCommand("transmute", transmute).setTabCompleter(transmute);
-        loadCommand("emc", new EMCCommand(data));
-        loadCommand("setemc", new SetEMCCommand(json, data));
-        loadCommand("discoveries", new DiscoveriesCommand(this, data, json));
+        loadCommand("emc", new EMCCommand());
+        loadCommand("setemc", new SetEMCCommand());
+        loadCommand("discoveries", new DiscoveriesCommand());
 
         // Register Events
-        getServer().getPluginManager().registerEvents(new TransmuteGUI(json, data, config), this);
-        getServer().getPluginManager().registerEvents(new TransmuteTakeGUI(json, data, config), this);
+        getServer().getPluginManager().registerEvents(new TransmuteGUI(config), this);
+        getServer().getPluginManager().registerEvents(new TransmuteTakeGUI(config), this);
         getServer().getPluginManager().registerEvents(new JoinListener(outdatedConfig), this);
 
         // Magic Time
@@ -123,9 +108,5 @@ public class TransmuteIt extends JavaPlugin {
         }
         econ = rsp.getProvider();
         return true;
-    }
-
-    public static DataManager getDataManager() {
-        return data;
     }
 }

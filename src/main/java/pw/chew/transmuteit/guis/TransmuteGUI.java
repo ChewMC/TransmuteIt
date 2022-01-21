@@ -1,4 +1,4 @@
-package pw.chew.transmuteit;
+package pw.chew.transmuteit.guis;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,8 +12,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.json.JSONObject;
+import org.jetbrains.annotations.NotNull;
 import pw.chew.transmuteit.commands.TransmuteCommand;
+import pw.chew.transmuteit.utils.DataManager;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -24,27 +25,23 @@ import static pw.chew.transmuteit.utils.GuiHelper.createGuiItem;
 
 public class TransmuteGUI implements InventoryHolder, Listener {
     private final Inventory inv;
-    private static JSONObject json;
-    private static DataManager dataManager;
     private static FileConfiguration config;
 
-    public TransmuteGUI(JSONObject jsonData, DataManager data, FileConfiguration configFile) {
+    public TransmuteGUI(FileConfiguration configFile) {
         inv = Bukkit.createInventory(this, 27, "TransmuteIt - Home Page");
-        json = jsonData;
-        dataManager = data;
         config = configFile;
     }
 
     @Override
-    public Inventory getInventory() {
+    public @NotNull Inventory getInventory() {
         return inv;
     }
 
     // You can call this whenever you want to put the items in
     public void initializeItems(UUID uuid, Player player) {
-        int emc = dataManager.getEMC(player);
-        int discoveries = dataManager.discoveries(uuid).size();
-        int totalDiscoveries = json.length();
+        long emc = DataManager.getEMC(player);
+        int discoveries = DataManager.discoveries(player).size();
+        int totalDiscoveries = DataManager.getAmountOfItemsWithEMC();
         inv.setItem(10, createSkullItem(player, ChatColor.YELLOW + "EMC: " + ChatColor.GREEN + NumberFormat.getInstance().format(emc), ChatColor.YELLOW + "Discoveries: " + ChatColor.GREEN + discoveries + " / " + totalDiscoveries));
         inv.setItem(12, createGuiItem(Material.PAPER, "Help!", "Click to view help!"));
         inv.setItem(14, createGuiItem(Material.ENCHANTING_TABLE, "Discoveries", "" + "Click to view your discoveries."));
@@ -82,32 +79,27 @@ public class TransmuteGUI implements InventoryHolder, Listener {
         ItemStack clickedItem = e.getCurrentItem();
 
         // verify current item is not null
-        if (clickedItem == null || clickedItem.getType() == Material.AIR) return;
+        if (clickedItem == null || clickedItem.getType().isAir()) return;
 
-        if(e.getRawSlot() > 26) {
+        if (e.getRawSlot() > 26) {
             return;
         }
 
-        if(e.getRawSlot() == 12) {
-            TransmuteCommand.helpResponse(player);
-            player.closeInventory();
+        switch (e.getRawSlot()) {
+            case 12 -> {
+                TransmuteCommand.helpResponse(player);
+                player.closeInventory();
+            }
+            case 14 -> {
+                player.closeInventory();
+                player.performCommand("discoveries");
+            }
+            case 16 -> {
+                TransmuteTakeGUI gui = new TransmuteTakeGUI(config);
+                gui.initializeItems();
+                gui.openInventory(player);
+            }
+            case 26 -> player.closeInventory();
         }
-
-        if(e.getRawSlot() == 14) {
-            player.closeInventory();
-            player.performCommand("discoveries");
-        }
-
-        if(e.getRawSlot() == 16) {
-            TransmuteTakeGUI gui = new TransmuteTakeGUI(json, dataManager, config);
-            gui.initializeItems();
-            gui.openInventory(player);
-        }
-
-        if(e.getRawSlot() == 26) {
-            player.closeInventory();
-        }
-
-
     }
 }

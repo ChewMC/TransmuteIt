@@ -11,8 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
-import pw.chew.transmuteit.TransmuteIt;
 import pw.chew.transmuteit.objects.TransmutableItem;
+import pw.chew.transmuteit.utils.DataManager;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         // Get JSON values
-        JSONObject json = TransmuteIt.getDataManager().getEMCValues();
+        JSONObject json = DataManager.getEMCValues();
 
         if (sender instanceof Player player) {
             TransmutableItem item;
@@ -66,7 +66,7 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
                 inventoryAmount += stack.getAmount();
             }
 
-            boolean discovered = TransmuteIt.getDataManager().discovered(player.getUniqueId(), name);
+            boolean discovered = DataManager.hasDiscovered(player, name);
 
             // Return responses
             sender.sendMessage(ChatColor.LIGHT_PURPLE + "--------[ " + ChatColor.AQUA + "Item Information" + ChatColor.LIGHT_PURPLE + " ]--------");
@@ -108,7 +108,7 @@ public class GetEMCCommand implements CommandExecutor, TabCompleter {
         List<String> commands = new ArrayList<>();
 
         if (args.length == 1) {
-            String[] items = TransmuteIt.getDataManager().getEMCValues().keySet().toArray(new String[0]);
+            String[] items = DataManager.getEMCValues().keySet().toArray(new String[0]);
             Collections.addAll(commands, items);
             StringUtil.copyPartialMatches(args[0], commands, completions);
         }

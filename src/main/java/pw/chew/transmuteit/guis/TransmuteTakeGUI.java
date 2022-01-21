@@ -1,4 +1,4 @@
-package pw.chew.transmuteit;
+package pw.chew.transmuteit.guis;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,7 +15,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.json.JSONObject;
+import org.jetbrains.annotations.NotNull;
+import pw.chew.transmuteit.utils.DataManager;
 
 import java.text.NumberFormat;
 import java.util.UUID;
@@ -25,19 +26,15 @@ import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
 
 public class TransmuteTakeGUI implements InventoryHolder, Listener {
     private final Inventory inv;
-    private static JSONObject json;
-    private static DataManager dataManager;
     private static FileConfiguration config;
 
-    public TransmuteTakeGUI(JSONObject jsonData, DataManager data, FileConfiguration configFile) {
+    public TransmuteTakeGUI(FileConfiguration configFile) {
         inv = Bukkit.createInventory(this, 9, "Click Items to Transmute");
-        json = jsonData;
-        dataManager = data;
         config = configFile;
     }
 
     @Override
-    public Inventory getInventory() {
+    public @NotNull Inventory getInventory() {
         return inv;
     }
 
@@ -77,7 +74,7 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
         // Verify if clicked item is the return button
         if (clickedItem.equals(returnButton)) {
             player.closeInventory();
-            TransmuteGUI mainMenu = new TransmuteGUI(json, dataManager, config);
+            TransmuteGUI mainMenu = new TransmuteGUI(config);
             mainMenu.initializeItems(player.getUniqueId(), player);
             mainMenu.openInventory(player);
             return;
@@ -95,19 +92,16 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
             String name = type.toString();
 
             boolean loreAllowed = config.getBoolean("lore");
-            // If it's nothing
-                // If it's something
-            try {
-                int emc = json.getInt(type.toString());
+
+            int emc = DataManager.getItemEMC(type.toString());
+            if (emc > 0) {
                 if(!loreAllowed && item.getItemMeta().hasLore()) {
                     player.sendMessage(ChatColor.RED + "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
                     return;
                 }
                 int currentDurability = 0;
                 ItemMeta meta = item.getItemMeta();
-                Damageable damage;
-                if(meta instanceof Damageable) {
-                    damage = ((Damageable) meta);
+                if(meta instanceof Damageable damage) {
                     currentDurability = damage.getDamage();
                 }
                 short maxDurability = type.getMaxDurability();
@@ -119,21 +113,21 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
                 }
                 item.setAmount(0);
                 UUID uuid = player.getUniqueId();
-                int current = dataManager.getEMC(player);
-                int newEMC = current + (amount * emc);
-                dataManager.writeEMC(uuid, newEMC, player);
+                long current = DataManager.getEMC(player);
+                long newEMC = current + (amount * emc);
+                DataManager.writeEMC(player, newEMC);
                 player.sendMessage(ChatColor.COLOR_CHAR + "d--------[ " + ChatColor.COLOR_CHAR + "bTransmuting Stats" + ChatColor.COLOR_CHAR + "d ]--------");
-                if(!dataManager.discovered(uuid, name)) {
+                if(!DataManager.hasDiscovered(player, name)) {
                     player.sendMessage(ChatColor.COLOR_CHAR + "aYou've discovered " + name + "!");
-                    if(dataManager.discoveries(uuid).size() == 0) {
+                    if(DataManager.discoveries(player).size() == 0) {
                         player.sendMessage(ChatColor.ITALIC + "" + ChatColor.COLOR_CHAR + "7Now you can run /transmute get " + name + " [amount] to get this item, given you have enough EMC!");
                     }
-                    dataManager.writeDiscovery(uuid, name);
+                    DataManager.writeDiscovery(uuid, name);
                 }
                 player.sendMessage(ChatColor.GREEN + "+ " + NumberFormat.getInstance().format(amount * emc) + " EMC [Total: " + NumberFormat.getInstance().format(newEMC) + " EMC]");
                 player.sendMessage(ChatColor.RED + "- " + amount + " " + capitalize(name));
                 // If there's no JSON file or it's not IN the JSON file
-            } catch(org.json.JSONException f) {
+            } else {
                 player.sendMessage("This item has no set EMC value!");
             }
         }
