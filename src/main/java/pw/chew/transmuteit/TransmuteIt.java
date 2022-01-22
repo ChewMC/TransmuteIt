@@ -24,7 +24,6 @@ public class TransmuteIt extends JavaPlugin {
 
     // Vault Hook
     private static Economy econ;
-    private static boolean useEconomy = false;
 
     // Fired when plugin is first enabled
     public void onEnable() {
@@ -40,21 +39,21 @@ public class TransmuteIt extends JavaPlugin {
         config.options().copyDefaults(true);
         saveDefaultConfig();
 
-        // Setup DataManager
-        DataManager.setInfo(this, useEconomy, econ);
-
         // bStats
         int pluginId = 6819;
         new Metrics(this, pluginId);
 
         // Setup Vault Hook
+        boolean useEconomy = false;
         if(!setupEconomy()) {
             this.getLogger().warning("Could not find vault (or there's no economy hooked into it), economy won't work!");
-            useEconomy = false;
         } else {
             this.getLogger().info("Vault HOOKED! Let's get this cash!");
             useEconomy = config.getBoolean("economy");
         }
+
+        // Setup DataManager
+        DataManager.setInfo(this, useEconomy, econ);
 
         // Set up PAPI Hook
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
