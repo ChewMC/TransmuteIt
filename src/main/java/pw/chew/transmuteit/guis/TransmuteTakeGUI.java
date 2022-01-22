@@ -13,6 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import pw.chew.transmuteit.TransmuteIt;
 import pw.chew.transmuteit.objects.TransmutableItem;
 import pw.chew.transmuteit.utils.ChatHelper;
 import pw.chew.transmuteit.utils.DataManager;
@@ -25,11 +26,11 @@ import static pw.chew.transmuteit.utils.GuiHelper.createGuiItem;
 
 public class TransmuteTakeGUI implements InventoryHolder, Listener {
     private final Inventory inv;
-    private static FileConfiguration config;
+    private final TransmuteIt plugin;
 
-    public TransmuteTakeGUI(FileConfiguration configFile) {
+    public TransmuteTakeGUI(TransmuteIt plugin) {
         inv = Bukkit.createInventory(this, 9 * 5, "Click Items to Transmute");
-        config = configFile;
+        this.plugin = plugin;
     }
 
     @Override
@@ -72,7 +73,7 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
         // Verify if clicked item is the return button
         if (e.getRawSlot() == 9*5-1) {
             player.closeInventory();
-            TransmuteGUI mainMenu = new TransmuteGUI(config);
+            TransmuteGUI mainMenu = new TransmuteGUI(plugin);
             mainMenu.initializeItems(player.getUniqueId(), player);
             mainMenu.openInventory(player);
             return;
@@ -99,7 +100,7 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
         }
 
         // Ensure items with lore are not transmuted
-        if (item.hasLore() && config.getBoolean("lore")) {
+        if (item.hasLore() && plugin.getConfig().getBoolean("lore")) {
             e.setCancelled(true);
             ChatHelper.sendError(player, "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
             return;

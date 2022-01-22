@@ -29,7 +29,6 @@ import java.util.function.Consumer;
 public class DataManager {
     private static File emcFile;
     private static TransmuteIt plugin;
-    private static boolean useEconomy;
     private static Economy econ;
     private static JSONObject json = null;
     private final static Map<UUID, JSONObject> userCache = new HashMap<>();
@@ -43,12 +42,10 @@ public class DataManager {
      * Sets info for the manager to use. Should only be called once on initialization.
      *
      * @param transmuteIt A reference to the main plugin.
-     * @param useEconomyConfig Whether to use Vault's Economy API.
      * @param economy The Economy API.
      */
-    public static void setInfo(TransmuteIt transmuteIt, boolean useEconomyConfig, Economy economy) {
+    public static void setInfo(TransmuteIt transmuteIt, Economy economy) {
         plugin = transmuteIt;
-        useEconomy = useEconomyConfig;
         econ = economy;
     }
 
@@ -78,7 +75,7 @@ public class DataManager {
      */
     public static long getEMC(OfflinePlayer player) {
         // If using Vault, use its API, otherwise get the player's EMC from their data file
-        return useEconomy ? (long) econ.getBalance(player) : getData(player.getUniqueId()).getLong("emc");
+        return plugin.getConfig().getBoolean("economy") ? (long) econ.getBalance(player) : getData(player.getUniqueId()).getLong("emc");
     }
 
     /**
@@ -130,7 +127,7 @@ public class DataManager {
      */
     public static void writeEMC(Player player, long amount) {
         // If we're using Vault, use the vault API and take it from there.
-        if (useEconomy) {
+        if (plugin.getConfig().getBoolean("economy")) {
             econ.depositPlayer(player, amount - econ.getBalance(player));
             return;
         }

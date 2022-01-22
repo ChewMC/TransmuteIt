@@ -3,7 +3,6 @@ package pw.chew.transmuteit.guis;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,6 +12,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
+import pw.chew.transmuteit.TransmuteIt;
 import pw.chew.transmuteit.commands.TransmuteCommand;
 import pw.chew.transmuteit.utils.DataManager;
 
@@ -25,11 +25,11 @@ import static pw.chew.transmuteit.utils.GuiHelper.createGuiItem;
 
 public class TransmuteGUI implements InventoryHolder, Listener {
     private final Inventory inv;
-    private static FileConfiguration config;
+    private final TransmuteIt plugin;
 
-    public TransmuteGUI(FileConfiguration configFile) {
+    public TransmuteGUI(TransmuteIt plugin) {
         inv = Bukkit.createInventory(this, 27, "TransmuteIt - Home Page");
-        config = configFile;
+        this.plugin = plugin;
     }
 
     @Override
@@ -95,7 +95,7 @@ public class TransmuteGUI implements InventoryHolder, Listener {
                 player.performCommand("discoveries");
             }
             case 16 -> {
-                TransmuteTakeGUI gui = new TransmuteTakeGUI(config);
+                TransmuteTakeGUI gui = new TransmuteTakeGUI(plugin);
                 gui.initializeItems();
                 gui.openInventory(player);
             }

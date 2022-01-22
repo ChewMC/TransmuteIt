@@ -44,16 +44,14 @@ public class TransmuteIt extends JavaPlugin {
         new Metrics(this, pluginId);
 
         // Setup Vault Hook
-        boolean useEconomy = false;
         if(!setupEconomy()) {
             this.getLogger().warning("Could not find vault (or there's no economy hooked into it), economy won't work!");
         } else {
             this.getLogger().info("Vault HOOKED! Let's get this cash!");
-            useEconomy = config.getBoolean("economy");
         }
 
         // Setup DataManager
-        DataManager.setInfo(this, useEconomy, econ);
+        DataManager.setInfo(this, econ);
 
         // Set up PAPI Hook
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null){
@@ -64,7 +62,7 @@ public class TransmuteIt extends JavaPlugin {
         DataManager.loadEMC();
 
         // Load Commands
-        TransmuteCommand transmute = new TransmuteCommand(config);
+        TransmuteCommand transmute = new TransmuteCommand(this);
 
         loadCommand("getemc", new GetEMCCommand());
         loadCommand("transmute", transmute).setTabCompleter(transmute);
@@ -73,8 +71,8 @@ public class TransmuteIt extends JavaPlugin {
         loadCommand("discoveries", new DiscoveriesCommand());
 
         // Register Events
-        getServer().getPluginManager().registerEvents(new TransmuteGUI(config), this);
-        getServer().getPluginManager().registerEvents(new TransmuteTakeGUI(config), this);
+        getServer().getPluginManager().registerEvents(new TransmuteGUI(this), this);
+        getServer().getPluginManager().registerEvents(new TransmuteTakeGUI(this), this);
         getServer().getPluginManager().registerEvents(new JoinListener(outdatedConfig), this);
 
         // Magic Time

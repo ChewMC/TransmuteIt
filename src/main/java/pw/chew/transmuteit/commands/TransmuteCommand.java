@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.StringUtil;
 import org.json.JSONObject;
+import pw.chew.transmuteit.TransmuteIt;
 import pw.chew.transmuteit.guis.TransmuteGUI;
 import pw.chew.transmuteit.guis.TransmuteTakeGUI;
 import pw.chew.transmuteit.objects.TransmutableItem;
@@ -40,10 +41,10 @@ import java.util.UUID;
 import static pw.chew.transmuteit.utils.StringFormattingHelper.capitalize;
 
 public class TransmuteCommand implements CommandExecutor, TabCompleter {
-    private static FileConfiguration config;
+    private final TransmuteIt plugin;
 
-    public TransmuteCommand(FileConfiguration configFile) {
-        config = configFile;
+    public TransmuteCommand(TransmuteIt plugin) {
+        this.plugin = plugin;
     }
 
     // /transmute command handler.
@@ -59,7 +60,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         // Show GUI or /tm help, permission depending, if no ARGs are specified
         if(args.length == 0) {
             if(sender.hasPermission("transmute.gui")) {
-                TransmuteGUI gui = new TransmuteGUI(config);
+                TransmuteGUI gui = new TransmuteGUI(plugin);
                 gui.initializeItems(player.getUniqueId(), player);
                 gui.openInventory(player);
                 return true;
@@ -80,6 +81,8 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
                 return this.handleLearn(sender);
             case "analyze":
                 return this.handleAnalyze(sender);
+            case "reload":
+                return this.handleReload(sender);
             case "version":
                 return this.handleVersion(sender);
             default:
@@ -142,7 +145,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         }
         PlayerInventory inventory = player.getInventory();
         TransmutableItem item = new TransmutableItem(inventory.getItemInMainHand());
-        boolean loreAllowed = config.getBoolean("lore");
+        boolean loreAllowed = plugin.getConfig().getBoolean("lore");
         if (!loreAllowed && item.hasLore()) {
             return ChatHelper.sendError(sender, "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
         }
@@ -150,7 +153,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         String name = type.toString();
         // If it's nothing
         if (type.isAir()) {
-            TransmuteTakeGUI gui = new TransmuteTakeGUI(config);
+            TransmuteTakeGUI gui = new TransmuteTakeGUI(plugin);
             gui.initializeItems();
             gui.openInventory(player);
             return true;
@@ -263,7 +266,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         PlayerInventory inventory = player.getInventory();
         ItemStack item = inventory.getItemInMainHand();
-        boolean loreAllowed = config.getBoolean("lore");
+        boolean loreAllowed = plugin.getConfig().getBoolean("lore");
         if (!loreAllowed && item.getItemMeta() != null && item.getItemMeta().hasLore()) {
             return ChatHelper.sendError(sender, "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
         }
@@ -340,6 +343,22 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    public boolean handleReload(CommandSender sender) {
+        if (missingPermission(sender, "transmute.command.reload")) {
+            return true;
+        }
+
+        // Reload EMC values
+        DataManager.loadEMC();
+
+        // Reload plugin config
+        plugin.reloadConfig();
+
+        // Send success message
+        sender.sendMessage(ChatColor.GREEN + "Reloaded config and EMC values!");
+        return true;
+    }
+
     public boolean handleVersion(CommandSender sender) {
         if(missingPermission(sender, "transmute.command.version")) {
             return true;
@@ -398,7 +417,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         List<String> completions = new ArrayList<>();
         List<String> commands = new ArrayList<>();
-        String[] completes = {"get", "take", "learn", "analyze", "version"};
+        String[] completes = {"get", "take", "learn", "analyze", "version", "reload"};
 
         if (args.length == 1) {
             commands.add("help");
@@ -429,6 +448,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         sendCommandString(sender, "transmute.command.get", "/transmute get [item] [amount]", "Get [amount] of [item] using EMC.");
         sendCommandString(sender, "transmute.command.learn", "/transmute learn", "Discover the item without transmuting it.");
         sendCommandString(sender, "transmute.command.analyze", "/transmute analyze", "Analyze your inventory for its EMC value.");
+        sendCommandString(sender, "transmute.command.reload", "/transmute reload", "Reloads the config and EMC file.");
         sendCommandString(sender, "transmute.command.getemc", "/getEMC (item)", "Get the EMC value of an item, blank for currently held item.");
         sendCommandString(sender, "transmute.player.emc", "/emc", "View your EMC.");
         sendCommandString(sender, "transmute.player.discoveries", "/discoveries (search term)", "View your Discoveries. Leave blank to see all, or type to search.");
