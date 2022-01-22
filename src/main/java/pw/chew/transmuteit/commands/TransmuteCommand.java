@@ -424,39 +424,23 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
     public static boolean helpResponse(CommandSender sender) {
         sender.sendMessage(ChatColor.LIGHT_PURPLE + "-----[ " + ChatColor.AQUA + "Welcome to TransmuteIt!" + ChatColor.LIGHT_PURPLE + " ]-----");
         sender.sendMessage(ChatColor.YELLOW + "/transmute help" + ChatColor.GRAY + " - " + ChatColor.GREEN + "This command.");
-        if(sender.hasPermission("transmute.command.version")) {
-            sender.sendMessage(helpCommandFormatting("/transmute version", "Gets the version of the plugin and checks for updates."));
-        }
-        if(sender.hasPermission("transmute.command.take")) {
-            sender.sendMessage(helpCommandFormatting("/transmute take (amount)", "Take [amount] of held item and convert to EMC."));
-        }
-        if(sender.hasPermission("transmute.command.get")) {
-            sender.sendMessage(helpCommandFormatting("/transmute get [item] [amount]", "Get [amount] of [item] using EMC."));
-        }
-        if(sender.hasPermission("transmute.command.learn")) {
-            sender.sendMessage(helpCommandFormatting("/transmute learn", "Discover the item without transmuting it."));
-        }
-        if(sender.hasPermission("transmute.command.analyze")) {
-            sender.sendMessage(helpCommandFormatting("/transmute analyze", "Analyze your inventory for its EMC value."));
-        }
-        if(sender.hasPermission("transmute.command.getemc")) {
-            sender.sendMessage(helpCommandFormatting("/getEMC (item)", "Get the EMC value of an item, blank for currently held item."));
-        }
-        if(sender.hasPermission("transmute.player.emc")) {
-            sender.sendMessage(helpCommandFormatting("/emc", "View your EMC."));
-        }
-        if(sender.hasPermission("transmute.player.discoveries")) {
-            sender.sendMessage(helpCommandFormatting("/discoveries (search term)", "View your Discoveries. Leave blank to see all, or type to search."));
-        }
-        if(sender.hasPermission("transmute.admin.emc.set")) {
-            sender.sendMessage(helpCommandFormatting("/setEMC [amount]", "Set the EMC value of held item. Use 0 to remove."));
-        }
+        sendCommandString(sender, "transmute.command.version", "/transmute version", "Gets the version of the plugin and checks for updates.");
+        sendCommandString(sender, "transmute.command.take", "/transmute take (amount)", "Take [amount] of held item and convert to EMC.");
+        sendCommandString(sender, "transmute.command.get", "/transmute get [item] [amount]", "Get [amount] of [item] using EMC.");
+        sendCommandString(sender, "transmute.command.learn", "/transmute learn", "Discover the item without transmuting it.");
+        sendCommandString(sender, "transmute.command.analyze", "/transmute analyze", "Analyze your inventory for its EMC value.");
+        sendCommandString(sender, "transmute.command.getemc", "/getEMC (item)", "Get the EMC value of an item, blank for currently held item.");
+        sendCommandString(sender, "transmute.player.emc", "/emc", "View your EMC.");
+        sendCommandString(sender, "transmute.player.discoveries", "/discoveries (search term)", "View your Discoveries. Leave blank to see all, or type to search.");
+        sendCommandString(sender, "transmute.admin.emc.set", "/setEMC [amount]", "Set the EMC value of held item. Use 0 to remove.");
         return true;
     }
 
     // Helpful command formatter that gives it colors
-    private static String helpCommandFormatting(String command, String description) {
-        return ChatColor.YELLOW + command + ChatColor.GRAY + " - " + ChatColor.GREEN + description;
+    private static void sendCommandString(CommandSender sender, String permission, String command, String description) {
+        if (sender.hasPermission(permission)) {
+            sender.sendMessage(ChatColor.YELLOW + command + ChatColor.GRAY + " - " + ChatColor.GREEN + description);
+        }
     }
 
     /**
