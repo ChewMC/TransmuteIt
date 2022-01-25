@@ -1,12 +1,15 @@
 package pw.chew.transmuteit.utils;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pw.chew.transmuteit.TransmuteIt;
+import pw.chew.transmuteit.events.ItemEMCChangeEvent;
+import pw.chew.transmuteit.events.PlayerEMCChangeEvent;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -126,6 +129,11 @@ public class DataManager {
      * @param amount The amount to set to.
      */
     public static void writeEMC(Player player, long amount) {
+        PlayerEMCChangeEvent event = new PlayerEMCChangeEvent(player, amount);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (event.isCancelled()) return;
+
         // If we're using Vault, use the vault API and take it from there.
         if (plugin.getConfig().getBoolean("economy")) {
             econ.depositPlayer(player, amount - econ.getBalance(player));
@@ -302,6 +310,10 @@ public class DataManager {
      */
     public static void setEMCValue(String item, int value) {
         item = item.toUpperCase(Locale.ROOT);
+
+        ItemEMCChangeEvent event = new ItemEMCChangeEvent(item, json.getInt(item), value);
+        Bukkit.getPluginManager().callEvent(event);
+
         if (value > 0) {
             json.put(item, value);
         } else {
