@@ -132,11 +132,20 @@ public class DataManager {
         PlayerEMCChangeEvent event = new PlayerEMCChangeEvent(player, amount);
         Bukkit.getPluginManager().callEvent(event);
 
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            //plugin.getLogger().info("EMC change cancelled for " + player.getName() + "!");
+            return;
+        }
 
         // If we're using Vault, use the vault API and take it from there.
         if (plugin.getConfig().getBoolean("economy", false)) {
-            econ.depositPlayer(player, amount - econ.getBalance(player));
+            double change = amount - econ.getBalance(player);
+            if (change > 0) {
+                econ.depositPlayer(player, change);
+            } else {
+                econ.withdrawPlayer(player, -change);
+            }
+            //plugin.getLogger().info("Deposited " + change + " EMC to " + player.getName() + "!");
             return;
         }
 
@@ -166,6 +175,9 @@ public class DataManager {
             for (String item : items) {
                 discoveries.put(item);
             }
+            // Ensure only unique items are stored
+            JSONArray unique = new JSONArray(discoveries.toList().stream().distinct().toList());
+            data.put("discoveries", unique);
         }, "Adding discoveries");
     }
 
@@ -195,6 +207,7 @@ public class DataManager {
         // Then proceed to write the data.
         try (FileWriter writer = new FileWriter(userFile)) {
             data.write(writer);
+            //plugin.getLogger().info("Successfully performed " + action + " for " + uuid);
         } catch (IOException e) {
             plugin.getLogger().severe("Unable to write to EMC file for UUID " + uuid + "! EMC will NOT save for this player! Attempted action: " + action);
         }

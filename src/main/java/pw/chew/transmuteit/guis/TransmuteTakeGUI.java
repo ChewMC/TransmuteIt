@@ -21,6 +21,7 @@ import pw.chew.transmuteit.utils.DataManager;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static pw.chew.transmuteit.utils.GuiHelper.createGuiItem;
 
@@ -132,6 +133,9 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
                 discoveries.add(item.getName());
             }
         }
+
+        // Make sure discoveries is unique
+        discoveries = discoveries.stream().distinct().collect(Collectors.toList());
 
         // Write the data
         DataManager.writeEMC(player, emc + toAdd);
