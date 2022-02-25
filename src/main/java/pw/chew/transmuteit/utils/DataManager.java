@@ -78,7 +78,7 @@ public class DataManager {
      */
     public static long getEMC(OfflinePlayer player) {
         // If using Vault, use its API, otherwise get the player's EMC from their data file
-        return plugin.getConfig().getBoolean("economy") ? (long) econ.getBalance(player) : getData(player.getUniqueId()).getLong("emc");
+        return plugin.getConfig().getBoolean("economy", false) ? (long) econ.getBalance(player) : getData(player.getUniqueId()).getLong("emc");
     }
 
     /**
@@ -135,10 +135,11 @@ public class DataManager {
         if (event.isCancelled()) return;
 
         // If we're using Vault, use the vault API and take it from there.
-        if (plugin.getConfig().getBoolean("economy")) {
+        if (plugin.getConfig().getBoolean("economy", false)) {
             econ.depositPlayer(player, amount - econ.getBalance(player));
             return;
         }
+
         // If not, use the inbuilt method.
         getDataAndWrite(player.getUniqueId(), data -> data.put("emc", amount), "Setting EMC to " + amount);
     }

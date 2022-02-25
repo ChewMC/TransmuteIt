@@ -36,7 +36,6 @@ public class TransmuteIt extends JavaPlugin {
             this.getLogger().warning("Your config is outdated! Please delete your config and re-generate it.");
             outdatedConfig = true;
         }
-        config.options().copyDefaults(true);
         saveDefaultConfig();
 
         // bStats
@@ -46,8 +45,10 @@ public class TransmuteIt extends JavaPlugin {
         // Setup Vault Hook
         if(!setupEconomy()) {
             this.getLogger().warning("Could not find vault (or there's no economy hooked into it), economy won't work!");
+        } else if (config.getBoolean("economy")) {
+            this.getLogger().info("Vault HOOKED! Economy is enabled, so balance will flow through it!");
         } else {
-            this.getLogger().info("Vault HOOKED! Let's get this cash!");
+            this.getLogger().info("Vault HOOKED! Economy is disabled in config, so EMC is file-backed!");
         }
 
         // Setup DataManager

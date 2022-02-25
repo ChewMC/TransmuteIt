@@ -145,7 +145,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         }
         PlayerInventory inventory = player.getInventory();
         TransmutableItem item = new TransmutableItem(inventory.getItemInMainHand());
-        boolean loreAllowed = plugin.getConfig().getBoolean("lore");
+        boolean loreAllowed = plugin.getConfig().getBoolean("lore", true);
         if (!loreAllowed && item.hasLore()) {
             return ChatHelper.sendError(sender, "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
         }
@@ -266,7 +266,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         Player player = (Player) sender;
         PlayerInventory inventory = player.getInventory();
         ItemStack item = inventory.getItemInMainHand();
-        boolean loreAllowed = plugin.getConfig().getBoolean("lore");
+        boolean loreAllowed = plugin.getConfig().getBoolean("lore", true);
         if (!loreAllowed && item.getItemMeta() != null && item.getItemMeta().hasLore()) {
             return ChatHelper.sendError(sender, "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
         }

@@ -100,7 +100,7 @@ public class TransmuteTakeGUI implements InventoryHolder, Listener {
         }
 
         // Ensure items with lore are not transmuted
-        if (item.hasLore() && plugin.getConfig().getBoolean("lore")) {
+        if (item.hasLore() && plugin.getConfig().getBoolean("lore", true)) {
             e.setCancelled(true);
             ChatHelper.sendError(player, "This item has a custom lore set, and items with lore can't be transmuted as per the config.");
             return;
