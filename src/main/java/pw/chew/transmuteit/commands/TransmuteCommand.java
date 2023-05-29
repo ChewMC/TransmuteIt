@@ -21,6 +21,7 @@ import pw.chew.transmuteit.guis.TransmuteGUI;
 import pw.chew.transmuteit.guis.TransmuteTakeGUI;
 import pw.chew.transmuteit.objects.TransmutableItem;
 import pw.chew.transmuteit.utils.ChatHelper;
+import pw.chew.transmuteit.utils.Compatibility;
 import pw.chew.transmuteit.utils.DataManager;
 
 import java.io.IOException;
@@ -376,7 +377,7 @@ public class TransmuteCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage("Checking for new updates...");
 
         int finalCbuild = cbuild;
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        Compatibility.runTaskAsync(plugin, () -> {
             String[] response = getLatestVersion();
             int lbuild = Integer.parseInt(response[0]);
             String lversion = response[1];
