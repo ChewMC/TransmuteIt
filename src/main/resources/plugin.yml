@@ -4,6 +4,7 @@ version: 0.5.0-b${build}
 api-version: "1.15"
 description: It's just ProjectE Transmutation for Spigot
 author: Chewsterchew
+folia-supported: true
 website: https://github.com/ChewMC/TransmuteIt
 softdepend: [Vault, PlaceholderAPI]
 commands:

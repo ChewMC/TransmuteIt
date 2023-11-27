@@ -49,7 +49,7 @@ dependencies {
     compileOnly("com.github.MilkBowl", "VaultAPI", "1.7")
     compileOnly("me.clip", "placeholderapi", "2.10.8")
     compileOnly("org.jetbrains", "annotations", "22.0.0")
-    compileOnly("io.papermc.paper", "paper-api", "1.18.1-R0.1-SNAPSHOT")
+    compileOnly("dev.folia", "folia-api", "1.19.4-R0.1-SNAPSHOT")
 }
 
 // Set the default value to the current time as an ISO-8601 string
